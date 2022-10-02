@@ -11,10 +11,3 @@
   </div>
   <div id="tests">Tests here</div>
 </main>
-
-<style>
-main {
-  display: grid;
-  grid-template-columns: repeat(autofill, 1fr);
-}
-</style>
