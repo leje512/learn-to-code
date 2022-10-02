@@ -11,3 +11,9 @@
   </div>
   <div id="tests">Tests here</div>
 </main>
+
+<style>
+  main {
+    text-align: left;
+  }
+</style>
