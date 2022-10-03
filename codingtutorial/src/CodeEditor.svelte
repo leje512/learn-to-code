@@ -3,7 +3,7 @@
     import { onMount } from 'svelte';
     import { transform } from '@babel/standalone'
 
-    let code = "";
+    let code;
     onMount(() => {
         const el = document.getElementById("codeeditor").addEventListener("codeedited", (e) => code = e.detail); // TODO: get rid of error here via typescript?: should be customevent not event
     })
@@ -13,10 +13,17 @@
     }
 
     function runCode() {
-        const transformedCode = transform(code, { presets: ["env"] }).code;
-        const scriptElement = document.createElement('script')
-        scriptElement.text = transformedCode
-        document.getElementById("codeeditor").appendChild(scriptElement)
+        if (code !== "\n\n\n\n\n\n\n") {
+            // TODO: is this step important?
+            const transformedCode = transform(code, { presets: ["env"] }).code; 
+
+            const scriptElement = document.createElement('script')
+            scriptElement.text = "function executeClientCode() { " + transformedCode + "}"
+            document.getElementById("codeeditor").appendChild(scriptElement)
+            executeClientCode() //TODO: how to do this better?
+        } else {
+            alert("please write your code first")
+        }
     }
 </script>
 
