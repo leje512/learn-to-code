@@ -6,7 +6,7 @@ import { linter, lintGutter } from "@codemirror/lint";
 import Linter from "eslint4b-prebuilt";
 
 export const editor = new EditorView({
-  doc: "\n\n\n\n\n\n\n", //TODO: multiple lines at creation
+  doc: "function sum(a, b) {\n//write your code here\n}\n\n\n\n\n", //TODO: multiple lines at creation
   extensions: [
     basicSetup,
     javascript(),
