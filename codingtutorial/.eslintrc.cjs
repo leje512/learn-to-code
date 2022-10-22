@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ["google"],
+  extends: ["google", "prettier"],
   plugins: ["svelte3"],
   overrides: [
     {
@@ -19,5 +19,6 @@ module.exports = {
   rules: {
     "max-len": "off",
     "require-jsdoc": "off",
+    quotes: ["warning", "single"],
   },
 };
