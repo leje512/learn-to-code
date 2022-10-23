@@ -4,24 +4,23 @@
 
 <div id="mocha-wrapper">
   <div id="mocha" />
-  <!-- src="https://unpkg.com/chai@4.3.6/chai.js"></script-->
   <script src="../node_modules/mocha/mocha.js"></script>
-  <!--script type="module" src="../test/example.test.js"></script-->
+  <script src="../node_modules/chai/chai.js"></script>
   <script>
     window.onload = () => {
-      // mocha.setup();
-      console.log("mocha run");
+      mocha.setup("bdd");
+      mocha.checkLeaks();
+      const assert = chai.assert;
 
-      // load tests after mocha setup
-      const scriptElement = document.createElement("script");
-      scriptElement.src = "../test/example.test.js";
-      document.getElementById("mocha-wrapper").appendChild(scriptElement);
-
-      console.log(scriptElement);
+      // example test -> written test should run here!
+      describe("sum", function () {
+        it("should return sum of arguments", function () {
+          assert.equal(3, 3);
+        });
+      });
 
       mocha.checkLeaks();
       mocha.run();
-      console.log("ran?");
     };
   </script>
 </div>
