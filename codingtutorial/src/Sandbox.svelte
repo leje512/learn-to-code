@@ -1,48 +1,38 @@
-
 <script>
-    import { onMount } from 'svelte';
-    import { transform } from '@babel/standalone'
-    import CodeEditor from './CodeEditor.svelte';
+  import { onMount } from "svelte";
+  import { transform } from "@babel/standalone";
+  import CodeEditor from "./CodeEditor.svelte";
+  import { createEventDispatcher } from "svelte";
 
-    let code;
-    let result;
-    onMount(() => {
-        const el = document.getElementById("codeeditor").addEventListener("codeedited", (e) => code = e.detail); // TODO: get rid of error here via typescript?: should be customevent not event
-    })
+  const dispatch = createEventDispatcher();
 
-    function logCode() {
-      console.log(code)
-    }
+  let code;
 
-    function compileCode() {
-        if (code !== "\n\n\n\n\n\n\n") {
-            const scriptElement = document.createElement('script')
-            const formattedCode = "function executeClientCode(...args) {" + code + "return sum(...args)}"
+  onMount(() => {
+    const el = document
+      .getElementById("codeeditor")
+      .addEventListener("codeedited", (e) => (code = e.detail)); // TODO: get rid of error here via typescript?: should be customevent not event
+  });
 
-            // the code should be transformed to avoid errors with comments, linebreaks etc. 
-            const transformedCode = transform(formattedCode, { presets: ["env"] }).code; 
-            scriptElement.text = transformedCode
-            console.log("compiled function:", scriptElement.text)
+  function logCode() {
+    console.log(code);
+  }
 
-            // TODO: parse function with a parser instead of scripting it!
-            document.getElementById("codeeditor").appendChild(scriptElement)
-            document.getElementById("codeeditor").removeChild(scriptElement)
-        } else {
-            alert("please write your code first")
-        }
-    }
+  function compileCode() {
+    const transformedCode = transform(code, { presets: ["env"] }).code;
+    dispatch("code", {
+      text: transformedCode,
+    });
+  }
 
-    function run(a, b) {
-        // TODO: try to get rid of all problems caused by adding a function on runtime
-        result = executeClientCode(a, b)
-        console.log(result)
-    }
+  function run() {
+    Function(code)();
+  }
 </script>
 
 <div id="sandbox">
-    <button on:click={logCode}>log code</button>
-    <button on:click={compileCode}>compile code</button>
-    <button on:click={() => run(1, 2)}>run(1, 2)</button>
-    Ergebnis: { result }
-    <CodeEditor />
+  <button on:click={logCode}>log code</button>
+  <button on:click={compileCode}>compile code</button>
+  <button on:click={run}>run</button>
+  <CodeEditor />
 </div>
