@@ -1,6 +1,8 @@
 <script>
   import Sandbox from "./Sandbox.svelte";
-  import Mocha from "./Mocha.svelte";
+  import Mocha from "./Test.svelte";
+
+  const testString = `assert.equal(sum(1, 2), 3, "test failed");`;
 </script>
 
 <main>
@@ -9,7 +11,8 @@
     numbers
   </div-->
   <!--Sandbox /-->
-  <Mocha />
+  {testString}
+  <Mocha {testString} />
 </main>
 
 <style>
