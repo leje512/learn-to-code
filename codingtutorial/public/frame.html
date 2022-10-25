@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <script>
+            console.log("frame");
+            // this event listener will not react on any event from svelte (maybe because this is not compiled?)
+            window.addEventListener("eval", function (event) {
+                console.log("eval")
+                const code = event.detail.text;
+                console.log("log code");
+                Function(code)();
+            });
+        </script>
+    </head>
+    <body>
+        hello
+    </body>
+</html>
