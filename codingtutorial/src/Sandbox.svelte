@@ -26,7 +26,12 @@
   }
 
   function run() {
-    Function(code)();
+    try {
+      Function(code)();
+    } catch(error) {
+      // TODO: move error to new console div!
+      console.log(error);
+    }
   }
 </script>
 
