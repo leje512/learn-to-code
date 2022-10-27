@@ -9,7 +9,7 @@
   let code
   const initialcode =
     'function sum(a, b) {\n//write your code here\n}\n\n\n\n\n'
-  let consoleCode
+  let consoleCode = ''
 
   onMount(() => {
     // eventListener to get editor content
@@ -21,7 +21,7 @@
     const consoleLog = console.log
     console.log = function (msg) {
       consoleLog.apply(console, arguments)
-      consoleCode += msg
+      consoleCode = `${consoleCode}${msg}\n`
     }
   })
 
@@ -34,11 +34,11 @@
     dispatch('code', {
       text: transformedCode,
     })
+    consoleCode = ''
     try {
       Function(transformedCode)()
     } catch (error) {
-      // TODO: move error to new console div!
-      console.log(error)
+      console.log(error) // as long as console.log is extended, consoleCode = `${consoleCode}${msg}\n` is not necessary here
     }
   }
 </script>
@@ -47,7 +47,13 @@
   <button on:click={logCode}>log code</button>
   <button on:click={run}>run code</button>
   <CodeEditor {initialcode} />
-  <div id="console">
+  <p id="console">
     {consoleCode}
-  </div>
+  </p>
 </div>
+
+<style>
+  p {
+    white-space: pre-line;
+  }
+</style>
