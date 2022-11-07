@@ -1,11 +1,12 @@
 <script>
-  import { onMount } from 'svelte'
-  import { EditorView, basicSetup } from 'codemirror'
-  import { javascript, esLint } from '@codemirror/lang-javascript'
-  import { linter, lintGutter } from '@codemirror/lint'
-  import Linter from 'eslint4b-prebuilt' // TODO: cite code?? https://codesandbox.io/s/f6nb0?file=/src/index.js:236-253
+  import { onMount, createEventDispatcher } from "svelte";
+  import { EditorView, basicSetup } from "codemirror";
+  import { javascript, esLint } from "@codemirror/lang-javascript";
+  import { linter, lintGutter } from "@codemirror/lint";
+  import Linter from "eslint4b-prebuilt"; // TODO: cite code?? https://codesandbox.io/s/f6nb0?file=/src/index.js:236-253
 
-  export let initialcode = ''
+  const dispatch = createEventDispatcher();
+  export let initialcode = "";
 
   onMount(() => {
     new EditorView({
@@ -17,15 +18,14 @@
         // @ts-ignore: ts2350
         linter(esLint(new Linter())),
         EditorView.updateListener.of((update) => {
-          const codeedited = new CustomEvent('codeedited', {
-            detail: update.state.doc.toString(),
-          })
-          document.getElementById('codeeditor').dispatchEvent(codeedited)
+          dispatch("edited", {
+            text: update.state.doc.toString(),
+          });
         }),
       ],
-      parent: document.getElementById('codeeditor'),
-    })
-  })
+      parent: document.getElementById("codeeditor"),
+    });
+  });
 </script>
 
 <div id="codeeditor" />
