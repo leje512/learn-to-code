@@ -1,26 +1,36 @@
 <script>
-  import Sandbox from "./Sandbox.svelte";
-  import Test from "./Test.svelte";
+  import Sandbox from "./components/Sandbox.svelte";
 
-  const testString = "sum(1, 2);";
-  const resultString = "3";
-  let code;
+  import exercises from "./exercises";
+  let count = 0;
 
-  function handleCode(event) {
-    code = event.detail.text;
+  function incrementCount() {
+    if (count < exercises.length - 1) {
+      count++;
+    }
+  }
+
+  function decreaseCount() {
+    if (count > 0) {
+      count--;
+    }
   }
 </script>
 
 <main>
+  <button on:click={decreaseCount}>back</button>
+  <button on:click={incrementCount}>next</button>
   <div id="task">
-    Write a function sum with two parameters that returns the sum of both
-    numbers
+    {exercises[count].task}
   </div>
-  <Sandbox on:code={handleCode} />
+  <Sandbox
+    testString={exercises[count].teststring}
+    resultString={exercises[count].resultstring}
+    initialcode={exercises[count].initialcode}
+  />
   <div id="task">
-    {testString} should return {resultString}
+    {exercises[count].teststring} should return {exercises[count].resultstring}
   </div>
-  <Test {testString} {resultString} {code} />
 </main>
 
 <style>
