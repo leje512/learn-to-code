@@ -1,28 +1,19 @@
 import { syntaxTree } from "@codemirror/language";
 import { linter } from "@codemirror/lint";
-import { parse } from "acorn";
-import * as walk from "acorn-walk";
 
 const errorStore = [];
 const diagnostics = [];
 
 const customLinter = (view) => {
-  const ast = parse(view.state.doc, { ecmaVersion: "latest" });
-  console.log("ast", ast);
-  console.log(
-    "token",
-    walk.simple(ast, {
-      Literal(node) {
-        console.log(`Found a literal: ${node.type}`);
-      },
-    })
-  );
-  /*  switch (true) {
+  syntaxTree(view.state)
+    .cursor()
+    .iterate((node) => {
+      switch (true) {
         case node.name == "ExpressionStatement" &&
           node.node.parent.name == "Script":
           errorConsoleLogNotInBody(node);
       }
-    });*/
+    });
   return diagnostics;
 };
 
