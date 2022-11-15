@@ -4,6 +4,7 @@
   import { javascript, esLint } from "@codemirror/lang-javascript";
   import { linter, lintGutter } from "@codemirror/lint";
   import Linter from "eslint4b-prebuilt"; // TODO: cite code?? https://codesandbox.io/s/f6nb0?file=/src/index.js:236-253
+  import astlint from "../lib/astlint";
 
   const dispatch = createEventDispatcher();
   export let initialcode = "";
@@ -16,7 +17,7 @@
         javascript(),
         lintGutter(),
         // @ts-ignore: ts2350
-        linter(esLint(new Linter())),
+        linter(astlint),
         EditorView.updateListener.of((update) => {
           dispatch("edited", {
             text: update.state.doc.toString(),
