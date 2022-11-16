@@ -1,7 +1,7 @@
 <script>
   import Sandbox from "./components/Sandbox.svelte"
 
-  import exercises from "./exercises"
+  import exercises from "./lib/exercises"
   let count = 0
 
   function incrementCount() {
@@ -25,7 +25,7 @@
     >
   </div>
   <div id="task">
-    {exercises[count].task}
+    {@html exercises[count].task}
   </div>
   <Sandbox
     testString={exercises[count].teststring}
@@ -51,5 +51,18 @@
   }
   button:disabled:hover {
     border: none;
+  }
+  #task {
+    display: block;
+    white-space: pre-wrap;
+  }
+  :global(code) {
+    background: lightgrey;
+    font-family: monospace;
+  }
+  :global(code.terminal) {
+    background: black;
+    color: white;
+    font-family: monospace;
   }
 </style>
