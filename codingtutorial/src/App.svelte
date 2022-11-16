@@ -1,25 +1,29 @@
 <script>
-  import Sandbox from "./components/Sandbox.svelte";
+  import Sandbox from './components/Sandbox.svelte'
 
-  import exercises from "./exercises";
-  let count = 0;
+  import exercises from './exercises'
+  let count = 0
 
   function incrementCount() {
     if (count < exercises.length - 1) {
-      count++;
+      count++
     }
   }
 
   function decreaseCount() {
     if (count > 0) {
-      count--;
+      count--
     }
   }
 </script>
 
 <main>
-  <button on:click={decreaseCount}>back</button>
-  <button on:click={incrementCount}>next</button>
+  <div class="exercise-action">
+    <button disabled={count <= 0} on:click={decreaseCount}>back</button>
+    <button disabled={count >= exercises.length - 1} on:click={incrementCount}
+      >next</button
+    >
+  </div>
   <div id="task">
     {exercises[count].task}
   </div>
@@ -36,5 +40,16 @@
 <style>
   main {
     text-align: left;
+  }
+  .exercise-action {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  button:disabled:hover {
+    border: none;
   }
 </style>
