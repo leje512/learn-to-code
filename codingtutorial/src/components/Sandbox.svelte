@@ -40,16 +40,41 @@
 </script>
 
 <div id="sandbox">
-  <button on:click={logCode}>log code</button>
-  <button on:click={run}>run code</button>
-  <CodeEditor {initialcode} on:edited={updateCode} />
+  <div id="editor">
+    <CodeEditor {initialcode} on:edited={updateCode} />
+  </div>
   <p id="console">
     {consoleCode}
   </p>
-  <Test {testString} {resultString} {code} />
+  <div id="action">
+    <button on:click={logCode}>log code</button>
+    <button on:click={run}>run code</button>
+    <Test {testString} {resultString} {code} />
+  </div>
 </div>
 
 <style>
+  #sandbox {
+    padding: 2em 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "editor console"
+      "action action";
+    grid-gap: 2em;
+  }
+  #editor {
+    grid-area: editor;
+  }
+  #console {
+    grid-area: console;
+    background-color: black;
+    color: white;
+    margin: 0;
+  }
+  #action {
+    grid-area: action;
+  }
   p {
     white-space: pre-line;
   }

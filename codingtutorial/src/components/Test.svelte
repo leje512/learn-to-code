@@ -18,6 +18,4 @@
   }
 </script>
 
-<div id="test-wrapper">
-  <button on:click={runTest}>test</button>
-</div>
+<button on:click={runTest}>test</button>

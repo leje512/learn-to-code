@@ -32,11 +32,11 @@
 <div id="codeeditor" />
 
 <style>
-  #codeeditor {
+  /*#codeeditor {
     width: 50vw;
   }
   #codeeditor .cm-editor {
     width: 100%;
     height: 30vh;
-  }
+  }*/
 </style>
