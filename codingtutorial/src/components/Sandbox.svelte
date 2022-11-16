@@ -1,38 +1,38 @@
 <script>
-  import { onMount } from "svelte";
-  import CodeEditor from "./CodeEditor.svelte";
-  import Test from "./Test.svelte";
+  import { onMount } from "svelte"
+  import CodeEditor from "./CodeEditor.svelte"
+  import Test from "./Test.svelte"
 
-  export let testString;
-  export let resultString;
-  export let initialcode;
+  export let testString
+  export let resultString
+  export let initialcode
 
-  let code;
-  let consoleCode = "";
+  let code
+  let consoleCode = ""
 
   onMount(() => {
     // override console.log to show message in div
-    const consoleLog = console.log;
+    const consoleLog = console.log
     console.log = function (msg) {
-      consoleLog.apply(console, arguments);
-      consoleCode = `${consoleCode}${msg}\n`;
-    };
-  });
+      consoleLog.apply(console, arguments)
+      consoleCode = `${consoleCode}${msg}\n`
+    }
+  })
 
   function updateCode(event) {
-    code = event.detail.text;
+    code = event.detail.text
   }
 
   function logCode() {
-    console.log(code);
+    console.log(code)
   }
 
   function run() {
-    consoleCode = "";
+    consoleCode = ""
     try {
-      Function(code)();
+      Function(code)()
     } catch (error) {
-      console.log(error); // as long as console.log is extended, consoleCode = `${consoleCode}${msg}\n` is not necessary here
+      console.log(error) // as long as console.log is extended, consoleCode = `${consoleCode}${msg}\n` is not necessary here
     }
   }
 
@@ -57,7 +57,7 @@
   #sandbox {
     padding: 2em 0;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(250px, 1fr) minmax(250px, 1fr);
     grid-template-areas:
       "editor console"
       "action action";
@@ -71,6 +71,8 @@
     background-color: black;
     color: white;
     margin: 0;
+    padding: 0 5px;
+    line-height: 1.4;
   }
   #action {
     grid-area: action;

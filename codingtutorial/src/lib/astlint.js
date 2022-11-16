@@ -1,14 +1,14 @@
 // @ts-nocheck
-//TODO: this is the current workaround to get rid of all errors regarding missing properties on nodes
+// TODO: this is the current workaround to get rid of all errors regarding missing properties on nodes
 
-import { parse } from "acorn";
-import * as walk from "acorn-walk";
+import { parse } from "acorn"
+import * as walk from "acorn-walk"
 
-const errorStore = [];
-let diagnostics = [];
+const errorStore = []
+let diagnostics = []
 
 export default (view) => {
-  const ast = parse(view.state.doc, { ecmaVersion: "latest" });
+  const ast = parse(view.state.doc, { ecmaVersion: "latest" })
   walk.fullAncestor(ast, (node, ancestors) => {
     switch (true) {
       case node.type == "ExpressionStatement" &&
@@ -16,14 +16,14 @@ export default (view) => {
         node.expression.callee.property.name == "log" &&
         node.expression.arguments[0].value.includes("Auf Wiedersehen") &&
         ancestors[ancestors.length - 2].type !== "Program":
-        errorConsoleLogNotInBody(node);
+        errorConsoleLogNotInBody(node)
     }
-  });
-  return diagnostics;
-};
+  })
+  return diagnostics
+}
 
 export function clearLintDiagnostics() {
-  diagnostics = [];
+  diagnostics = []
 }
 
 // console.log("Auf Wiedersehen"); is not a child of script
@@ -31,11 +31,11 @@ const errorConsoleLogNotInBody = (node) => {
   const messages = [
     "Achte darauf, if-else richtig zu verwenden. Der Code innerhalb der if-Anweisung wird ausgeführt, wenn die Bedingung true ergibt. Der Code innerhalb von else wird ausgeführt, wenn die Kondition false ist.",
     "Code außerhalb von if-else wird immer ausgeführt.",
-    'console.log("Auf Wiedersehen"); sollte nicht in if-else enthalten sein. Stattdessen wird diese danach ausgeführt.',
-  ];
+    "console.log('Auf Wiedersehen'); sollte nicht in if-else enthalten sein. Stattdessen wird diese danach ausgeführt.",
+  ]
   const messageIndex = messages.findIndex((message) => {
-    return !errorStore.find((el) => el.message === message);
-  });
+    return !errorStore.find((el) => el.message === message)
+  })
   const diagnosticElement = {
     from: node.start,
     to: node.end,
@@ -53,8 +53,8 @@ const errorConsoleLogNotInBody = (node) => {
         },
       },
     ],
-  };
-  errorStore.push(diagnosticElement);
-  diagnostics = diagnostics.filter((d) => Object.is(d, diagnosticElement));
-  diagnostics.push(diagnosticElement);
-};
+  }
+  errorStore.push(diagnosticElement)
+  diagnostics = diagnostics.filter((d) => Object.is(d, diagnosticElement))
+  diagnostics.push(diagnosticElement)
+}
