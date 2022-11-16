@@ -1,7 +1,7 @@
 <script>
-  import Sandbox from './components/Sandbox.svelte'
+  import Sandbox from "./components/Sandbox.svelte"
 
-  import exercises from './exercises'
+  import exercises from "./exercises"
   let count = 0
 
   function incrementCount() {

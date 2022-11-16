@@ -19,6 +19,6 @@ module.exports = {
   rules: {
     "max-len": "off",
     "require-jsdoc": "off",
-    quotes: ["warning", "single"],
+    quotes: ["warn", "double"],
   },
-};
+}
