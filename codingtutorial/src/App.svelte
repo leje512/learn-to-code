@@ -28,13 +28,9 @@
     {@html exercises[count].task}
   </div>
   <Sandbox
-    testString={exercises[count].teststring}
-    resultString={exercises[count].resultstring}
+    title={exercises[count].title}
     initialcode={exercises[count].initialcode}
   />
-  <div id="task">
-    {exercises[count].teststring} should return {exercises[count].resultstring}
-  </div>
 </main>
 
 <style>

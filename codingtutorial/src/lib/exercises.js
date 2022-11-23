@@ -1,12 +1,12 @@
 export default [
   {
+    title: "functionSum",
     task: "Write a function sum with two parameters that returns the sum of both numbers.",
-    solution: "",
-    teststring: "sum(1, 2);",
-    resultstring: "3",
+    solution: "function sum(a, b) {\nreturn a + b;\n}",
     initialcode: "function sum(a, b) {\n//write your code here\n}\n\n\n\n\n",
   },
   {
+    title: "if-else",
     task: `Sie haben eine Punktzahl gegeben: 
 <code>int punktzahl = 10</code>
 Schreiben Sie ein Programm, dass bei einer Punktzahl von mindestens 5 ausgibt:
@@ -24,8 +24,6 @@ if (punkte >= 5) {
 }
     
 console.log("Auf Wiedersehen.");`,
-    teststring: "", // TODO
-    resultstring: "", // TODO
     initialcode: "let punkte = 10;",
   },
 ]

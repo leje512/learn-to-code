@@ -1,10 +1,9 @@
 <script>
   import { onMount } from "svelte"
   import CodeEditor from "./CodeEditor.svelte"
-  import Test from "./Test.svelte"
+  import { runUnitTest } from "../lib/tests"
 
-  export let testString
-  export let resultString
+  export let title
   export let initialcode
 
   let code
@@ -36,6 +35,11 @@
     }
   }
 
+  function test() {
+    let correct = runUnitTest(title, code)
+    document.body.style.background = correct ? "green" : "red"
+  }
+
   // TODO: add test function here to avoid having to run the code before you can test
 </script>
 
@@ -49,7 +53,7 @@
   <div id="action">
     <button on:click={logCode}>log code</button>
     <button on:click={run}>run code</button>
-    <Test {testString} {resultString} {code} />
+    <button on:click={test}>test</button>
   </div>
 </div>
 
