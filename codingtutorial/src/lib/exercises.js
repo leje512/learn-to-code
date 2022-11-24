@@ -24,6 +24,14 @@ if (punkte >= 5) {
 }
     
 console.log("Auf Wiedersehen.");`,
-    initialcode: "let punkte = 10;",
+    initialcode: `let punkte = 10;
+
+if (punkte >= 5) {
+  console.log("Bestanden.");
+  console.log("Auf Wiedersehen.");
+} else {
+  console.log("Leider durchgefallen.");
+  console.log("Auf Wiedersehen.");
+}`,
   },
 ]
