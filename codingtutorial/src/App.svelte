@@ -40,7 +40,7 @@
   .exercise-action {
     display: flex;
     justify-content: space-between;
-    padding: 20px 0;
+    padding: 0 0 20px 0;
   }
   button:disabled {
     cursor: not-allowed;

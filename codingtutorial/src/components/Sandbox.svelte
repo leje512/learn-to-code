@@ -2,12 +2,19 @@
   import { onMount } from "svelte"
   import CodeEditor from "./CodeEditor.svelte"
   import { runUnitTest } from "../lib/tests"
+  import { getDiagnostics } from "../lib/astlint"
 
   export let title
   export let initialcode
 
   let code
   let consoleCode = ""
+  let errors = []
+  let messageIndex = 0
+
+  // TODO: zeige Fehler -> markiert Fehler im Code
+  // TODO: mehr Infos -> nächstes Level
+  // TODO: weitere Erklärungen -> erkläre zusätzliche Prinzipien wie if-Bedingung etc.
 
   onMount(() => {
     // override console.log to show message in div
@@ -20,6 +27,7 @@
 
   function updateCode(event) {
     code = event.detail.text
+    errors = getDiagnostics(code)
   }
 
   function logCode() {
@@ -40,16 +48,34 @@
     document.body.style.background = correct ? "green" : "red"
   }
 
-  // TODO: add test function here to avoid having to run the code before you can test
+  function showWhere() {
+    // TODO: mark in code, where?
+  }
+
+  function moreInformation() {
+    if (messageIndex < errors[0].messages.length - 1) {
+      messageIndex++
+    }
+  }
 </script>
 
 <div id="sandbox">
   <div id="editor">
-    <CodeEditor {initialcode} on:edited={updateCode} />
+    <CodeEditor {initialcode} error={errors[0]} on:edited={updateCode} />
   </div>
   <p id="console">
     {consoleCode}
   </p>
+  {#if errors.length}
+    <div id="error">
+      <h4>Achtung!</h4>
+      <p>{errors[0].messages[messageIndex]}</p>
+      <button on:click={showWhere}>Wo?</button>
+      {#if messageIndex < errors[0].messages.length - 1}
+        <button on:click={moreInformation}>Mehr Informationen</button>
+      {/if}
+    </div>
+  {/if}
   <div id="action">
     <button on:click={logCode}>log code</button>
     <button on:click={run}>run code</button>
@@ -64,7 +90,7 @@
     grid-template-columns: minmax(250px, 1fr) minmax(250px, 1fr);
     grid-template-areas:
       "editor console"
-      "action action";
+      "error action";
     grid-gap: 2em;
   }
   #editor {
@@ -77,6 +103,16 @@
     margin: 0;
     padding: 0 5px;
     line-height: 1.4;
+  }
+  #error {
+    grid-area: error;
+    background-color: #c41d3f;
+    margin: 0;
+    padding: 1em;
+    color: white;
+  }
+  #error h4 {
+    margin: 0;
   }
   #action {
     grid-area: action;

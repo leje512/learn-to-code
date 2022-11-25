@@ -3,13 +3,38 @@
   import { EditorView, basicSetup } from "codemirror"
   import { javascript } from "@codemirror/lang-javascript"
   import { linter, lintGutter } from "@codemirror/lint"
-  import { EditorState } from "@codemirror/state"
+  import { EditorState, StateField, StateEffect } from "@codemirror/state"
+  import { Decoration } from "@codemirror/view"
   import astlint, { clearLintDiagnostics } from "../lib/astlint"
+  import { isEqual } from "lodash"
 
   const dispatch = createEventDispatcher()
   export let initialcode = "\n\n\n\n\n\n\n\n\n\n\n"
+  export let error
+  let previousError
 
   let view
+  const highlightExtension = StateField.define({
+    create() {
+      return Decoration.none
+    },
+    update(value, transaction) {
+      value = value.map(transaction.changes)
+
+      for (let effect of transaction.effects) {
+        try {
+          value = value.update({ add: effect.value, sort: true })
+        } catch (error) {}
+      }
+      return value
+    },
+    provide: (f) => EditorView.decorations.from(f),
+  })
+
+  const highlightDecoration = Decoration.mark({
+    attributes: { style: "background-color: red" },
+  })
+
   let state = EditorState.create({
     doc: initialcode,
     extensions: [
@@ -23,6 +48,7 @@
         })
         clearLintDiagnostics()
       }),
+      highlightExtension,
     ],
   })
 
@@ -40,6 +66,20 @@
         },
       })
     }
+  }
+
+  $: {
+    if (
+      (error && !previousError) ||
+      (error && previousError && !isEqual(error, previousError))
+    ) {
+      view.dispatch({
+        effects: StateEffect.define({
+          map: ({ from, to }) => ({ from, to }),
+        }).of([highlightDecoration.range(error.from, error.to)]),
+      })
+    }
+    previousError = error
   }
 
   onMount(() => {

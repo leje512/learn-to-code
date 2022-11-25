@@ -24,6 +24,23 @@ export default (view) => {
   return diagnostics
 }
 
+export function getDiagnostics(code) {
+  const ast = parse(code, {
+    ecmaVersion: "latest",
+  })
+  walk.fullAncestor(ast, (node, ancestors) => {
+    switch (true) {
+      case node.type == "ExpressionStatement" &&
+        node.expression.callee.object.name == "console" &&
+        node.expression.callee.property.name == "log" &&
+        node.expression.arguments[0].value.includes("Auf Wiedersehen") &&
+        ancestors[ancestors.length - 2].type !== "Program":
+        errorConsoleLogNotInBody(node)
+    }
+  })
+  return diagnostics
+}
+
 export function clearLintDiagnostics() {
   diagnostics = []
 }
@@ -35,35 +52,11 @@ const errorConsoleLogNotInBody = (node) => {
     "Code außerhalb von if-else wird immer ausgeführt.",
     "console.log('Auf Wiedersehen'); sollte nicht in if-else enthalten sein. Stattdessen wird diese danach ausgeführt.",
   ]
-  // get biggest messageIndex at current node and use next message
-  const messageIndex = errorStore.reduce((resultIndex, errorElement) => {
-    if (errorElement.from === node.start && errorElement.to === node.end) {
-      const newMessageIndex =
-        messages.findIndex((message) => message === errorElement.message) + 1
-      resultIndex =
-        resultIndex > newMessageIndex ? resultIndex : newMessageIndex
-    }
-    return resultIndex
-  }, 0)
   const diagnosticElement = {
     from: node.start,
     to: node.end,
     severity: "warning",
-    message: messages[messageIndex],
-  }
-  if (messageIndex < messages.length - 1) {
-    diagnosticElement.actions = [
-      {
-        name: "Mehr Informationen.",
-        apply(view) {
-          // TODO: compute linter here to reload changes
-          errorStore.push({
-            ...diagnosticElement,
-            message: messages[messageIndex],
-          })
-        },
-      },
-    ]
+    messages,
   }
   diagnostics.push(diagnosticElement)
 }
