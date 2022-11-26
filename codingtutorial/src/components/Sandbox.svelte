@@ -107,6 +107,7 @@
       "editor console"
       "error action";
     grid-gap: 2em;
+    max-height: 100%;
   }
   #editor {
     grid-area: editor;
@@ -118,6 +119,9 @@
     margin: 0;
     padding: 0 5px;
     line-height: 1.4;
+    overflow-y: scroll;
+    max-height: 70vh;
+    height: 70vh;
   }
   #error {
     grid-area: error;
@@ -128,6 +132,10 @@
   }
   #error h4 {
     margin: 0;
+  }
+  #error p {
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
   #action {
     grid-area: action;

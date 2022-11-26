@@ -97,9 +97,9 @@
 
 <style>
   #codeeditor :global(.cm-editor) {
-    min-height: 300px;
-    max-height: 300px;
     width: 50vw;
     max-width: 100%;
+    max-height: 70vh;
+    height: 70vh;
   }
 </style>
