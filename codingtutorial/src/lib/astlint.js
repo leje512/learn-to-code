@@ -29,13 +29,17 @@ export function getDiagnostics(code) {
       ecmaVersion: "latest",
     })
     walk.fullAncestor(ast, (node, ancestors) => {
+      const parent = ancestors[ancestors.length - 2]
       switch (true) {
         case node.type == "ExpressionStatement" &&
           node.expression.callee.object.name == "console" &&
           node.expression.callee.property.name == "log" &&
           node.expression.arguments[0].value.includes("Auf Wiedersehen") &&
-          ancestors[ancestors.length - 2].type !== "Program":
+          parent.type !== "Program":
           errorConsoleLogNotInBody(node)
+        case node.type == "ArrowFunctionExpression" &&
+          parent.type == "IfStatement":
+          errorSwitchedCompareSymbol(node)
       }
     })
   } catch (error) {
@@ -61,6 +65,21 @@ const errorConsoleLogNotInBody = (node) => {
     "Achte darauf, if-else richtig zu verwenden. Der Code innerhalb der if-Anweisung wird ausgeführt, wenn die Bedingung true ergibt. Der Code innerhalb von else wird ausgeführt, wenn die Kondition false ist.",
     "Code außerhalb von if-else wird immer ausgeführt.",
     "console.log('Auf Wiedersehen'); sollte nicht in if-else enthalten sein. Stattdessen wird diese danach ausgeführt.",
+  ]
+  const diagnosticElement = {
+    from: node.start,
+    to: node.end,
+    severity: "warning",
+    messages,
+  }
+  diagnostics.push(diagnosticElement)
+}
+
+const errorSwitchedCompareSymbol = (node) => {
+  const messages = [
+    "Das Gleichheitszeichen befindet sich bei Vergleichsoperatoren immer hinten.",
+    "Mögliche Vergleichsoperatoren sind <, >, <=, >=, != und ==.",
+    "Benutze >= 5, um 'Bestanden' anzuzeigen.",
   ]
   const diagnosticElement = {
     from: node.start,
