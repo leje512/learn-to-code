@@ -3,6 +3,7 @@
 
 import { parse } from "acorn"
 import * as walk from "acorn-walk"
+import * as acornLoose from "acorn-loose"
 import errorMessages from "./errorMessages"
 
 let diagnostics = []
@@ -16,7 +17,6 @@ export function getDiagnostics(code) {
     walk.fullAncestor(ast, (node, ancestors) => {
       const parent = ancestors[ancestors.length - 2]
       let messages = []
-      console.log("node", node)
       switch (true) {
         // console.log("Auf Wiedersehen"); is not a child of script
         case node.type == "ExpressionStatement" &&
@@ -26,9 +26,9 @@ export function getDiagnostics(code) {
           parent.type !== "Program":
           messages = errorMessages.errorConsoleLogNotInBody
           break
-        // TODO: only works for =>
-        case node.type == "ArrowFunctionExpression" &&
-          parent.type == "IfStatement":
+        case node.type == "IfStatement" &&
+          (node.test.type == "ArrowFunctionExpression" ||
+            node.test.type == "AssignmentExpression"):
           messages = errorMessages.errorSwitchedCompareSymbol
           break
         case node.type == "IfStatement" ||
@@ -55,15 +55,31 @@ export function getDiagnostics(code) {
       })
     }
   } catch (error) {
-    console.log("error", error)
-    diagnostics.push({
-      from: error.pos,
-      to: error.raisedAt,
-      severity: "error",
-      messages: [
-        "Syntax Fehler: Unerwartetes Zeichen. Achte auf die richtige Syntax.",
-      ],
-    })
+    // try again with a loose parse to get syntax errors
+    try {
+      const looseAst = acornLoose.parse(code, { ecmaVersion: "latest" })
+      walk.fullAncestor(looseAst, (node, ancestors) => {
+        const parent = ancestors[ancestors.length - 2]
+        let messages = []
+        switch (true) {
+          // TODO: only works for =>
+          case node.type == "IfStatement" &&
+            node.test.type == "AssignmentExpression":
+            messages = errorMessages.errorSwitchedCompareSymbol
+            break
+        }
+        if (messages.length > 0) {
+          diagnostics.push({
+            from: node.start,
+            to: node.end,
+            severity: "warning",
+            messages,
+          })
+        }
+      })
+    } catch (looseError) {
+      console.log("Konnte Code nicht übersetzen.", looseError)
+    }
   }
   return diagnostics
 }
