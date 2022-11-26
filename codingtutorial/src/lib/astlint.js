@@ -24,19 +24,30 @@ let diagnostics = []
 } */
 
 export function getDiagnostics(code) {
-  const ast = parse(code, {
-    ecmaVersion: "latest",
-  })
-  walk.fullAncestor(ast, (node, ancestors) => {
-    switch (true) {
-      case node.type == "ExpressionStatement" &&
-        node.expression.callee.object.name == "console" &&
-        node.expression.callee.property.name == "log" &&
-        node.expression.arguments[0].value.includes("Auf Wiedersehen") &&
-        ancestors[ancestors.length - 2].type !== "Program":
-        errorConsoleLogNotInBody(node)
-    }
-  })
+  try {
+    const ast = parse(code, {
+      ecmaVersion: "latest",
+    })
+    walk.fullAncestor(ast, (node, ancestors) => {
+      switch (true) {
+        case node.type == "ExpressionStatement" &&
+          node.expression.callee.object.name == "console" &&
+          node.expression.callee.property.name == "log" &&
+          node.expression.arguments[0].value.includes("Auf Wiedersehen") &&
+          ancestors[ancestors.length - 2].type !== "Program":
+          errorConsoleLogNotInBody(node)
+      }
+    })
+  } catch (error) {
+    diagnostics.push({
+      from: error.pos,
+      to: error.raisedAt,
+      severity: "error",
+      messages: [
+        "Syntax Fehler: Unerwartetes Zeichen. Achte auf die richtige Syntax.",
+      ],
+    })
+  }
   return diagnostics
 }
 
