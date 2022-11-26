@@ -2,15 +2,17 @@
   import { onMount, createEventDispatcher } from "svelte"
   import { EditorView, basicSetup } from "codemirror"
   import { javascript } from "@codemirror/lang-javascript"
-  import { linter, lintGutter } from "@codemirror/lint"
+  // import { linter, lintGutter } from "@codemirror/lint"
   import { EditorState, StateField, StateEffect } from "@codemirror/state"
   import { Decoration } from "@codemirror/view"
-  import astlint, { clearLintDiagnostics } from "../lib/astlint"
+  import { clearLintDiagnostics } from "../lib/astlint"
   import { isEqual } from "lodash"
 
   const dispatch = createEventDispatcher()
   export let initialcode = "\n\n\n\n\n\n\n\n\n\n\n"
   export let error
+  export let showErrorMessage = false
+
   let previousError
 
   let view
@@ -40,8 +42,8 @@
     extensions: [
       basicSetup,
       javascript(),
-      lintGutter(),
-      linter(astlint),
+      /* lintGutter(),
+      linter(astlint), */
       EditorView.updateListener.of((update) => {
         dispatch("edited", {
           text: update.state.doc.toString(),
@@ -70,16 +72,17 @@
 
   $: {
     if (
-      (error && !previousError) ||
-      (error && previousError && !isEqual(error, previousError))
+      showErrorMessage &&
+      ((error && !previousError) ||
+        (error && previousError && !isEqual(error, previousError)))
     ) {
       view.dispatch({
         effects: StateEffect.define({
           map: ({ from, to }) => ({ from, to }),
         }).of([highlightDecoration.range(error.from, error.to)]),
       })
+      previousError = error
     }
-    previousError = error
   }
 
   onMount(() => {

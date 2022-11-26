@@ -3,14 +3,17 @@
   import CodeEditor from "./CodeEditor.svelte"
   import { runUnitTest } from "../lib/tests"
   import { getDiagnostics } from "../lib/astlint"
+  import { isEqual } from "lodash"
 
   export let title
   export let initialcode
 
   let code
   let consoleCode = ""
-  let errors = []
+  let lintError
+  let previousLintError
   let messageIndex = 0
+  let showErrorMessage = false
 
   // TODO: zeige Fehler -> markiert Fehler im Code
   // TODO: mehr Infos -> nächstes Level
@@ -27,7 +30,14 @@
 
   function updateCode(event) {
     code = event.detail.text
-    errors = getDiagnostics(code)
+    if (lintError) {
+      previousLintError = lintError
+    }
+    lintError = getDiagnostics(code)[0]
+    if (!isEqual(previousLintError, lintError)) {
+      showErrorMessage = false
+      messageIndex = 0
+    }
   }
 
   function logCode() {
@@ -49,11 +59,11 @@
   }
 
   function showWhere() {
-    // TODO: mark in code, where?
+    showErrorMessage = true
   }
 
   function moreInformation() {
-    if (messageIndex < errors[0].messages.length - 1) {
+    if (messageIndex < lintError.messages.length - 1) {
       messageIndex++
     }
   }
@@ -61,17 +71,22 @@
 
 <div id="sandbox">
   <div id="editor">
-    <CodeEditor {initialcode} error={errors[0]} on:edited={updateCode} />
+    <CodeEditor
+      {initialcode}
+      {showErrorMessage}
+      error={lintError}
+      on:edited={updateCode}
+    />
   </div>
   <p id="console">
     {consoleCode}
   </p>
-  {#if errors.length}
+  {#if lintError}
     <div id="error">
       <h4>Achtung!</h4>
-      <p>{errors[0].messages[messageIndex]}</p>
+      <p>{lintError.messages[messageIndex]}</p>
       <button on:click={showWhere}>Wo?</button>
-      {#if messageIndex < errors[0].messages.length - 1}
+      {#if messageIndex < lintError.messages.length - 1}
         <button on:click={moreInformation}>Mehr Informationen</button>
       {/if}
     </div>

@@ -4,10 +4,9 @@
 import { parse } from "acorn"
 import * as walk from "acorn-walk"
 
-const errorStore = []
 let diagnostics = []
 
-export default (view) => {
+/* export default (view) => {
   const ast = parse(view.state.doc.toString(), {
     ecmaVersion: "latest",
   })
@@ -22,7 +21,7 @@ export default (view) => {
     }
   })
   return diagnostics
-}
+} */
 
 export function getDiagnostics(code) {
   const ast = parse(code, {
