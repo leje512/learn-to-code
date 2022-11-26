@@ -1,5 +1,6 @@
 <script>
   import Sandbox from "./components/Sandbox.svelte"
+  import { clearLintDiagnostics } from "./lib/astlint"
 
   import exercises from "./lib/exercises"
   let count = 0
@@ -7,12 +8,14 @@
   function incrementCount() {
     if (count < exercises.length - 1) {
       count++
+      clearLintDiagnostics()
     }
   }
 
   function decreaseCount() {
     if (count > 0) {
       count--
+      clearLintDiagnostics()
     }
   }
 </script>
