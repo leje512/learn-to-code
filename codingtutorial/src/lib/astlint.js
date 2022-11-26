@@ -40,6 +40,11 @@ export function getDiagnostics(code) {
         case node.type == "ArrowFunctionExpression" &&
           parent.type == "IfStatement":
           errorSwitchedCompareSymbol(node)
+        case !ast.body.find((node) => node.type == "IfStatement") ||
+          !ast.body.find(
+            (node) => node.type == "IfStatement" && node.alternate
+          ):
+          errorMissingIf(ast)
       }
     })
   } catch (error) {
@@ -80,6 +85,31 @@ const errorSwitchedCompareSymbol = (node) => {
     "Das Gleichheitszeichen befindet sich bei Vergleichsoperatoren immer hinten.",
     "Mögliche Vergleichsoperatoren sind <, >, <=, >=, != und ==.",
     "Benutze >= 5, um 'Bestanden' anzuzeigen.",
+  ]
+  const diagnosticElement = {
+    from: node.start,
+    to: node.end,
+    severity: "warning",
+    messages,
+  }
+  diagnostics.push(diagnosticElement)
+}
+
+const errorMissingIf = (node) => {
+  const messages = [
+    "Diese Aufgabe benötigt eine if- und else-Anweisung. Sind beide Teil des Codes?",
+    `Die Syntax für eine if- und else-Anweisung sieht folgendermaßen aus:
+if (kondition) {
+  //code
+} else {
+  //code
+}`,
+    `Ergänze folgende Syntax um den richtigen Code:
+if (punkte mindestens 5) {
+  // drucke "Bestanden"
+} else {
+  // drucke "Durchgefallen"
+}`,
   ]
   const diagnosticElement = {
     from: node.start,
