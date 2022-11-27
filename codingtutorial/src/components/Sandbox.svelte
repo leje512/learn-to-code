@@ -7,6 +7,7 @@
 
   export let title
   export let initialcode
+  export let misconceptions
 
   let code
   let consoleCode = ""
@@ -33,7 +34,7 @@
     if (lintError) {
       previousLintError = lintError
     }
-    lintError = getDiagnostics(code)[0]
+    lintError = getDiagnostics(misconceptions, code)[0]
     if (!isEqual(previousLintError, lintError)) {
       showErrorMessage = false
       messageIndex = 0

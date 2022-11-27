@@ -33,6 +33,7 @@
   <Sandbox
     title={exercises[count].title}
     initialcode={exercises[count].initialcode}
+    misconceptions={exercises[count].misconceptions}
   />
 </main>
 

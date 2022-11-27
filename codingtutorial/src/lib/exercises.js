@@ -1,9 +1,12 @@
+import errorMessages from "./errorMessages"
+
 export default [
   {
     title: "functionSum",
     task: "Write a function sum with two parameters that returns the sum of both numbers.",
     solution: "function sum(a, b) {\nreturn a + b;\n}",
     initialcode: "function sum(a, b) {\n//write your code here\n}\n\n\n\n\n",
+    misconceptions: [],
   },
   {
     title: "if-else",
@@ -33,5 +36,28 @@ if (punkte >= 5) {
   console.log("Leider durchgefallen.");
   console.log("Auf Wiedersehen.");
 }`,
+    // misconceptions are to be ranked by priority -> from general to specific
+    misconceptions: [
+      {
+        type: "node",
+        check: errorMessages.errorConsoleLogNotInBody,
+        severity: "error",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorSwitchedCompareSymbol,
+        severity: "error",
+      },
+      {
+        type: "ast",
+        check: errorMessages.errorMissingIfElse,
+        severity: "error",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorSemicolonAfterIfCondition,
+        severity: "error",
+      },
+    ],
   },
 ]
