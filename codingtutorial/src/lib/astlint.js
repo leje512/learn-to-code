@@ -11,33 +11,38 @@ export function getDiagnostics(misconceptions, code) {
     })
 
     misconceptions.forEach((misconception) => {
-      if (misconception.type == "node") {
-        walk.fullAncestor(ast, (node, ancestors) => {
-          const parent = ancestors[ancestors.length - 2]
-          if (misconception.check.condition(node, parent)) {
+      if (
+        misconception.parseErrorCheck == "regular" ||
+        misconception.parseErrorCheck == "both"
+      ) {
+        if (misconception.type == "node") {
+          walk.fullAncestor(ast, (node, ancestors) => {
+            const parent = ancestors[ancestors.length - 2]
+            if (misconception.check.condition(node, parent)) {
+              diagnostics.push({
+                from: node.start,
+                to: node.end,
+                severity: misconception.severity,
+                messages: misconception.check.messages,
+              })
+            }
+          })
+        } else if (misconception.type == "ast") {
+          let existsInAst = false
+          walk.fullAncestor(ast, (node, ancestors) => {
+            const parent = ancestors[ancestors.length - 2]
+            if (!existsInAst && misconception.check.condition(node, parent)) {
+              existsInAst = true
+            }
+          })
+          if (!existsInAst) {
             diagnostics.push({
-              from: node.start,
-              to: node.end,
+              from: ast.start,
+              to: ast.end,
               severity: misconception.severity,
               messages: misconception.check.messages,
             })
           }
-        })
-      } else if (misconception.type == "ast") {
-        let existsInAst = false
-        walk.fullAncestor(ast, (node, ancestors) => {
-          const parent = ancestors[ancestors.length - 2]
-          if (!existsInAst && misconception.check.condition(node, parent)) {
-            existsInAst = true
-          }
-        })
-        if (!existsInAst) {
-          diagnostics.push({
-            from: ast.start,
-            to: ast.end,
-            severity: misconception.severity,
-            messages: misconception.check.messages,
-          })
         }
       }
     })
@@ -46,17 +51,22 @@ export function getDiagnostics(misconceptions, code) {
     try {
       const looseAst = acornLoose.parse(code, { ecmaVersion: "latest" })
       misconceptions.forEach((misconception) => {
-        walk.fullAncestor(looseAst, (node, ancestors) => {
-          const parent = ancestors[ancestors.length - 2]
-          if (misconception.check.condition(node, parent)) {
-            diagnostics.push({
-              from: node.start,
-              to: node.end,
-              severity: misconception.severity,
-              messages: misconception.check.messages,
-            })
-          }
-        })
+        if (
+          misconception.parseErrorCheck == "parseError" ||
+          misconception.parseErrorCheck == "both"
+        ) {
+          walk.fullAncestor(looseAst, (node, ancestors) => {
+            const parent = ancestors[ancestors.length - 2]
+            if (misconception.check.condition(node, parent, code)) {
+              diagnostics.push({
+                from: node.start,
+                to: node.end,
+                severity: misconception.severity,
+                messages: misconception.check.messages,
+              })
+            }
+          })
+        }
       })
     } catch (looseError) {
       console.log("Konnte Code nicht übersetzen.", looseError)

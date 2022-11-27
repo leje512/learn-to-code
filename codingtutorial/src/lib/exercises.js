@@ -40,23 +40,33 @@ if (punkte >= 5) {
     misconceptions: [
       {
         type: "node",
+        check: errorMessages.errorMissingParenthesesIfCondition,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+      {
+        type: "node",
         check: errorMessages.errorSwitchedCompareSymbol,
         severity: "error",
+        parseErrorCheck: "both",
       },
       {
         type: "node",
         check: errorMessages.errorSemicolonAfterIfCondition,
         severity: "error",
+        parseErrorCheck: "parseError",
       },
       {
         type: "ast",
         check: errorMessages.errorMissingIfElse,
         severity: "hint",
+        parseErrorCheck: "regular",
       },
       {
         type: "node",
         check: errorMessages.errorConsoleLogNotInBody,
         severity: "hint",
+        parseErrorCheck: "regular",
       },
     ],
   },

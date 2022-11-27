@@ -1,3 +1,5 @@
+import { getLineOfCodeByLineNumber, getLineOfCodeByStart } from "./utils"
+
 // console.log("Auf Wiedersehen"); is not a child of script
 const errorConsoleLogNotInBody = {
   condition: (node, parent) => {
@@ -76,9 +78,32 @@ if (kondition) {
   ],
 }
 
+const errorMissingParenthesesIfCondition = {
+  condition: (node, parent, code) => {
+    // unexpected token, after if in same row
+    const lineNumber = getLineOfCodeByStart(code, node.start)
+    const currentLine = getLineOfCodeByLineNumber(code, lineNumber)
+    return (
+      node.type == "IfStatement" &&
+      (!currentLine.includes("(") || !currentLine.includes(")"))
+    )
+  },
+  messages: [
+    "Achte auf die richtige Syntax bei der if-else-Anweisung.",
+    `Die Syntax für eine if- und else-Anweisung sieht folgendermaßen aus:
+if (kondition) {
+  //code
+} else {
+  //code
+}`,
+    "Die Bedingung ist nicht in Klammern.",
+  ],
+}
+
 export default {
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
   errorMissingIfElse,
   errorSemicolonAfterIfCondition,
+  errorMissingParenthesesIfCondition,
 }
