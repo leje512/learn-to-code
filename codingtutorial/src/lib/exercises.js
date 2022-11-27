@@ -40,23 +40,23 @@ if (punkte >= 5) {
     misconceptions: [
       {
         type: "node",
-        check: errorMessages.errorConsoleLogNotInBody,
-        severity: "error",
-      },
-      {
-        type: "node",
         check: errorMessages.errorSwitchedCompareSymbol,
-        severity: "error",
-      },
-      {
-        type: "ast",
-        check: errorMessages.errorMissingIfElse,
         severity: "error",
       },
       {
         type: "node",
         check: errorMessages.errorSemicolonAfterIfCondition,
         severity: "error",
+      },
+      {
+        type: "ast",
+        check: errorMessages.errorMissingIfElse,
+        severity: "hint",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorConsoleLogNotInBody,
+        severity: "hint",
       },
     ],
   },

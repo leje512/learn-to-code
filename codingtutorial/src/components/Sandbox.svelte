@@ -83,7 +83,7 @@
     {consoleCode}
   </p>
   {#if lintError}
-    <div id="error">
+    <div id="pop-up" class={lintError.severity == "error" ? "error" : "help"}>
       <h4>Achtung!</h4>
       <p>{lintError.messages[messageIndex]}</p>
       <button on:click={showWhere}>Wo?</button>
@@ -124,17 +124,22 @@
     max-height: 70vh;
     height: 70vh;
   }
-  #error {
+  #pop-up {
     grid-area: error;
-    background-color: #c41d3f;
     margin: 0;
     padding: 1em;
     color: white;
   }
-  #error h4 {
+  .error {
+    background-color: #f23d3d;
+  }
+  .help {
+    background-color: #2678bf;
+  }
+  #pop-up h4 {
     margin: 0;
   }
-  #error p {
+  #pop-up p {
     white-space: pre-wrap;
     word-wrap: break-word;
   }
