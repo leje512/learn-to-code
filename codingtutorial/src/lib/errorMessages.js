@@ -61,8 +61,7 @@ const errorMissingIfElse = {
 const errorSemicolonAfterIfCondition = {
   condition: (node, parent) => {
     return (
-      node.type == "IfStatement" ||
-      (node.type == "IfStatement" && node.alternate.type == "BlockStatement")
+      node.type == "IfStatement" && node.consequent.type == "EmptyStatement"
     )
   },
   messages: [
