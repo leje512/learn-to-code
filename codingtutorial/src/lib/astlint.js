@@ -8,6 +8,8 @@ export function getDiagnostics(misconceptions, code) {
   try {
     const ast = parse(code, {
       ecmaVersion: "latest",
+      sourceType: "script",
+      allowReserved: "never",
     })
 
     misconceptions.forEach((misconception) => {
@@ -65,7 +67,14 @@ export function getDiagnostics(misconceptions, code) {
         ) {
           walk.fullAncestor(looseAst, (node, ancestors) => {
             const parent = ancestors[ancestors.length - 2]
-            if (misconception.check.condition(node, parent, code)) {
+            const nextSibling = walk.findNodeAfter(
+              looseAst,
+              node.end + 1,
+              () => true
+            )
+            if (
+              misconception.check.condition(node, parent, code, nextSibling)
+            ) {
               const messages = misconception.check.messages
               if (misconception.exerciseSpecificMessage) {
                 messages[2] = misconception.exerciseSpecificMessage
