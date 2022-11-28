@@ -132,6 +132,24 @@ const errorMissingFunctionKeyword = {
   ],
 }
 
+const errorMissingFunctionName = {
+  condition: (node, parent) => {
+    return (
+      node.type == "FunctionDeclaration" &&
+      node.id.type == "Identifier" &&
+      node.id.name == "✖"
+    )
+  },
+  messages: [
+    "Um eine Funktion aufrufen zu können benötigt diese einen Namen.",
+    `Nutze folgende Syntax:
+function name() {
+  // code 
+}`,
+    "Zwischen dem Keyword function und den Funktionsparametern, also dem Teil in normalen Klammern, sollte der Name stehen.",
+  ],
+}
+
 export default {
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
@@ -140,4 +158,5 @@ export default {
   errorMissingParenthesesIfCondition,
   errorStatementInBody,
   errorMissingFunctionKeyword,
+  errorMissingFunctionName,
 }
