@@ -10,9 +10,9 @@ export default [
   },
   {
     title: "if-else",
-    task: `Sie haben eine Punktzahl gegeben: 
+    task: `Es ist eine Punktzahl gegeben: 
 <code>int punktzahl = 10</code>
-Schreiben Sie ein Programm, dass bei einer Punktzahl von mindestens 5 ausgibt:
+Schreibe ein Programm, dass bei einer Punktzahl von mindestens 5 ausgibt:
 <code class="terminal">Bestanden. 
 Auf Wiedersehen.</code>
 Bei 4 oder weniger Punkten wird folgendes ausgegeben:
@@ -27,15 +27,7 @@ if (punkte >= 5) {
 }
     
 console.log("Auf Wiedersehen.");`,
-    initialcode: `let punkte = 10;
-
-if (punkte >= 5) {
-  console.log("Bestanden.");
-  console.log("Auf Wiedersehen.");
-} else {
-  console.log("Leider durchgefallen.");
-  console.log("Auf Wiedersehen.");
-}`,
+    initialcode: "let punkte = 10;",
     // misconceptions are to be ranked by priority -> from general to specific
     misconceptions: [
       {
@@ -61,12 +53,95 @@ if (punkte >= 5) {
         check: errorMessages.errorMissingIfElse,
         severity: "hint",
         parseErrorCheck: "regular",
+        exerciseSpecificMessage: `Ergänze folgende Syntax um den richtigen Code:
+if (punkte mindestens 5) {
+  // drucke "Bestanden"
+} else {
+  // drucke "Durchgefallen"
+}`,
       },
       {
         type: "node",
-        check: errorMessages.errorConsoleLogNotInBody,
+        check: {
+          ...errorMessages.errorConsoleLogNotInBody,
+          condition: (...args) =>
+            errorMessages.errorConsoleLogNotInBody.condition(
+              ...args,
+              "Auf Wiedersehen"
+            ),
+        },
         severity: "hint",
         parseErrorCheck: "regular",
+        exerciseSpecificMessage:
+          "console.log('Auf Wiedersehen'); sollte nicht in if-else enthalten sein. Stattdessen wird diese danach ausgeführt.",
+      },
+    ],
+  },
+  {
+    title: "if-else-if",
+    task: `Es ist eine Punktzahl gegeben: 
+<code>int punktzahl = 10</code>
+Schreiben Sie ein Programm, dass bei verschiedenen Punktständen ausgibt, wie die Klausur ausfällt:
+<code>0-10: Durchgefallen
+11-20: Naja
+21-30: Mittelgut
+31-40: Gut
+41-50: Super</code>
+Die Höchstpunktzahl sind 50 Punkte, deshalb wird bei mehr Punkten kein Text ausgegeben.`,
+    solution: `let punkte = 41;
+
+    if (punkte <= 10) {
+     console.log("Durchgefallen");
+    } else if (punkte <=20) {
+     console.log("Naja");
+    } else if (punkte <= 30) {
+      console.log("Mittelgut");
+    } else if (punkte <= 40) {
+      console.log("Gut");
+    } else if (punkte <= 50) {
+      console.log("Super");
+    }`,
+    initialcode: `let punkte = 10;
+console.log("Durchgefallen");`,
+    // misconceptions are to be ranked by priority -> from general to specific
+    misconceptions: [
+      {
+        type: "node",
+        check: errorMessages.errorMissingParenthesesIfCondition,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorSwitchedCompareSymbol,
+        severity: "error",
+        parseErrorCheck: "both",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorSemicolonAfterIfCondition,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+      {
+        type: "ast",
+        check: errorMessages.errorMissingIfElse,
+        severity: "hint",
+        parseErrorCheck: "regular",
+        exerciseSpecificMessage: `Ergänze folgende Syntax um den richtigen Code und erweitere um weitere else if Bedingungen:
+if (punkte <= 10) {
+  // drucke Durchgefallen
+} else if (punkte <=20) {
+  // drucke Naja
+}`,
+      },
+      {
+        type: "node",
+        check: errorMessages.errorStatementInBody,
+        severity: "hint",
+        parseErrorCheck: "regular",
+        exerciseSpecificMessage:
+          "Achte darauf, dass bei dieser Aufgabe kein console.log außerhalb von if oder else steht, da dieser sonst immer ausgeführt wird. Hier sollen aber nur ein bestimmter Text für jeden Fall angezeigt werden.",
       },
     ],
   },
