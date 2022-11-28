@@ -188,6 +188,12 @@ max2(10, 5);`,
         exerciseSpecificMessage:
           "Zwischen dem Keyword function und den Funktionsparametern, also dem Teil in normalen Klammern, sollte der Name stehen: in dieser Aufgabe ist die Benennung entweder max2 oder max3.",
       },
+      {
+        type: "node",
+        check: errorMessages.errorLogicalOperator,
+        severity: "error",
+        parseErrorCheck: "regular",
+      },
       /* {
         type: "node",
         check: errorMessages.errorMissingParenthesesIfCondition,

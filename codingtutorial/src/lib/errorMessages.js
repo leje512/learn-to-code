@@ -150,6 +150,17 @@ function name() {
   ],
 }
 
+const errorLogicalOperator = {
+  condition: (node, parent) => {
+    return node.type == "IfStatement" && node.test.type == "LogicalExpression"
+  },
+  messages: [
+    "Achte auf die richtige Syntax bei der Verkettung.",
+    "Logische Operatoren können so aussehen: && für UND, || für ODER, ! für NICHT",
+    "Achte darauf, bei UND && und ODER || doppelte Zeichen zu benutzen, also z.B. && statt &, um mehrere Bedingungen miteinander zu verknüpfen.",
+  ],
+}
+
 export default {
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
@@ -159,4 +170,5 @@ export default {
   errorStatementInBody,
   errorMissingFunctionKeyword,
   errorMissingFunctionName,
+  errorLogicalOperator,
 }
