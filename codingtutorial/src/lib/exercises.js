@@ -194,6 +194,12 @@ max2(10, 5);`,
         severity: "error",
         parseErrorCheck: "regular",
       },
+      {
+        type: "node",
+        check: errorMessages.errorUsageOfMathMax,
+        severity: "error",
+        parseErrorCheck: "regular",
+      },
       /* {
         type: "node",
         check: errorMessages.errorMissingParenthesesIfCondition,

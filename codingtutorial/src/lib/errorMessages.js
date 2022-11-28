@@ -161,6 +161,17 @@ const errorLogicalOperator = {
   ],
 }
 
+const errorUsageOfMathMax = {
+  condition: (node, parent) => {
+    return (
+      node.type == "CallExpression" &&
+      node.callee.object.name == "Math" &&
+      node.callee.property.name == "max"
+    )
+  },
+  messages: ["Benutze nicht Math.max()."],
+}
+
 export default {
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
@@ -171,4 +182,5 @@ export default {
   errorMissingFunctionKeyword,
   errorMissingFunctionName,
   errorLogicalOperator,
+  errorUsageOfMathMax,
 }
