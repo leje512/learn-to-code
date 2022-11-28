@@ -2,19 +2,19 @@ import { getLineOfCodeByLineNumber, getLineOfCodeByStart } from "./utils"
 
 // console.log("Auf Wiedersehen"); is not a child of script
 const errorConsoleLogNotInBody = {
-  condition: (node, parent) => {
+  condition: (node, parent, text) => {
     return (
       node.type == "ExpressionStatement" &&
       node.expression.callee.object.name == "console" &&
       node.expression.callee.property.name == "log" &&
-      node.expression.arguments[0].value.includes("Auf Wiedersehen") &&
+      node.expression.arguments[0].value.includes(text) &&
       parent.type !== "Program"
     )
   },
   messages: [
     "Achte darauf, if-else richtig zu verwenden. Der Code innerhalb der if-Anweisung wird ausgeführt, wenn die Bedingung true ergibt. Der Code innerhalb von else wird ausgeführt, wenn die Kondition false ist.",
     "Code außerhalb von if-else wird immer ausgeführt.",
-    "console.log('Auf Wiedersehen'); sollte nicht in if-else enthalten sein. Stattdessen wird diese danach ausgeführt.",
+    "Mindestens ein Druck-Befehl (console.log()) sollte nicht in if-else enthalten sein. Stattdessen soll dieser danach ausgeführt werden. Lösche den Druckbefehl und schreibe ihn außerhalb der geschweiften Klammern von if und else, damit er immer ausgeführt wird, egal ob die Kondition true oder false ergibt.",
   ],
 }
 
@@ -40,7 +40,8 @@ const errorMissingIfElse = {
       node.type == "IfStatement" &&
       node.alternate &&
       node.alternate.type &&
-      node.alternate.type == "BlockStatement"
+      (node.alternate.type == "BlockStatement" ||
+        node.alternate.type == "IfStatement")
     )
   },
   messages: [
@@ -51,11 +52,11 @@ const errorMissingIfElse = {
       } else {
         //code
       }`,
-    `Ergänze folgende Syntax um den richtigen Code:
-      if (punkte mindestens 5) {
-        // drucke "Bestanden"
+    `Ergänze if- und else:
+      if (kondition) {
+        //code
       } else {
-        // drucke "Durchgefallen"
+        //code
       }`,
   ],
 }
@@ -100,10 +101,23 @@ if (kondition) {
   ],
 }
 
+const errorStatementInBody = {
+  condition: (node, parent) => {
+    return node.type == "ExpressionStatement" && parent.type == "Program"
+  },
+  messages: [
+    "Achte darauf, die if-else-then Syntax richtig zu verwenden.",
+    `Die Befehle in der if-Bedingung werden ausgeführt, wenn die Bedingung true ergibt. Die Befehle in else werden nur ausgeführt, wenn die Bedingung false ergibt.
+Code der weder in if noch in else enthalten ist, wird immer ausgeführt.`,
+    "Achte darauf, dass bei dieser Aufgabe kein Code außerhalb von if oder else steht, da dieser sonst immer ausgeführt wird.",
+  ],
+}
+
 export default {
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
   errorMissingIfElse,
   errorSemicolonAfterIfCondition,
   errorMissingParenthesesIfCondition,
+  errorStatementInBody,
 }

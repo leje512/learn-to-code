@@ -19,11 +19,15 @@ export function getDiagnostics(misconceptions, code) {
           walk.fullAncestor(ast, (node, ancestors) => {
             const parent = ancestors[ancestors.length - 2]
             if (misconception.check.condition(node, parent)) {
+              const messages = misconception.check.messages
+              if (misconception.exerciseSpecificMessage) {
+                messages[2] = misconception.exerciseSpecificMessage
+              }
               diagnostics.push({
                 from: node.start,
                 to: node.end,
                 severity: misconception.severity,
-                messages: misconception.check.messages,
+                messages,
               })
             }
           })
@@ -36,11 +40,15 @@ export function getDiagnostics(misconceptions, code) {
             }
           })
           if (!existsInAst) {
+            const messages = misconception.check.messages
+            if (misconception.exerciseSpecificMessage) {
+              messages[2] = misconception.exerciseSpecificMessage
+            }
             diagnostics.push({
               from: ast.start,
               to: ast.end,
               severity: misconception.severity,
-              messages: misconception.check.messages,
+              messages,
             })
           }
         }
@@ -58,11 +66,15 @@ export function getDiagnostics(misconceptions, code) {
           walk.fullAncestor(looseAst, (node, ancestors) => {
             const parent = ancestors[ancestors.length - 2]
             if (misconception.check.condition(node, parent, code)) {
+              const messages = misconception.check.messages
+              if (misconception.exerciseSpecificMessage) {
+                messages[2] = misconception.exerciseSpecificMessage
+              }
               diagnostics.push({
                 from: node.start,
                 to: node.end,
                 severity: misconception.severity,
-                messages: misconception.check.messages,
+                messages,
               })
             }
           })
