@@ -145,4 +145,79 @@ if (punkte <= 10) {
       },
     ],
   },
+  {
+    title: "function-max",
+    task: `Schreibe zwei Funktionen. Die erste Funktion <code>max2</code> bekommt zwei Parameter und vergleicht die beiden miteinander. Gebe den größeren Wert zurück.
+Die zweite Funktion <code>max3</code> bekommt drei Parameter und gibt ebenfalls den größten der drei Parameter zurück. 
+Verwende dabei nicht Math.max().`,
+    solution: `function max2(a, b) {
+  if (a > b) {
+    return a
+  } else {
+    return b
+  }
+}
+    
+function max3(a, b, c) {
+  if (a > b && a > c) {
+    return a
+  } else if (b > a && b > c) {
+    return b
+  } else {
+    return c
+  }
+}`,
+    initialcode: `function max2() {
+  return 0;
+}
+
+max2(10, 5);`,
+    // misconceptions are to be ranked by priority -> from general to specific
+    misconceptions: [
+      {
+        type: "node",
+        check: errorMessages.errorMissingFunctionKeyword,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+      /* {
+        type: "node",
+        check: errorMessages.errorMissingParenthesesIfCondition,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorSwitchedCompareSymbol,
+        severity: "error",
+        parseErrorCheck: "both",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorSemicolonAfterIfCondition,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+      {
+        type: "ast",
+        check: errorMessages.errorMissingIfElse,
+        severity: "hint",
+        parseErrorCheck: "regular",
+        exerciseSpecificMessage: `Ergänze folgende Syntax um den richtigen Code und erweitere um weitere else if Bedingungen:
+if (punkte <= 10) {
+  // drucke Durchgefallen
+} else if (punkte <=20) {
+  // drucke Naja
+}`,
+      },
+      {
+        type: "node",
+        check: errorMessages.errorStatementInBody,
+        severity: "hint",
+        parseErrorCheck: "regular",
+        exerciseSpecificMessage:
+          "Achte darauf, dass bei dieser Aufgabe kein console.log außerhalb von if oder else steht, da dieser sonst immer ausgeführt wird. Hier sollen aber nur ein bestimmter Text für jeden Fall angezeigt werden.",
+      },*/
+    ],
+  },
 ]
