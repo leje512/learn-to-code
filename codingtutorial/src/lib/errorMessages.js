@@ -113,6 +113,25 @@ Code der weder in if noch in else enthalten ist, wird immer ausgeführt.`,
   ],
 }
 
+const errorMissingFunctionKeyword = {
+  condition: (node, parent, code, nextSibling) => {
+    const lineNumber = getLineOfCodeByStart(code, node.start)
+    const currentLine = getLineOfCodeByLineNumber(code, lineNumber)
+    return (
+      node.type == "Identifier" &&
+      nextSibling &&
+      nextSibling.node.type == "BlockStatement" &&
+      !currentLine.includes("function")
+    )
+  },
+  messages: [
+    "Eine Funktion wurde mehrfach deklariert.",
+    "Jede Funktion braucht einen eigenen Namen.",
+    `Achte darauf, dass keine Funktionsnamen gleich sind, da bei Javascript die Funktionen über ihren Namen aufgerufen werden. Der Funktionsname steht zwischen dem Keyword function und den Klammern:
+      function name()`,
+  ],
+}
+
 export default {
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
@@ -120,4 +139,5 @@ export default {
   errorSemicolonAfterIfCondition,
   errorMissingParenthesesIfCondition,
   errorStatementInBody,
+  errorMissingFunctionKeyword,
 }
