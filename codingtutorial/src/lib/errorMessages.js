@@ -1,4 +1,5 @@
 import { getLineOfCodeByLineNumber, getLineOfCodeByStart } from "./utils"
+import * as walk from "acorn-walk"
 
 // console.log("Auf Wiedersehen"); is not a child of script
 const errorConsoleLogNotInBody = {
@@ -113,6 +114,167 @@ Code der weder in if noch in else enthalten ist, wird immer ausgeführt.`,
   ],
 }
 
+const errorMissingFunctionKeyword = {
+  condition: (node, parent, code, next) => {
+    const lineNumber = getLineOfCodeByStart(code, node.start)
+    const currentLine = getLineOfCodeByLineNumber(code, lineNumber)
+    return (
+      node.type == "Identifier" &&
+      next &&
+      next.node.type == "BlockStatement" &&
+      !currentLine.includes("function")
+    )
+  },
+  messages: [
+    "Eine Funktion wurde mehrfach deklariert.",
+    "Jede Funktion braucht einen eigenen Namen.",
+    `Achte darauf, dass keine Funktionsnamen gleich sind, da bei Javascript die Funktionen über ihren Namen aufgerufen werden. Der Funktionsname steht zwischen dem Keyword function und den Klammern:
+      function name()`,
+  ],
+}
+
+const errorMissingFunctionName = {
+  condition: (node, parent) => {
+    return (
+      node.type == "FunctionDeclaration" &&
+      node.id.type == "Identifier" &&
+      node.id.name == "✖"
+    )
+  },
+  messages: [
+    "Um eine Funktion aufrufen zu können benötigt diese einen Namen.",
+    `Nutze folgende Syntax:
+function name() {
+  // code 
+}`,
+    "Zwischen dem Keyword function und den Funktionsparametern, also dem Teil in normalen Klammern, sollte der Name stehen.",
+  ],
+}
+
+const errorLogicalOperator = {
+  condition: (node, parent) => {
+    return (
+      node.type == "IfStatement" &&
+      node.test.type == "BinaryExpression" &&
+      (node.test.operator == "&" || node.test.operator == "|")
+    )
+  },
+  messages: [
+    "Achte auf die richtige Syntax bei der Verkettung.",
+    "Logische Operatoren können so aussehen: && für UND, || für ODER, ! für NICHT",
+    "Achte darauf, bei UND && und ODER || doppelte Zeichen zu benutzen, also z.B. && statt &, um mehrere Bedingungen miteinander zu verknüpfen.",
+  ],
+}
+
+const errorUsageOfMathMax = {
+  condition: (node, parent) => {
+    return (
+      node.type == "CallExpression" &&
+      node.callee &&
+      node.callee.object &&
+      node.callee.property &&
+      node.callee.object.name == "Math" &&
+      node.callee.property.name == "max"
+    )
+  },
+  messages: ["Benutze nicht Math.max()."],
+}
+
+const errorMissingReturn = {
+  condition: (node, parent, functionNames) => {
+    const children = walk.findNodeAfter(
+      node,
+      0,
+      (nodeType) => nodeType == "ReturnStatement"
+    )
+    return (
+      node.type == "FunctionDeclaration" &&
+      node.id.type == "Identifier" &&
+      functionNames.includes(node.id.name) &&
+      !children
+    )
+  },
+  messages: [
+    "Achte darauf, für die Rückgabe return zu verwenden.",
+    "Werte können mit dem Keyword return zurückgegeben werden. Dadurch wird der Wert an den Punkt weitergegeben, an dem die Funktion aufgerufen wird und kann z.B. in eine Variable gespeichert werden.",
+    `Nutze folgende Syntax um einen Wert zurückzugeben: 
+return x
+Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
+  ],
+}
+
+const errorConsoleLogInsteadOfReturn = {
+  condition: (node, parent, functionNames) => {
+    const consoleLogChildren = walk.findNodeAfter(
+      node,
+      0,
+      (nodeType, node) =>
+        node.type == "ExpressionStatement" &&
+        node.expression &&
+        node.expression.callee &&
+        node.expression.callee.object &&
+        node.expression.callee.property &&
+        node.expression.callee.object.name == "console" &&
+        node.expression.callee.property.name == "log"
+    )
+    const returnChildren = walk.findNodeAfter(
+      node,
+      0,
+      (nodeType) => nodeType == "ReturnStatement"
+    )
+    return (
+      node.type == "FunctionDeclaration" &&
+      node.id.type == "Identifier" &&
+      functionNames.includes(node.id.name) &&
+      consoleLogChildren &&
+      !returnChildren
+    )
+  },
+  messages: [
+    "Achte darauf, für die Rückgabe return zu verwenden.",
+    `Werte können mit dem Keyword return zurückgegeben werden. Dadurch wird der Wert an den Punkt weitergegeben, an dem die Funktion aufgerufen wird und kann z.B. in eine Variable gespeichert werden. 
+console.log() druckt den Wert stattdessen nur auf die Konsole.`,
+    `Nutze statt console.log() return um einen WErt zurückzugeben. Die Syntax sieht so aus: 
+return x
+Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
+  ],
+}
+
+const errorIncorrectNumberOfParams = {
+  condition: (node, parent, functionName, length) => {
+    return (
+      node.type == "FunctionDeclaration" &&
+      node.params.length !== length &&
+      node.id.name == functionName
+    )
+  },
+  messages: [
+    "Überprüfe die Aufgabenstellung. Haben deine Funktionen die richtige Parameterzahl?",
+    "Parameter sind die Variablen, die in eine Funktion gegeben werden und dort für die Werte stehen. Diese werden in Klammern nach dem Funktionsnamen angegeben. Achte auf die korrekte Anzahl.",
+    `So sieht ein Funktionskopf aus:
+function name(a, b)
+a und b sind Parameter, hier zwei Stück. Überprüfe die Parameterzahl bei deinen Funktionen.`,
+  ],
+}
+
+const errorIncorrectNumberOfCallArguments = {
+  condition: (node, parent, functionName, length) => {
+    return (
+      node.type == "CallExpression" &&
+      node.callee &&
+      node.callee.name == functionName &&
+      node.arguments.length !== length
+    )
+  },
+  messages: [
+    "Die Anzahl der Parameter bei der Initialisierung der Funktion und dem Aufruf der Funktion sollten übereinstimmen.",
+    `function name(eins, zwei) {}
+In dem Funktionsbeispiel oben wurden zwei Parameter initialisiert: eins und zwei.
+Beim Funktionsaufruf sollten also ebenfalls zwei Parameter übergeben werden.`,
+    "Für eine Funktion function name(eins, zwei) {} sollte der Funktionsaufruf so aussehen: name(a, b). name steht für den Namen der Funktion und a und b sind zwei übergebene Parameter. Die Anzahl der übergebenen Parameter muss dabei mit der Funktionsinitialisierung übereinstimmen.",
+  ],
+}
+
 export default {
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
@@ -120,4 +282,12 @@ export default {
   errorSemicolonAfterIfCondition,
   errorMissingParenthesesIfCondition,
   errorStatementInBody,
+  errorMissingFunctionKeyword,
+  errorMissingFunctionName,
+  errorLogicalOperator,
+  errorUsageOfMathMax,
+  errorConsoleLogInsteadOfReturn,
+  errorMissingReturn,
+  errorIncorrectNumberOfParams,
+  errorIncorrectNumberOfCallArguments,
 }

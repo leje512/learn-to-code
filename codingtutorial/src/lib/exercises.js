@@ -145,4 +145,183 @@ if (punkte <= 10) {
       },
     ],
   },
+  {
+    title: "function-max",
+    task: `Schreibe zwei Funktionen. Die erste Funktion <code>max2</code> bekommt zwei Parameter und vergleicht die beiden miteinander. Gebe den größeren Wert zurück.
+Die zweite Funktion <code>max3</code> bekommt drei Parameter und gibt ebenfalls den größten der drei Parameter zurück. 
+Verwende dabei nicht Math.max().`,
+    solution: `function max2(a, b) {
+  if (a > b) {
+    return a
+  } else {
+    return b
+  }
+}
+    
+function max3(a, b, c) {
+  if (a > b && a > c) {
+    return a
+  } else if (b > a && b > c) {
+    return b
+  } else {
+    return c
+  }
+}`,
+    initialcode: `function max2() {
+  return 0;
+}
+
+max2(10, 5);`,
+    // misconceptions are to be ranked by priority -> from general to specific
+    misconceptions: [
+      {
+        type: "node",
+        check: errorMessages.errorMissingFunctionKeyword,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorMissingFunctionName,
+        severity: "error",
+        parseErrorCheck: "parseError",
+        exerciseSpecificMessage:
+          "Zwischen dem Keyword function und den Funktionsparametern, also dem Teil in normalen Klammern, sollte der Name stehen: in dieser Aufgabe ist die Benennung entweder max2 oder max3.",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorLogicalOperator,
+        severity: "error",
+        parseErrorCheck: "regular",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorUsageOfMathMax,
+        severity: "error",
+        parseErrorCheck: "regular",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorMissingParenthesesIfCondition,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorSwitchedCompareSymbol,
+        severity: "error",
+        parseErrorCheck: "both",
+      },
+      {
+        type: "node",
+        check: errorMessages.errorSemicolonAfterIfCondition,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorConsoleLogInsteadOfReturn,
+          condition: (...args) =>
+            errorMessages.errorConsoleLogInsteadOfReturn.condition(...args, [
+              "max2",
+              "max3",
+            ]),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+      },
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorMissingReturn,
+          condition: (...args) =>
+            errorMessages.errorMissingReturn.condition(...args, [
+              "max2",
+              "max3",
+            ]),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+      },
+      {
+        type: "ast",
+        check: errorMessages.errorMissingIfElse,
+        severity: "hint",
+        parseErrorCheck: "regular",
+        exerciseSpecificMessage: `Ergänze folgende Syntax um den richtigen Code und erweitere um weitere Bedingungen:
+if (a > b) {
+  // gebe den größeren Wert zurück
+} else {
+  // gebe den übrigen Wert zurück
+}`,
+      },
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorIncorrectNumberOfParams,
+          condition: (...args) =>
+            errorMessages.errorIncorrectNumberOfParams.condition(
+              ...args,
+              "max2",
+              2
+            ),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+        exerciseSpecificMessage: `Die Funktion max2 sollte zwei Parameter bekommen. So sollte der Funktionskopf von max2 aussehen:
+function max2(a, b)
+Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Bezeichnungen als a und b wählen.`,
+      },
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorIncorrectNumberOfParams,
+          condition: (...args) =>
+            errorMessages.errorIncorrectNumberOfParams.condition(
+              ...args,
+              "max3",
+              3
+            ),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+        exerciseSpecificMessage: `Die Funktion max3 sollte drei Parameter bekommen. So sollte der Funktionskopf von max3 aussehen:
+function max3(a, b, c)
+Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Bezeichnungen als a, b und c wählen.`,
+      },
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorIncorrectNumberOfCallArguments,
+          condition: (...args) =>
+            errorMessages.errorIncorrectNumberOfCallArguments.condition(
+              ...args,
+              "max2",
+              2
+            ),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+        exerciseSpecificMessage:
+          "Für die Funktion function max2(a, b) {} sollte der Funktionsaufruf so aussehen: max2(1, 2). 1 und 2 sind dabei die Werte für die Parameter a und b eingesetzt werden. Die Anzahl der übergebenen Parameter muss dabei mit der Funktionsinitialisierung übereinstimmen, hier also genau zwei.",
+      },
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorIncorrectNumberOfCallArguments,
+          condition: (...args) =>
+            errorMessages.errorIncorrectNumberOfCallArguments.condition(
+              ...args,
+              "max3",
+              3
+            ),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+        exerciseSpecificMessage:
+          "Für die Funktion function max3(a, b, c) {} sollte der Funktionsaufruf so aussehen: max3(1, 2, 3). 1, 2 und 3 sind dabei die Werte für die Parameter a, b und c eingesetzt werden. Die Anzahl der übergebenen Parameter muss dabei mit der Funktionsinitialisierung übereinstimmen, hier also genau drei.",
+      },
+    ],
+  },
 ]
