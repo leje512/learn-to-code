@@ -211,6 +211,9 @@ const errorConsoleLogInsteadOfReturn = {
       (nodeType, node) =>
         node.type == "ExpressionStatement" &&
         node.expression &&
+        node.expression.callee &&
+        node.expression.callee.object &&
+        node.expression.callee.property &&
         node.expression.callee.object.name == "console" &&
         node.expression.callee.property.name == "log"
     )
