@@ -219,6 +219,32 @@ max2(10, 5);`,
         parseErrorCheck: "parseError",
       },
       {
+        type: "node",
+        check: {
+          ...errorMessages.errorConsoleLogInsteadOfReturn,
+          condition: (...args) =>
+            errorMessages.errorConsoleLogInsteadOfReturn.condition(...args, [
+              "max2",
+              "max3",
+            ]),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+      },
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorMissingReturn,
+          condition: (...args) =>
+            errorMessages.errorMissingReturn.condition(...args, [
+              "max2",
+              "max3",
+            ]),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+      },
+      {
         type: "ast",
         check: errorMessages.errorMissingIfElse,
         severity: "hint",
