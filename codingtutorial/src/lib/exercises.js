@@ -233,28 +233,36 @@ if (a > b) {
       {
         type: "node",
         check: {
-          ...errorMessages.errorConsoleLogInsteadOfReturn,
+          ...errorMessages.errorCorrectNumberOfParams,
           condition: (...args) =>
-            errorMessages.errorConsoleLogInsteadOfReturn.condition(...args, [
+            errorMessages.errorCorrectNumberOfParams.condition(
+              ...args,
               "max2",
-              "max3",
-            ]),
+              2
+            ),
         },
         severity: "hint",
         parseErrorCheck: "regular",
+        exerciseSpecificMessage: `Die Funktion max2 sollte zwei Parameter bekommen. So sollte der Funktionskopf von max2 aussehen:
+function max2(a, b)
+Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Bezeichnungen als a und b wählen.`,
       },
       {
         type: "node",
         check: {
-          ...errorMessages.errorMissingReturn,
+          ...errorMessages.errorCorrectNumberOfParams,
           condition: (...args) =>
-            errorMessages.errorMissingReturn.condition(...args, [
-              "max2",
+            errorMessages.errorCorrectNumberOfParams.condition(
+              ...args,
               "max3",
-            ]),
+              3
+            ),
         },
         severity: "hint",
         parseErrorCheck: "regular",
+        exerciseSpecificMessage: `Die Funktion max3 sollte drei Parameter bekommen. So sollte der Funktionskopf von max3 aussehen:
+function max3(a, b, c)
+Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Bezeichnungen als a, b und c wählen.`,
       },
     ],
   },
