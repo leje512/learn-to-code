@@ -203,6 +203,40 @@ Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
   ],
 }
 
+const errorConsoleLogInsteadOfReturn = {
+  condition: (node, parent, functionNames) => {
+    const consoleLogChildren = walk.findNodeAfter(
+      node,
+      0,
+      (nodeType, node) =>
+        node.type == "ExpressionStatement" &&
+        node.expression &&
+        node.expression.callee.object.name == "console" &&
+        node.expression.callee.property.name == "log"
+    )
+    const returnChildren = walk.findNodeAfter(
+      node,
+      0,
+      (nodeType) => nodeType == "ReturnStatement"
+    )
+    return (
+      node.type == "FunctionDeclaration" &&
+      node.id.type == "Identifier" &&
+      functionNames.includes(node.id.name) &&
+      consoleLogChildren &&
+      !returnChildren
+    )
+  },
+  messages: [
+    "Achte darauf, für die Rückgabe return zu verwenden.",
+    `Werte können mit dem Keyword return zurückgegeben werden. Dadurch wird der Wert an den Punkt weitergegeben, an dem die Funktion aufgerufen wird und kann z.B. in eine Variable gespeichert werden. 
+console.log() druckt den Wert stattdessen nur auf die Konsole.`,
+    `Nutze statt console.log() return um einen WErt zurückzugeben. Die Syntax sieht so aus: 
+return x
+Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
+  ],
+}
+
 export default {
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
@@ -214,5 +248,6 @@ export default {
   errorMissingFunctionName,
   errorLogicalOperator,
   errorUsageOfMathMax,
+  errorConsoleLogInsteadOfReturn,
   errorMissingReturn,
 }

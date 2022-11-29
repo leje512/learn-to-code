@@ -233,6 +233,19 @@ if (a > b) {
       {
         type: "node",
         check: {
+          ...errorMessages.errorConsoleLogInsteadOfReturn,
+          condition: (...args) =>
+            errorMessages.errorConsoleLogInsteadOfReturn.condition(...args, [
+              "max2",
+              "max3",
+            ]),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+      },
+      {
+        type: "node",
+        check: {
           ...errorMessages.errorMissingReturn,
           condition: (...args) =>
             errorMessages.errorMissingReturn.condition(...args, [
