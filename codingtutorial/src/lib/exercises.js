@@ -200,7 +200,7 @@ max2(10, 5);`,
         severity: "error",
         parseErrorCheck: "regular",
       },
-      /* {
+      {
         type: "node",
         check: errorMessages.errorMissingParenthesesIfCondition,
         severity: "error",
@@ -223,11 +223,11 @@ max2(10, 5);`,
         check: errorMessages.errorMissingIfElse,
         severity: "hint",
         parseErrorCheck: "regular",
-        exerciseSpecificMessage: `Ergänze folgende Syntax um den richtigen Code und erweitere um weitere else if Bedingungen:
-if (punkte <= 10) {
-  // drucke Durchgefallen
-} else if (punkte <=20) {
-  // drucke Naja
+        exerciseSpecificMessage: `Ergänze folgende Syntax um den richtigen Code und erweitere um weitere Bedingungen:
+if (a > b) {
+  // gebe den größeren Wert zurück
+} else {
+  // gebe den übrigen Wert zurück
 }`,
       },
       {
