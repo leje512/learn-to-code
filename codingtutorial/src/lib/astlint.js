@@ -67,14 +67,8 @@ export function getDiagnostics(misconceptions, code) {
         ) {
           walk.fullAncestor(looseAst, (node, ancestors) => {
             const parent = ancestors[ancestors.length - 2]
-            const nextSibling = walk.findNodeAfter(
-              looseAst,
-              node.end + 1,
-              () => true
-            )
-            if (
-              misconception.check.condition(node, parent, code, nextSibling)
-            ) {
+            const next = walk.findNodeAfter(looseAst, node.end + 1, () => true)
+            if (misconception.check.condition(node, parent, code, next)) {
               const messages = misconception.check.messages
               if (misconception.exerciseSpecificMessage) {
                 messages[2] = misconception.exerciseSpecificMessage

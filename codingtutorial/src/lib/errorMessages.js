@@ -114,13 +114,13 @@ Code der weder in if noch in else enthalten ist, wird immer ausgeführt.`,
 }
 
 const errorMissingFunctionKeyword = {
-  condition: (node, parent, code, nextSibling) => {
+  condition: (node, parent, code, next) => {
     const lineNumber = getLineOfCodeByStart(code, node.start)
     const currentLine = getLineOfCodeByLineNumber(code, lineNumber)
     return (
       node.type == "Identifier" &&
-      nextSibling &&
-      nextSibling.node.type == "BlockStatement" &&
+      next &&
+      next.node.type == "BlockStatement" &&
       !currentLine.includes("function")
     )
   },
@@ -152,7 +152,11 @@ function name() {
 
 const errorLogicalOperator = {
   condition: (node, parent) => {
-    return node.type == "IfStatement" && node.test.type == "LogicalExpression"
+    return (
+      node.type == "IfStatement" &&
+      node.test.type == "BinaryExpression" &&
+      (node.test.operator == "&" || node.test.operator == "|")
+    )
   },
   messages: [
     "Achte auf die richtige Syntax bei der Verkettung.",
