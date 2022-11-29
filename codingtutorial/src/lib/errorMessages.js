@@ -126,10 +126,10 @@ const errorMissingFunctionKeyword = {
     )
   },
   messages: [
-    "Eine Funktion wurde mehrfach deklariert.",
-    "Jede Funktion braucht einen eigenen Namen.",
-    `Achte darauf, dass keine Funktionsnamen gleich sind, da bei Javascript die Funktionen über ihren Namen aufgerufen werden. Der Funktionsname steht zwischen dem Keyword function und den Klammern:
-      function name()`,
+    "Das Keyword function zeichnet einen Codeblock als Funktion aus.",
+    `Nutze folgende Syntax um eine Funktion auszuzeichnen:
+function name() { }`,
+    "Ergänze das Keyword function vor dem Funktionsnamen.",
   ],
 }
 
