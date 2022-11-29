@@ -240,12 +240,12 @@ Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
   ],
 }
 
-const errorCorrectNumberOfParams = {
+const errorIncorrectNumberOfParams = {
   condition: (node, parent, functionName, length) => {
     return (
       node.type == "FunctionDeclaration" &&
       node.params.length !== length &&
-      functionName == node.id.name
+      node.id.name == functionName
     )
   },
   messages: [
@@ -254,6 +254,24 @@ const errorCorrectNumberOfParams = {
     `So sieht ein Funktionskopf aus:
 function name(a, b)
 a und b sind Parameter, hier zwei Stück. Überprüfe die Parameterzahl bei deinen Funktionen.`,
+  ],
+}
+
+const errorIncorrectNumberOfCallArguments = {
+  condition: (node, parent, functionName, length) => {
+    return (
+      node.type == "CallExpression" &&
+      node.callee &&
+      node.callee.name == functionName &&
+      node.arguments.length !== length
+    )
+  },
+  messages: [
+    "Die Anzahl der Parameter bei der Initialisierung der Funktion und dem Aufruf der Funktion sollten übereinstimmen.",
+    `function name(eins, zwei) {}
+In dem Funktionsbeispiel oben wurden zwei Parameter initialisiert: eins und zwei.
+Beim Funktionsaufruf sollten also ebenfalls zwei Parameter übergeben werden.`,
+    "Für eine Funktion function name(eins, zwei) {} sollte der Funktionsaufruf so aussehen: name(a, b). name steht für den Namen der Funktion und a und b sind zwei übergebene Parameter. Die Anzahl der übergebenen Parameter muss dabei mit der Funktionsinitialisierung übereinstimmen.",
   ],
 }
 
@@ -270,5 +288,6 @@ export default {
   errorUsageOfMathMax,
   errorConsoleLogInsteadOfReturn,
   errorMissingReturn,
-  errorCorrectNumberOfParams,
+  errorIncorrectNumberOfParams,
+  errorIncorrectNumberOfCallArguments,
 }

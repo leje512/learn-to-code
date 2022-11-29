@@ -259,9 +259,9 @@ if (a > b) {
       {
         type: "node",
         check: {
-          ...errorMessages.errorCorrectNumberOfParams,
+          ...errorMessages.errorIncorrectNumberOfParams,
           condition: (...args) =>
-            errorMessages.errorCorrectNumberOfParams.condition(
+            errorMessages.errorIncorrectNumberOfParams.condition(
               ...args,
               "max2",
               2
@@ -276,9 +276,9 @@ Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Beze
       {
         type: "node",
         check: {
-          ...errorMessages.errorCorrectNumberOfParams,
+          ...errorMessages.errorIncorrectNumberOfParams,
           condition: (...args) =>
-            errorMessages.errorCorrectNumberOfParams.condition(
+            errorMessages.errorIncorrectNumberOfParams.condition(
               ...args,
               "max3",
               3
@@ -289,6 +289,38 @@ Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Beze
         exerciseSpecificMessage: `Die Funktion max3 sollte drei Parameter bekommen. So sollte der Funktionskopf von max3 aussehen:
 function max3(a, b, c)
 Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Bezeichnungen als a, b und c wählen.`,
+      },
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorIncorrectNumberOfCallArguments,
+          condition: (...args) =>
+            errorMessages.errorIncorrectNumberOfCallArguments.condition(
+              ...args,
+              "max2",
+              2
+            ),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+        exerciseSpecificMessage:
+          "Für die Funktion function max2(a, b) {} sollte der Funktionsaufruf so aussehen: max2(1, 2). 1 und 2 sind dabei die Werte für die Parameter a und b eingesetzt werden. Die Anzahl der übergebenen Parameter muss dabei mit der Funktionsinitialisierung übereinstimmen, hier also genau zwei.",
+      },
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorIncorrectNumberOfCallArguments,
+          condition: (...args) =>
+            errorMessages.errorIncorrectNumberOfCallArguments.condition(
+              ...args,
+              "max3",
+              3
+            ),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+        exerciseSpecificMessage:
+          "Für die Funktion function max3(a, b, c) {} sollte der Funktionsaufruf so aussehen: max3(1, 2, 3). 1, 2 und 3 sind dabei die Werte für die Parameter a, b und c eingesetzt werden. Die Anzahl der übergebenen Parameter muss dabei mit der Funktionsinitialisierung übereinstimmen, hier also genau drei.",
       },
     ],
   },
