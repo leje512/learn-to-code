@@ -23,7 +23,8 @@ export function getDiagnostics(misconceptions, code) {
             if (misconception.check.condition(node, parent)) {
               const messages = misconception.check.messages
               if (misconception.exerciseSpecificMessage) {
-                messages[2] = misconception.exerciseSpecificMessage
+                messages[messages.length - 1] =
+                  misconception.exerciseSpecificMessage
               }
               diagnostics.push({
                 from: node.start,
@@ -44,7 +45,8 @@ export function getDiagnostics(misconceptions, code) {
           if (!existsInAst) {
             const messages = misconception.check.messages
             if (misconception.exerciseSpecificMessage) {
-              messages[2] = misconception.exerciseSpecificMessage
+              messages[messages.length - 1] =
+                misconception.exerciseSpecificMessage
             }
             diagnostics.push({
               from: ast.start,
@@ -59,7 +61,11 @@ export function getDiagnostics(misconceptions, code) {
   } catch (error) {
     // try again with a loose parse to get syntax errors
     try {
-      const looseAst = acornLoose.parse(code, { ecmaVersion: "latest" })
+      const looseAst = acornLoose.parse(code, {
+        ecmaVersion: "latest",
+        sourceType: "script",
+        allowReserved: "never",
+      })
       misconceptions.forEach((misconception) => {
         if (
           misconception.parseErrorCheck == "parseError" ||
@@ -71,7 +77,8 @@ export function getDiagnostics(misconceptions, code) {
             if (misconception.check.condition(node, parent, code, next)) {
               const messages = misconception.check.messages
               if (misconception.exerciseSpecificMessage) {
-                messages[2] = misconception.exerciseSpecificMessage
+                messages[messages.length - 1] =
+                  misconception.exerciseSpecificMessage
               }
               diagnostics.push({
                 from: node.start,
