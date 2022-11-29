@@ -169,6 +169,9 @@ const errorUsageOfMathMax = {
   condition: (node, parent) => {
     return (
       node.type == "CallExpression" &&
+      node.callee &&
+      node.callee.object &&
+      node.callee.property &&
       node.callee.object.name == "Math" &&
       node.callee.property.name == "max"
     )
