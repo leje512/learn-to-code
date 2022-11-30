@@ -27,3 +27,4 @@ function checkFunctionSum(code) {
 // eg. adding event via proxy and listening to event
 
 // or maybe rather Object.prototype to add new functions depending on context
+// https://stackoverflow.com/questions/13472188/enhance-function-prototype-to-call-a-given-function-before-execution-itself
