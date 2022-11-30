@@ -48,7 +48,22 @@
   function run() {
     consoleCode = ""
     try {
-      Function(code)()
+      Function(
+        code +
+          `const event = new Event('build');
+// Dispatch the event.
+const ed = document.getElementById("editor")
+ed.dispatchEvent(event);`
+      )()
+      // Listen for the event.
+      const ed = document.getElementById("editor")
+      ed.addEventListener(
+        "build",
+        (e) => {
+          console.log("event bubble")
+        },
+        false
+      )
     } catch (error) {
       console.log(error) // as long as console.log is extended, consoleCode = `${consoleCode}${msg}\n` is not necessary here
     }
