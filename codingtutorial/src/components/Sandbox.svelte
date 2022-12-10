@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from "svelte"
   import CodeEditor from "./CodeEditor.svelte"
   import { runUnitTest } from "../lib/tests"
   import { getDiagnostics } from "../lib/astlint"
@@ -7,6 +6,7 @@
 
   export let title
   export let initialcode
+  export let testCases
   export let misconceptions
 
   let code
@@ -16,18 +16,7 @@
   let messageIndex = 0
   let showErrorMessage = false
 
-  // TODO: zeige Fehler -> markiert Fehler im Code
-  // TODO: mehr Infos -> nächstes Level
   // TODO: weitere Erklärungen -> erkläre zusätzliche Prinzipien wie if-Bedingung etc.
-
-  onMount(() => {
-    // override console.log to show message in div
-    const consoleLog = console.log
-    console.log = function (msg) {
-      consoleLog.apply(console, arguments)
-      consoleCode = `${consoleCode}${msg}\n`
-    }
-  })
 
   function updateCode(event) {
     code = event.detail.text
@@ -47,9 +36,14 @@
 
   function run() {
     consoleCode = ""
+    const consoleLog = console.log
+    console.log = function (msg) {
+      consoleLog.apply(console, arguments)
+      consoleCode = `${consoleCode}${msg}\n`
+    }
     try {
-      Function(
-        code +
+      Function(code)
+      /* +
           `const event = new Event('build');
 // Dispatch the event.
 const ed = document.getElementById("editor")
@@ -62,15 +56,15 @@ ed.dispatchEvent(event);`
         (e) => {
           console.log("event bubble")
         },
-        false
-      )
+        false 
+      ) */
     } catch (error) {
       console.log(error) // as long as console.log is extended, consoleCode = `${consoleCode}${msg}\n` is not necessary here
     }
   }
 
   function test() {
-    let correct = runUnitTest(title, code)
+    let correct = runUnitTest(title, code, testCases)
     document.body.style.background = correct ? "green" : "red"
   }
 

@@ -28,6 +28,23 @@ if (punkte >= 5) {
     
 console.log("Auf Wiedersehen.");`,
     initialcode: "let punkte = 10;",
+    testCases: [
+      {
+        variableName: "punkte",
+        value: 4,
+        consoleResult: "Leider durchgefallen.\nAuf Wiedersehen.\n",
+      },
+      {
+        variableName: "punkte",
+        value: 5,
+        consoleResult: "Bestanden.\nAuf Wiedersehen.\n",
+      },
+      {
+        variableName: "punkte",
+        value: 6,
+        consoleResult: "Bestanden.\nAuf Wiedersehen.\n",
+      },
+    ],
     // misconceptions are to be ranked by priority -> from general to specific
     misconceptions: [
       {
@@ -88,7 +105,7 @@ Schreiben Sie ein Programm, dass bei verschiedenen Punktständen ausgibt, wie di
 31-40: Gut
 41-50: Super</code>
 Die Höchstpunktzahl sind 50 Punkte, deshalb wird bei mehr Punkten kein Text ausgegeben.`,
-    solution: `let punkte = 41;
+    solution: `let punkte = 10;
 
     if (punkte <= 10) {
      console.log("Durchgefallen");
@@ -103,6 +120,43 @@ Die Höchstpunktzahl sind 50 Punkte, deshalb wird bei mehr Punkten kein Text aus
     }`,
     initialcode: `let punkte = 10;
 console.log("Durchgefallen");`,
+    testCases: [
+      {
+        variableName: "punkte",
+        value: 9,
+        consoleResult: "Durchgefallen\n",
+      },
+      {
+        variableName: "punkte",
+        value: 11,
+        consoleResult: "Naja\n",
+      },
+      {
+        variableName: "punkte",
+        value: 20,
+        consoleResult: "Naja\n",
+      },
+      {
+        variableName: "punkte",
+        value: 29,
+        consoleResult: "Mittelgut\n",
+      },
+      {
+        variableName: "punkte",
+        value: 39,
+        consoleResult: "Gut\n",
+      },
+      {
+        variableName: "punkte",
+        value: 49,
+        consoleResult: "Super\n",
+      },
+      {
+        variableName: "punkte",
+        value: 51,
+        consoleResult: "",
+      },
+    ],
     // misconceptions are to be ranked by priority -> from general to specific
     misconceptions: [
       {
