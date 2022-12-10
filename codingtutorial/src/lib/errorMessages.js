@@ -1,14 +1,37 @@
-import { getLineOfCodeByLineNumber, getLineOfCodeByStart } from "./utils"
+import { getLineOfCodeByLineNumber, getLineOfCodeByStart } from "./utils.js"
 import * as walk from "acorn-walk"
+
+const isConsoleLog = (node) => {
+  return (
+    node.type == "ExpressionStatement" &&
+    node.expression.callee.object.name == "console" &&
+    node.expression.callee.property.name == "log"
+  )
+}
+
+const consoleLogIncludesText = (node, text) => {
+  return isConsoleLog(node) && node.expression.arguments[0].value.includes(text)
+}
+
+const isIfStatement = (node) => {
+  return node.type == "IfStatement"
+}
+
+const isElseOrElseIfStatement = (node) => {
+  return (
+    node.alternate &&
+    node.alternate.type &&
+    (node.alternate.type == "BlockStatement" ||
+      node.alternate.type == "IfStatement")
+  )
+}
 
 // console.log("Auf Wiedersehen"); is not a child of script
 const errorConsoleLogNotInBody = {
   condition: (node, parent, text) => {
     return (
-      node.type == "ExpressionStatement" &&
-      node.expression.callee.object.name == "console" &&
-      node.expression.callee.property.name == "log" &&
-      node.expression.arguments[0].value.includes(text) &&
+      isConsoleLog(node) &&
+      consoleLogIncludesText(node, text) &&
       parent.type !== "Program"
     )
   },
@@ -22,7 +45,7 @@ const errorConsoleLogNotInBody = {
 const errorSwitchedCompareSymbol = {
   condition: (node, parent) => {
     return (
-      node.type == "IfStatement" &&
+      isIfStatement(node) &&
       (node.test.type == "ArrowFunctionExpression" ||
         node.test.type == "AssignmentExpression")
     )
@@ -36,14 +59,7 @@ const errorSwitchedCompareSymbol = {
 
 const errorMissingIfElse = {
   condition: (node, parent) => {
-    return (
-      node.type &&
-      node.type == "IfStatement" &&
-      node.alternate &&
-      node.alternate.type &&
-      (node.alternate.type == "BlockStatement" ||
-        node.alternate.type == "IfStatement")
-    )
+    return node.type && isIfStatement(node) && isElseOrElseIfStatement(node)
   },
   messages: [
     "Diese Aufgabe benötigt eine if- und else-Anweisung. Sind beide Teil des Codes?",
@@ -64,9 +80,7 @@ const errorMissingIfElse = {
 
 const errorSemicolonAfterIfCondition = {
   condition: (node, parent) => {
-    return (
-      node.type == "IfStatement" && node.consequent.type == "EmptyStatement"
-    )
+    return isIfStatement(node) && node.consequent.type == "EmptyStatement"
   },
   messages: [
     "Achte auf die richtige Syntax bei der if-else-Anweisung.",
@@ -86,7 +100,7 @@ const errorMissingParenthesesIfCondition = {
     const lineNumber = getLineOfCodeByStart(code, node.start)
     const currentLine = getLineOfCodeByLineNumber(code, lineNumber)
     return (
-      node.type == "IfStatement" &&
+      isIfStatement(node) &&
       (!currentLine.includes("(") || !currentLine.includes(")"))
     )
   },
@@ -154,7 +168,7 @@ function name() {
 const errorLogicalOperator = {
   condition: (node, parent) => {
     return (
-      node.type == "IfStatement" &&
+      isIfStatement(node) &&
       node.test.type == "BinaryExpression" &&
       (node.test.operator == "&" || node.test.operator == "|")
     )
