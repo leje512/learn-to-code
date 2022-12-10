@@ -2,13 +2,6 @@ import errorMessages from "./errorMessages"
 
 export default [
   {
-    title: "functionSum",
-    task: "Write a function sum with two parameters that returns the sum of both numbers.",
-    solution: "function sum(a, b) {\nreturn a + b;\n}",
-    initialcode: "function sum(a, b) {\n//write your code here\n}\n\n\n\n\n",
-    misconceptions: [],
-  },
-  {
     title: "if-else",
     task: `Es ist eine Punktzahl gegeben: 
 <code>int punktzahl = 10</code>
@@ -31,17 +24,17 @@ console.log("Auf Wiedersehen.");`,
     testCases: [
       {
         variableName: "punkte",
-        value: 4,
+        variableReplaceValue: 4,
         consoleResult: "Leider durchgefallen.\nAuf Wiedersehen.\n",
       },
       {
         variableName: "punkte",
-        value: 5,
+        variableReplaceValue: 5,
         consoleResult: "Bestanden.\nAuf Wiedersehen.\n",
       },
       {
         variableName: "punkte",
-        value: 6,
+        variableReplaceValue: 6,
         consoleResult: "Bestanden.\nAuf Wiedersehen.\n",
       },
     ],
@@ -123,37 +116,37 @@ console.log("Durchgefallen");`,
     testCases: [
       {
         variableName: "punkte",
-        value: 9,
+        variableReplaceValue: 9,
         consoleResult: "Durchgefallen\n",
       },
       {
         variableName: "punkte",
-        value: 11,
+        variableReplaceValue: 11,
         consoleResult: "Naja\n",
       },
       {
         variableName: "punkte",
-        value: 20,
+        variableReplaceValue: 20,
         consoleResult: "Naja\n",
       },
       {
         variableName: "punkte",
-        value: 29,
+        variableReplaceValue: 29,
         consoleResult: "Mittelgut\n",
       },
       {
         variableName: "punkte",
-        value: 39,
+        variableReplaceValue: 39,
         consoleResult: "Gut\n",
       },
       {
         variableName: "punkte",
-        value: 49,
+        variableReplaceValue: 49,
         consoleResult: "Super\n",
       },
       {
         variableName: "punkte",
-        value: 51,
+        variableReplaceValue: 51,
         consoleResult: "",
       },
     ],
@@ -226,6 +219,40 @@ function max3(a, b, c) {
 }
 
 max2(10, 5);`,
+    testCases: [
+      {
+        functionTest: "max2(1, 2)",
+        functionResult: 2,
+      },
+      {
+        functionTest: "max2(-10, 20)",
+        functionResult: 20,
+      },
+      {
+        functionTest: "max2(0, 0)",
+        functionResult: 0,
+      },
+      {
+        functionTest: "max2(-1, -2)",
+        functionResult: -1,
+      },
+      {
+        functionTest: "max3(-1, -2, -15)",
+        functionResult: -1,
+      },
+      {
+        functionTest: "max3(1, 5, 1)",
+        functionResult: 5,
+      },
+      {
+        functionTest: "max3(156, 325, 661)",
+        functionResult: 661,
+      },
+      {
+        functionTest: "max3(1, 5456, -781)",
+        functionResult: 5456,
+      },
+    ],
     // misconceptions are to be ranked by priority -> from general to specific
     misconceptions: [
       {
