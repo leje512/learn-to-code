@@ -2,16 +2,9 @@ import errorMessages from "./errorMessages"
 
 export default [
   {
-    title: "functionSum",
-    task: "Write a function sum with two parameters that returns the sum of both numbers.",
-    solution: "function sum(a, b) {\nreturn a + b;\n}",
-    initialcode: "function sum(a, b) {\n//write your code here\n}\n\n\n\n\n",
-    misconceptions: [],
-  },
-  {
     title: "if-else",
     task: `Es ist eine Punktzahl gegeben: 
-<code>int punktzahl = 10</code>
+<code>let punktzahl = 10</code>
 Schreibe ein Programm, dass bei einer Punktzahl von mindestens 5 ausgibt:
 <code class="terminal">Bestanden. 
 Auf Wiedersehen.</code>
@@ -28,6 +21,23 @@ if (punkte >= 5) {
     
 console.log("Auf Wiedersehen.");`,
     initialcode: "let punkte = 10;",
+    testCases: [
+      {
+        variableName: "punkte",
+        variableReplaceValue: 4,
+        consoleResult: "Leider durchgefallen.\nAuf Wiedersehen.\n",
+      },
+      {
+        variableName: "punkte",
+        variableReplaceValue: 5,
+        consoleResult: "Bestanden.\nAuf Wiedersehen.\n",
+      },
+      {
+        variableName: "punkte",
+        variableReplaceValue: 6,
+        consoleResult: "Bestanden.\nAuf Wiedersehen.\n",
+      },
+    ],
     // misconceptions are to be ranked by priority -> from general to specific
     misconceptions: [
       {
@@ -80,7 +90,7 @@ if (punkte mindestens 5) {
   {
     title: "if-else-if",
     task: `Es ist eine Punktzahl gegeben: 
-<code>int punktzahl = 10</code>
+<code>let punktzahl = 10</code>
 Schreiben Sie ein Programm, dass bei verschiedenen Punktständen ausgibt, wie die Klausur ausfällt:
 <code>0-10: Durchgefallen
 11-20: Naja
@@ -88,7 +98,7 @@ Schreiben Sie ein Programm, dass bei verschiedenen Punktständen ausgibt, wie di
 31-40: Gut
 41-50: Super</code>
 Die Höchstpunktzahl sind 50 Punkte, deshalb wird bei mehr Punkten kein Text ausgegeben.`,
-    solution: `let punkte = 41;
+    solution: `let punkte = 10;
 
     if (punkte <= 10) {
      console.log("Durchgefallen");
@@ -103,6 +113,43 @@ Die Höchstpunktzahl sind 50 Punkte, deshalb wird bei mehr Punkten kein Text aus
     }`,
     initialcode: `let punkte = 10;
 console.log("Durchgefallen");`,
+    testCases: [
+      {
+        variableName: "punkte",
+        variableReplaceValue: 9,
+        consoleResult: "Durchgefallen\n",
+      },
+      {
+        variableName: "punkte",
+        variableReplaceValue: 11,
+        consoleResult: "Naja\n",
+      },
+      {
+        variableName: "punkte",
+        variableReplaceValue: 20,
+        consoleResult: "Naja\n",
+      },
+      {
+        variableName: "punkte",
+        variableReplaceValue: 29,
+        consoleResult: "Mittelgut\n",
+      },
+      {
+        variableName: "punkte",
+        variableReplaceValue: 39,
+        consoleResult: "Gut\n",
+      },
+      {
+        variableName: "punkte",
+        variableReplaceValue: 49,
+        consoleResult: "Super\n",
+      },
+      {
+        variableName: "punkte",
+        variableReplaceValue: 51,
+        consoleResult: "",
+      },
+    ],
     // misconceptions are to be ranked by priority -> from general to specific
     misconceptions: [
       {
@@ -172,6 +219,40 @@ function max3(a, b, c) {
 }
 
 max2(10, 5);`,
+    testCases: [
+      {
+        functionTest: "max2(1, 2)",
+        functionResult: 2,
+      },
+      {
+        functionTest: "max2(-10, 20)",
+        functionResult: 20,
+      },
+      {
+        functionTest: "max2(0, 0)",
+        functionResult: 0,
+      },
+      {
+        functionTest: "max2(-1, -2)",
+        functionResult: -1,
+      },
+      {
+        functionTest: "max3(-1, -2, -15)",
+        functionResult: -1,
+      },
+      {
+        functionTest: "max3(1, 5, 1)",
+        functionResult: 5,
+      },
+      {
+        functionTest: "max3(156, 325, 661)",
+        functionResult: 661,
+      },
+      {
+        functionTest: "max3(1, 5456, -781)",
+        functionResult: 5456,
+      },
+    ],
     // misconceptions are to be ranked by priority -> from general to specific
     misconceptions: [
       {
