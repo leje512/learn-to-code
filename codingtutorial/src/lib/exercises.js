@@ -4,7 +4,7 @@ export default [
   {
     title: "if-else",
     task: `Es ist eine Punktzahl gegeben: 
-<code>int punktzahl = 10</code>
+<code>let punktzahl = 10</code>
 Schreibe ein Programm, dass bei einer Punktzahl von mindestens 5 ausgibt:
 <code class="terminal">Bestanden. 
 Auf Wiedersehen.</code>
@@ -90,7 +90,7 @@ if (punkte mindestens 5) {
   {
     title: "if-else-if",
     task: `Es ist eine Punktzahl gegeben: 
-<code>int punktzahl = 10</code>
+<code>let punktzahl = 10</code>
 Schreiben Sie ein Programm, dass bei verschiedenen Punktständen ausgibt, wie die Klausur ausfällt:
 <code>0-10: Durchgefallen
 11-20: Naja
