@@ -26,6 +26,14 @@ const isElseOrElseIfStatement = (node) => {
   )
 }
 
+const isFunctionDeclaration = (node) => {
+  return node.type == "FunctionDeclaration"
+}
+
+const isFunctionCall = (node) => {
+  return node.type == "CallExpression"
+}
+
 // console.log("Auf Wiedersehen"); is not a child of script
 const errorConsoleLogNotInBody = {
   condition: (node, parent, text) => {
@@ -154,7 +162,7 @@ function name() { }`,
 const errorMissingFunctionName = {
   condition: (node, parent) => {
     return (
-      node.type == "FunctionDeclaration" &&
+      isFunctionDeclaration(node) &&
       node.id.type == "Identifier" &&
       node.id.name == "✖"
     )
@@ -187,7 +195,7 @@ const errorLogicalOperator = {
 const errorUsageOfMathMax = {
   condition: (node, parent) => {
     return (
-      node.type == "CallExpression" &&
+      isFunctionCall(node) &&
       node.callee &&
       node.callee.object &&
       node.callee.property &&
@@ -200,16 +208,16 @@ const errorUsageOfMathMax = {
 
 const errorMissingReturn = {
   condition: (node, parent, functionNames) => {
-    const children = walk.findNodeAfter(
+    const returnChildren = walk.findNodeAfter(
       node,
       0,
       (nodeType) => nodeType == "ReturnStatement"
     )
     return (
-      node.type == "FunctionDeclaration" &&
+      isFunctionDeclaration(node) &&
       node.id.type == "Identifier" &&
       functionNames.includes(node.id.name) &&
-      !children
+      !returnChildren
     )
   },
   messages: [
@@ -223,17 +231,8 @@ Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
 
 const errorConsoleLogInsteadOfReturn = {
   condition: (node, parent, functionNames) => {
-    const consoleLogChildren = walk.findNodeAfter(
-      node,
-      0,
-      (nodeType, node) =>
-        node.type == "ExpressionStatement" &&
-        node.expression &&
-        node.expression.callee &&
-        node.expression.callee.object &&
-        node.expression.callee.property &&
-        node.expression.callee.object.name == "console" &&
-        node.expression.callee.property.name == "log"
+    const consoleLogChildren = walk.findNodeAfter(node, 0, (nodeType, node) =>
+      isConsoleLog(node)
     )
     const returnChildren = walk.findNodeAfter(
       node,
@@ -241,7 +240,7 @@ const errorConsoleLogInsteadOfReturn = {
       (nodeType) => nodeType == "ReturnStatement"
     )
     return (
-      node.type == "FunctionDeclaration" &&
+      isFunctionDeclaration(node) &&
       node.id.type == "Identifier" &&
       functionNames.includes(node.id.name) &&
       consoleLogChildren &&
@@ -261,7 +260,7 @@ Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
 const errorIncorrectNumberOfParams = {
   condition: (node, parent, functionName, length) => {
     return (
-      node.type == "FunctionDeclaration" &&
+      isFunctionDeclaration(node) &&
       node.params.length !== length &&
       node.id.name == functionName
     )
@@ -278,7 +277,7 @@ a und b sind Parameter, hier zwei Stück. Überprüfe die Parameterzahl bei dein
 const errorIncorrectNumberOfCallArguments = {
   condition: (node, parent, functionName, length) => {
     return (
-      node.type == "CallExpression" &&
+      isFunctionCall(node) &&
       node.callee &&
       node.callee.name == functionName &&
       node.arguments.length !== length
