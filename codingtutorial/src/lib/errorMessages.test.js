@@ -303,4 +303,62 @@ function name () {
       assert.lengthOf(errors, 0)
     })
   })
+
+  describe("errorLogicalOperator", () => {
+    const misconceptions = [
+      {
+        type: "node",
+        check: errorMessages.errorLogicalOperator,
+        severity: "error",
+        parseErrorCheck: "regular",
+      },
+    ]
+    it("with error", () => {
+      const code = `
+if (true & true) {
+  // code
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 1)
+      assert.deepEqual(errors[0].messages, [
+        "Achte auf die richtige Syntax bei der Verkettung.",
+        "Logische Operatoren können so aussehen: && für UND, || für ODER, ! für NICHT",
+        "Achte darauf, bei UND && und ODER || doppelte Zeichen zu benutzen, also z.B. && statt &, um mehrere Bedingungen miteinander zu verknüpfen.",
+      ])
+    })
+    it("no error", () => {
+      const code = `
+if (true && true) {
+  // code
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
+
+  describe("errorUsageOfMathMax", () => {
+    const misconceptions = [
+      {
+        type: "node",
+        check: errorMessages.errorUsageOfMathMax,
+        severity: "error",
+        parseErrorCheck: "regular",
+      },
+    ]
+    it("with error", () => {
+      const code = `
+Math.max(2, 3)`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 1)
+      assert.deepEqual(errors[0].messages, ["Benutze nicht Math.max()."])
+    })
+    it("no error", () => {
+      const code = `
+function max() {
+  // code
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
 })
