@@ -64,32 +64,36 @@ const errorMissingIfElse = {
   messages: [
     "Diese Aufgabe benötigt eine if- und else-Anweisung. Sind beide Teil des Codes?",
     `Die Syntax für eine if- und else-Anweisung sieht folgendermaßen aus:
-      if (kondition) {
-        //code
-      } else {
-        //code
-      }`,
+  if (kondition) {
+    //code
+  } else {
+    //code
+  }`,
     `Ergänze if- und else:
-      if (kondition) {
-        //code
-      } else {
-        //code
-      }`,
+  if (kondition) {
+    //code
+  } else {
+    //code
+  }`,
   ],
 }
 
 const errorSemicolonAfterIfCondition = {
   condition: (node, parent) => {
-    return isIfStatement(node) && node.consequent.type == "EmptyStatement"
+    return (
+      isIfStatement(node) &&
+      node.consequent &&
+      node.consequent.type == "EmptyStatement"
+    )
   },
   messages: [
     "Achte auf die richtige Syntax bei der if-else-Anweisung.",
     `Die Syntax für eine if- und else-Anweisung sieht folgendermaßen aus:
-if (kondition) {
-  //code
-} else {
-  //code
-}`,
+  if (kondition) {
+    //code
+  } else {
+    //code
+  }`,
     "Entferne das Semikolon nach den Klammern der if-Anweisung. Hier wird keine Methode aufgerufen, sondern ein neuer Block geöffnet. Dies passiert nicht mit dem Semikolon, sondern mit geschweiften Klammern nach der Bedingung.",
   ],
 }
