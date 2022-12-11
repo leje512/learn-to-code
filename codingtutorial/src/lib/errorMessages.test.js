@@ -361,4 +361,84 @@ function max() {
       assert.lengthOf(errors, 0)
     })
   })
+
+  describe("errorMissingReturn", () => {
+    const misconceptions = [
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorMissingReturn,
+          condition: (...args) =>
+            errorMessages.errorMissingReturn.condition(...args, ["name"]),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+      },
+    ]
+    it("with error", () => {
+      const code = `
+function name() {
+  // missing return
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 1)
+      assert.deepEqual(errors[0].messages, [
+        "Achte darauf, für die Rückgabe return zu verwenden.",
+        "Werte können mit dem Keyword return zurückgegeben werden. Dadurch wird der Wert an den Punkt weitergegeben, an dem die Funktion aufgerufen wird und kann z.B. in eine Variable gespeichert werden.",
+        `Nutze folgende Syntax um einen Wert zurückzugeben: 
+  return x
+Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
+      ])
+    })
+    it("no error", () => {
+      const code = `
+function name() {
+  return 0;
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
+
+  describe("errorConsoleLogInsteadOfReturn", () => {
+    const misconceptions = [
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorConsoleLogInsteadOfReturn,
+          condition: (...args) =>
+            errorMessages.errorConsoleLogInsteadOfReturn.condition(...args, [
+              "name",
+            ]),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+      },
+    ]
+    it("with error", () => {
+      const code = `
+function name() {
+ console.log("log")
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 1)
+      assert.deepEqual(errors[0].messages, [
+        "Achte darauf, für die Rückgabe return zu verwenden.",
+        `Werte können mit dem Keyword return zurückgegeben werden. Dadurch wird der Wert an den Punkt weitergegeben, an dem die Funktion aufgerufen wird und kann z.B. in eine Variable gespeichert werden.
+console.log() druckt den Wert stattdessen nur auf die Konsole.`,
+        `Nutze statt console.log() return um einen Wert zurückzugeben. Die Syntax sieht so aus:
+  return x
+Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
+      ])
+    })
+    it("no error", () => {
+      const code = `
+function name() {
+ console.log("log")
+ return 0;
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
 })

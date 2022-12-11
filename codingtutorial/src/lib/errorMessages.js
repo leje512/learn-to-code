@@ -216,7 +216,7 @@ const errorMissingReturn = {
     "Achte darauf, für die Rückgabe return zu verwenden.",
     "Werte können mit dem Keyword return zurückgegeben werden. Dadurch wird der Wert an den Punkt weitergegeben, an dem die Funktion aufgerufen wird und kann z.B. in eine Variable gespeichert werden.",
     `Nutze folgende Syntax um einen Wert zurückzugeben: 
-return x
+  return x
 Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
   ],
 }
@@ -250,10 +250,10 @@ const errorConsoleLogInsteadOfReturn = {
   },
   messages: [
     "Achte darauf, für die Rückgabe return zu verwenden.",
-    `Werte können mit dem Keyword return zurückgegeben werden. Dadurch wird der Wert an den Punkt weitergegeben, an dem die Funktion aufgerufen wird und kann z.B. in eine Variable gespeichert werden. 
+    `Werte können mit dem Keyword return zurückgegeben werden. Dadurch wird der Wert an den Punkt weitergegeben, an dem die Funktion aufgerufen wird und kann z.B. in eine Variable gespeichert werden.
 console.log() druckt den Wert stattdessen nur auf die Konsole.`,
-    `Nutze statt console.log() return um einen WErt zurückzugeben. Die Syntax sieht so aus: 
-return x
+    `Nutze statt console.log() return um einen Wert zurückzugeben. Die Syntax sieht so aus:
+  return x
 Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
   ],
 }
