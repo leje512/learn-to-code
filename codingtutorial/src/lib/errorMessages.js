@@ -4,6 +4,10 @@ import * as walk from "acorn-walk"
 const isConsoleLog = (node) => {
   return (
     node.type == "ExpressionStatement" &&
+    node.expression &&
+    node.expression.callee &&
+    node.expression.callee.object &&
+    node.expression.callee.property &&
     node.expression.callee.object.name == "console" &&
     node.expression.callee.property.name == "log"
   )
