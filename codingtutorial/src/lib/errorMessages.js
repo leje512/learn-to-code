@@ -162,9 +162,9 @@ const errorMissingFunctionName = {
   messages: [
     "Um eine Funktion aufrufen zu können benötigt diese einen Namen.",
     `Nutze folgende Syntax:
-function name() {
-  // code 
-}`,
+  function name() {
+    // code 
+  }`,
     "Zwischen dem Keyword function und den Funktionsparametern, also dem Teil in normalen Klammern, sollte der Name stehen.",
   ],
 }

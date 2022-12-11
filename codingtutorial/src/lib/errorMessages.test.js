@@ -235,4 +235,72 @@ if (3 < 5) {
       assert.lengthOf(errors, 0)
     })
   })
+
+  describe("errorMissingFunctionKeyword", () => {
+    const misconceptions = [
+      {
+        type: "node",
+        check: errorMessages.errorMissingFunctionKeyword,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+    ]
+    it("with error", () => {
+      const code = `
+name () {
+  // function implementation
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 1)
+      assert.deepEqual(errors[0].messages, [
+        "Das Keyword function zeichnet einen Codeblock als Funktion aus.",
+        `Nutze folgende Syntax um eine Funktion auszuzeichnen:
+function name() { }`,
+        "Ergänze das Keyword function vor dem Funktionsnamen.",
+      ])
+    })
+    it("no error", () => {
+      const code = `
+function name () {
+  // function implementation
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
+
+  describe("errorMissingFunctionName", () => {
+    const misconceptions = [
+      {
+        type: "node",
+        check: errorMessages.errorMissingFunctionName,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+    ]
+    it("with error", () => {
+      const code = `
+function () {
+  // function implementation
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 1)
+      assert.deepEqual(errors[0].messages, [
+        "Um eine Funktion aufrufen zu können benötigt diese einen Namen.",
+        `Nutze folgende Syntax:
+  function name() {
+    // code 
+  }`,
+        "Zwischen dem Keyword function und den Funktionsparametern, also dem Teil in normalen Klammern, sollte der Name stehen.",
+      ])
+    })
+    it("no error", () => {
+      const code = `
+function name () {
+  // function implementation
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
 })
