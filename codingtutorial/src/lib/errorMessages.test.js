@@ -164,4 +164,41 @@ if (3 < 5) {
       assert.lengthOf(errors, 0)
     })
   })
+
+  describe("errorSemicolonAfterIfCondition", () => {
+    const misconceptions = [
+      {
+        type: "node",
+        check: errorMessages.errorMissingParenthesesIfCondition,
+        severity: "error",
+        parseErrorCheck: "parseError",
+      },
+    ]
+    it("with error", () => {
+      const code = `
+if 3 < 5 {
+  console.log("Text")
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 1)
+      assert.deepEqual(errors[0].messages, [
+        "Achte auf die richtige Syntax bei der if-else-Anweisung.",
+        `Die Syntax für eine if- und else-Anweisung sieht folgendermaßen aus:
+  if (kondition) {
+    //code
+  } else {
+    //code
+  }`,
+        "Die Bedingung ist nicht in Klammern.",
+      ])
+    })
+    it("no error", () => {
+      const code = `
+if (3 < 5) {
+  console.log("Text");
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
 })

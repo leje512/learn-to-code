@@ -111,11 +111,11 @@ const errorMissingParenthesesIfCondition = {
   messages: [
     "Achte auf die richtige Syntax bei der if-else-Anweisung.",
     `Die Syntax für eine if- und else-Anweisung sieht folgendermaßen aus:
-if (kondition) {
-  //code
-} else {
-  //code
-}`,
+  if (kondition) {
+    //code
+  } else {
+    //code
+  }`,
     "Die Bedingung ist nicht in Klammern.",
   ],
 }
