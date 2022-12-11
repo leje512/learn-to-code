@@ -270,7 +270,7 @@ const errorIncorrectNumberOfParams = {
     "Überprüfe die Aufgabenstellung. Haben deine Funktionen die richtige Parameterzahl?",
     "Parameter sind die Variablen, die in eine Funktion gegeben werden und dort für die Werte stehen. Diese werden in Klammern nach dem Funktionsnamen angegeben. Achte auf die korrekte Anzahl.",
     `So sieht ein Funktionskopf aus:
-function name(a, b)
+  function name(a, b)
 a und b sind Parameter, hier zwei Stück. Überprüfe die Parameterzahl bei deinen Funktionen.`,
   ],
 }

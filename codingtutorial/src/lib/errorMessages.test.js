@@ -441,4 +441,90 @@ function name() {
       assert.lengthOf(errors, 0)
     })
   })
+
+  describe("errorIncorrectNumberOfParams", () => {
+    const misconceptions = [
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorIncorrectNumberOfParams,
+          condition: (...args) =>
+            errorMessages.errorIncorrectNumberOfParams.condition(
+              ...args,
+              "name",
+              1
+            ),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+      },
+    ]
+    it("with error", () => {
+      const code = `
+function name(one, two) {
+ console.log("log")
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 1)
+      assert.deepEqual(errors[0].messages, [
+        "Überprüfe die Aufgabenstellung. Haben deine Funktionen die richtige Parameterzahl?",
+        "Parameter sind die Variablen, die in eine Funktion gegeben werden und dort für die Werte stehen. Diese werden in Klammern nach dem Funktionsnamen angegeben. Achte auf die korrekte Anzahl.",
+        `So sieht ein Funktionskopf aus:
+  function name(a, b)
+a und b sind Parameter, hier zwei Stück. Überprüfe die Parameterzahl bei deinen Funktionen.`,
+      ])
+    })
+    it("no error", () => {
+      const code = `
+function name(one) {
+ console.log("log")
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
+
+  describe("errorIncorrectNumberOfCallArguments", () => {
+    const misconceptions = [
+      {
+        type: "node",
+        check: {
+          ...errorMessages.errorIncorrectNumberOfCallArguments,
+          condition: (...args) =>
+            errorMessages.errorIncorrectNumberOfCallArguments.condition(
+              ...args,
+              "name",
+              1
+            ),
+        },
+        severity: "hint",
+        parseErrorCheck: "regular",
+      },
+    ]
+    it("with error", () => {
+      const code = `
+function name(one) {
+ console.log("log")
+}
+name(1, 2)`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 1)
+      assert.deepEqual(errors[0].messages, [
+        "Die Anzahl der Parameter bei der Initialisierung der Funktion und dem Aufruf der Funktion sollten übereinstimmen.",
+        `function name(eins, zwei) {}
+In dem Funktionsbeispiel oben wurden zwei Parameter initialisiert: eins und zwei.
+Beim Funktionsaufruf sollten also ebenfalls zwei Parameter übergeben werden.`,
+        "Für eine Funktion function name(eins, zwei) {} sollte der Funktionsaufruf so aussehen: name(a, b). name steht für den Namen der Funktion und a und b sind zwei übergebene Parameter. Die Anzahl der übergebenen Parameter muss dabei mit der Funktionsinitialisierung übereinstimmen.",
+      ])
+    })
+    it("no error", () => {
+      const code = `
+function name(one) {
+ console.log("log")
+}
+name(1)`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
 })
