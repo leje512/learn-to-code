@@ -1,14 +1,49 @@
-import { getLineOfCodeByLineNumber, getLineOfCodeByStart } from "./utils"
+import { getLineOfCodeByLineNumber, getLineOfCodeByStart } from "./utils.js"
 import * as walk from "acorn-walk"
+
+const isConsoleLog = (node) => {
+  return (
+    node.type == "ExpressionStatement" &&
+    node.expression &&
+    node.expression.callee &&
+    node.expression.callee.object &&
+    node.expression.callee.property &&
+    node.expression.callee.object.name == "console" &&
+    node.expression.callee.property.name == "log"
+  )
+}
+
+const consoleLogIncludesText = (node, text) => {
+  return isConsoleLog(node) && node.expression.arguments[0].value.includes(text)
+}
+
+const isIfStatement = (node) => {
+  return node.type == "IfStatement"
+}
+
+const isElseOrElseIfStatement = (node) => {
+  return (
+    node.alternate &&
+    node.alternate.type &&
+    (node.alternate.type == "BlockStatement" ||
+      node.alternate.type == "IfStatement")
+  )
+}
+
+const isFunctionDeclaration = (node) => {
+  return node.type == "FunctionDeclaration"
+}
+
+const isFunctionCall = (node) => {
+  return node.type == "CallExpression"
+}
 
 // console.log("Auf Wiedersehen"); is not a child of script
 const errorConsoleLogNotInBody = {
   condition: (node, parent, text) => {
     return (
-      node.type == "ExpressionStatement" &&
-      node.expression.callee.object.name == "console" &&
-      node.expression.callee.property.name == "log" &&
-      node.expression.arguments[0].value.includes(text) &&
+      isConsoleLog(node) &&
+      consoleLogIncludesText(node, text) &&
       parent.type !== "Program"
     )
   },
@@ -22,7 +57,7 @@ const errorConsoleLogNotInBody = {
 const errorSwitchedCompareSymbol = {
   condition: (node, parent) => {
     return (
-      node.type == "IfStatement" &&
+      isIfStatement(node) &&
       (node.test.type == "ArrowFunctionExpression" ||
         node.test.type == "AssignmentExpression")
     )
@@ -36,46 +71,41 @@ const errorSwitchedCompareSymbol = {
 
 const errorMissingIfElse = {
   condition: (node, parent) => {
-    return (
-      node.type &&
-      node.type == "IfStatement" &&
-      node.alternate &&
-      node.alternate.type &&
-      (node.alternate.type == "BlockStatement" ||
-        node.alternate.type == "IfStatement")
-    )
+    return node.type && isIfStatement(node) && isElseOrElseIfStatement(node)
   },
   messages: [
     "Diese Aufgabe benötigt eine if- und else-Anweisung. Sind beide Teil des Codes?",
     `Die Syntax für eine if- und else-Anweisung sieht folgendermaßen aus:
-      if (kondition) {
-        //code
-      } else {
-        //code
-      }`,
+  if (kondition) {
+    //code
+  } else {
+    //code
+  }`,
     `Ergänze if- und else:
-      if (kondition) {
-        //code
-      } else {
-        //code
-      }`,
+  if (kondition) {
+    //code
+  } else {
+    //code
+  }`,
   ],
 }
 
 const errorSemicolonAfterIfCondition = {
   condition: (node, parent) => {
     return (
-      node.type == "IfStatement" && node.consequent.type == "EmptyStatement"
+      isIfStatement(node) &&
+      node.consequent &&
+      node.consequent.type == "EmptyStatement"
     )
   },
   messages: [
     "Achte auf die richtige Syntax bei der if-else-Anweisung.",
     `Die Syntax für eine if- und else-Anweisung sieht folgendermaßen aus:
-if (kondition) {
-  //code
-} else {
-  //code
-}`,
+  if (kondition) {
+    //code
+  } else {
+    //code
+  }`,
     "Entferne das Semikolon nach den Klammern der if-Anweisung. Hier wird keine Methode aufgerufen, sondern ein neuer Block geöffnet. Dies passiert nicht mit dem Semikolon, sondern mit geschweiften Klammern nach der Bedingung.",
   ],
 }
@@ -86,25 +116,25 @@ const errorMissingParenthesesIfCondition = {
     const lineNumber = getLineOfCodeByStart(code, node.start)
     const currentLine = getLineOfCodeByLineNumber(code, lineNumber)
     return (
-      node.type == "IfStatement" &&
+      isIfStatement(node) &&
       (!currentLine.includes("(") || !currentLine.includes(")"))
     )
   },
   messages: [
     "Achte auf die richtige Syntax bei der if-else-Anweisung.",
     `Die Syntax für eine if- und else-Anweisung sieht folgendermaßen aus:
-if (kondition) {
-  //code
-} else {
-  //code
-}`,
+  if (kondition) {
+    //code
+  } else {
+    //code
+  }`,
     "Die Bedingung ist nicht in Klammern.",
   ],
 }
 
-const errorStatementInBody = {
+const errorConsoleLogInBody = {
   condition: (node, parent) => {
-    return node.type == "ExpressionStatement" && parent.type == "Program"
+    return isConsoleLog(node) && parent.type == "Program"
   },
   messages: [
     "Achte darauf, die if-else-then Syntax richtig zu verwenden.",
@@ -136,7 +166,7 @@ function name() { }`,
 const errorMissingFunctionName = {
   condition: (node, parent) => {
     return (
-      node.type == "FunctionDeclaration" &&
+      isFunctionDeclaration(node) &&
       node.id.type == "Identifier" &&
       node.id.name == "✖"
     )
@@ -144,9 +174,9 @@ const errorMissingFunctionName = {
   messages: [
     "Um eine Funktion aufrufen zu können benötigt diese einen Namen.",
     `Nutze folgende Syntax:
-function name() {
-  // code 
-}`,
+  function name() {
+    // code 
+  }`,
     "Zwischen dem Keyword function und den Funktionsparametern, also dem Teil in normalen Klammern, sollte der Name stehen.",
   ],
 }
@@ -154,7 +184,7 @@ function name() {
 const errorLogicalOperator = {
   condition: (node, parent) => {
     return (
-      node.type == "IfStatement" &&
+      isIfStatement(node) &&
       node.test.type == "BinaryExpression" &&
       (node.test.operator == "&" || node.test.operator == "|")
     )
@@ -169,7 +199,7 @@ const errorLogicalOperator = {
 const errorUsageOfMathMax = {
   condition: (node, parent) => {
     return (
-      node.type == "CallExpression" &&
+      isFunctionCall(node) &&
       node.callee &&
       node.callee.object &&
       node.callee.property &&
@@ -182,40 +212,31 @@ const errorUsageOfMathMax = {
 
 const errorMissingReturn = {
   condition: (node, parent, functionNames) => {
-    const children = walk.findNodeAfter(
+    const returnChildren = walk.findNodeAfter(
       node,
       0,
       (nodeType) => nodeType == "ReturnStatement"
     )
     return (
-      node.type == "FunctionDeclaration" &&
+      isFunctionDeclaration(node) &&
       node.id.type == "Identifier" &&
       functionNames.includes(node.id.name) &&
-      !children
+      !returnChildren
     )
   },
   messages: [
     "Achte darauf, für die Rückgabe return zu verwenden.",
     "Werte können mit dem Keyword return zurückgegeben werden. Dadurch wird der Wert an den Punkt weitergegeben, an dem die Funktion aufgerufen wird und kann z.B. in eine Variable gespeichert werden.",
     `Nutze folgende Syntax um einen Wert zurückzugeben: 
-return x
+  return x
 Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
   ],
 }
 
 const errorConsoleLogInsteadOfReturn = {
   condition: (node, parent, functionNames) => {
-    const consoleLogChildren = walk.findNodeAfter(
-      node,
-      0,
-      (nodeType, node) =>
-        node.type == "ExpressionStatement" &&
-        node.expression &&
-        node.expression.callee &&
-        node.expression.callee.object &&
-        node.expression.callee.property &&
-        node.expression.callee.object.name == "console" &&
-        node.expression.callee.property.name == "log"
+    const consoleLogChildren = walk.findNodeAfter(node, 0, (nodeType, node) =>
+      isConsoleLog(node)
     )
     const returnChildren = walk.findNodeAfter(
       node,
@@ -223,7 +244,7 @@ const errorConsoleLogInsteadOfReturn = {
       (nodeType) => nodeType == "ReturnStatement"
     )
     return (
-      node.type == "FunctionDeclaration" &&
+      isFunctionDeclaration(node) &&
       node.id.type == "Identifier" &&
       functionNames.includes(node.id.name) &&
       consoleLogChildren &&
@@ -232,10 +253,10 @@ const errorConsoleLogInsteadOfReturn = {
   },
   messages: [
     "Achte darauf, für die Rückgabe return zu verwenden.",
-    `Werte können mit dem Keyword return zurückgegeben werden. Dadurch wird der Wert an den Punkt weitergegeben, an dem die Funktion aufgerufen wird und kann z.B. in eine Variable gespeichert werden. 
+    `Werte können mit dem Keyword return zurückgegeben werden. Dadurch wird der Wert an den Punkt weitergegeben, an dem die Funktion aufgerufen wird und kann z.B. in eine Variable gespeichert werden.
 console.log() druckt den Wert stattdessen nur auf die Konsole.`,
-    `Nutze statt console.log() return um einen WErt zurückzugeben. Die Syntax sieht so aus: 
-return x
+    `Nutze statt console.log() return um einen Wert zurückzugeben. Die Syntax sieht so aus:
+  return x
 Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
   ],
 }
@@ -243,7 +264,7 @@ Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
 const errorIncorrectNumberOfParams = {
   condition: (node, parent, functionName, length) => {
     return (
-      node.type == "FunctionDeclaration" &&
+      isFunctionDeclaration(node) &&
       node.params.length !== length &&
       node.id.name == functionName
     )
@@ -252,7 +273,7 @@ const errorIncorrectNumberOfParams = {
     "Überprüfe die Aufgabenstellung. Haben deine Funktionen die richtige Parameterzahl?",
     "Parameter sind die Variablen, die in eine Funktion gegeben werden und dort für die Werte stehen. Diese werden in Klammern nach dem Funktionsnamen angegeben. Achte auf die korrekte Anzahl.",
     `So sieht ein Funktionskopf aus:
-function name(a, b)
+  function name(a, b)
 a und b sind Parameter, hier zwei Stück. Überprüfe die Parameterzahl bei deinen Funktionen.`,
   ],
 }
@@ -260,7 +281,7 @@ a und b sind Parameter, hier zwei Stück. Überprüfe die Parameterzahl bei dein
 const errorIncorrectNumberOfCallArguments = {
   condition: (node, parent, functionName, length) => {
     return (
-      node.type == "CallExpression" &&
+      isFunctionCall(node) &&
       node.callee &&
       node.callee.name == functionName &&
       node.arguments.length !== length
@@ -281,7 +302,7 @@ export default {
   errorMissingIfElse,
   errorSemicolonAfterIfCondition,
   errorMissingParenthesesIfCondition,
-  errorStatementInBody,
+  errorConsoleLogInBody,
   errorMissingFunctionKeyword,
   errorMissingFunctionName,
   errorLogicalOperator,
