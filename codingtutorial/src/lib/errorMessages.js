@@ -120,9 +120,9 @@ const errorMissingParenthesesIfCondition = {
   ],
 }
 
-const errorStatementInBody = {
+const errorConsoleLogInBody = {
   condition: (node, parent) => {
-    return node.type == "ExpressionStatement" && parent.type == "Program"
+    return isConsoleLog(node) && parent.type == "Program"
   },
   messages: [
     "Achte darauf, die if-else-then Syntax richtig zu verwenden.",
@@ -299,7 +299,7 @@ export default {
   errorMissingIfElse,
   errorSemicolonAfterIfCondition,
   errorMissingParenthesesIfCondition,
-  errorStatementInBody,
+  errorConsoleLogInBody,
   errorMissingFunctionKeyword,
   errorMissingFunctionName,
   errorLogicalOperator,

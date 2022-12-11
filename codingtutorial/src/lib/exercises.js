@@ -184,11 +184,11 @@ if (punkte <= 10) {
       },
       {
         type: "node",
-        check: errorMessages.errorStatementInBody,
+        check: errorMessages.errorConsoleLogInBody,
         severity: "hint",
         parseErrorCheck: "regular",
         exerciseSpecificMessage:
-          "Achte darauf, dass bei dieser Aufgabe kein console.log außerhalb von if oder else steht, da dieser sonst immer ausgeführt wird. Hier sollen aber nur ein bestimmter Text für jeden Fall angezeigt werden.",
+          "Achte darauf, dass bei dieser Aufgabe kein console.log außerhalb von if oder else steht, da dieser sonst immer ausgeführt wird. Hier soll aber nur ein bestimmter Text für jeden Fall angezeigt werden.",
       },
     ],
   },

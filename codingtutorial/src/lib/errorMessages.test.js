@@ -201,4 +201,38 @@ if (3 < 5) {
       assert.lengthOf(errors, 0)
     })
   })
+
+  describe("errorConsoleLogInBody", () => {
+    const misconceptions = [
+      {
+        type: "node",
+        check: errorMessages.errorConsoleLogInBody,
+        severity: "hint",
+        parseErrorCheck: "regular",
+      },
+    ]
+    it("with error", () => {
+      const code = `
+if (3 < 5) {
+  console.log("Text")
+}
+console.log("Wrong")`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 1)
+      assert.deepEqual(errors[0].messages, [
+        "Achte darauf, die if-else-then Syntax richtig zu verwenden.",
+        `Die Befehle in der if-Bedingung werden ausgeführt, wenn die Bedingung true ergibt. Die Befehle in else werden nur ausgeführt, wenn die Bedingung false ergibt.
+Code der weder in if noch in else enthalten ist, wird immer ausgeführt.`,
+        "Achte darauf, dass bei dieser Aufgabe kein Code außerhalb von if oder else steht, da dieser sonst immer ausgeführt wird.",
+      ])
+    })
+    it("no error", () => {
+      const code = `
+if (3 < 5) {
+  console.log("Text");
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
 })
