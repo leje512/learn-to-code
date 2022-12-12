@@ -42,7 +42,7 @@
       consoleCode = `${consoleCode}${msg}\n`
     }
     try {
-      Function(code)
+      Function(code)()
     } catch (error) {
       console.log(error) // as long as console.log is extended, consoleCode = `${consoleCode}${msg}\n` is not necessary here
     }
