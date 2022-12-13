@@ -338,6 +338,23 @@ Beim Funktionsaufruf sollten also ebenfalls zwei Parameter übergeben werden.`,
   ],
 }
 
+export {
+  errorConsoleLogNotInBody,
+  errorSwitchedCompareSymbol,
+  errorMissingIfElse,
+  errorSemicolonAfterIfCondition,
+  errorMissingParenthesesIfCondition,
+  errorConsoleLogInBody,
+  errorMissingFunctionKeyword,
+  errorMissingFunctionName,
+  errorLogicalOperator,
+  errorUsageOfMathMax,
+  errorConsoleLogInsteadOfReturn,
+  errorMissingReturn,
+  errorIncorrectNumberOfParams,
+  errorIncorrectNumberOfCallArguments,
+}
+
 export default {
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,

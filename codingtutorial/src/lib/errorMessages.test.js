@@ -1,6 +1,21 @@
 import { assert } from "chai"
 import { getDiagnostics, clearLintDiagnostics } from "./astlint.js"
-import errorMessages from "./errorMessages.js"
+import {
+  errorMissingParenthesesIfCondition,
+  errorSwitchedCompareSymbol,
+  errorSemicolonAfterIfCondition,
+  errorMissingIfElse,
+  errorConsoleLogNotInBody,
+  errorConsoleLogInBody,
+  errorMissingFunctionKeyword,
+  errorMissingFunctionName,
+  errorLogicalOperator,
+  errorUsageOfMathMax,
+  errorConsoleLogInsteadOfReturn,
+  errorMissingReturn,
+  errorIncorrectNumberOfParams,
+  errorIncorrectNumberOfCallArguments,
+} from "./errorMessages.js"
 
 beforeEach(() => {
   clearLintDiagnostics()
@@ -10,16 +25,21 @@ describe("errorMessages work as expected", () => {
   describe("no misconception should return no errors", () => {
     const misconceptions = []
     it("no error", () => {
-      assert.deepEqual(getDiagnostics(misconceptions, ""), [])
+      const errors = getDiagnostics(misconceptions, "")
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorConsoleLogNotInBody", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorConsoleLogNotInBody,
+        ...errorConsoleLogNotInBody,
         condition: (...args) =>
-          errorMessages.errorConsoleLogNotInBody.condition(...args, "Text"),
+          errorConsoleLogNotInBody.condition(...args, "Text"),
       },
     ]
     it("with error", () => {
@@ -42,12 +62,16 @@ if (2 > 5) {
   }
   console.log("Text")`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorSwitchedCompareSymbol", () => {
-    const misconceptions = [{ ...errorMessages.errorSwitchedCompareSymbol }]
+    const misconceptions = [{ ...errorSwitchedCompareSymbol }]
     it("with error", () => {
       const code = `
 if (3 =< 5) {
@@ -68,12 +92,16 @@ if (3 =< 5) {
   }
   console.log("Text")`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorMissingIfElse", () => {
-    const misconceptions = [{ ...errorMessages.errorMissingIfElse }]
+    const misconceptions = [{ ...errorMissingIfElse }]
     it("with error", () => {
       const code = `
 if (3 < 5) {
@@ -105,14 +133,18 @@ if (3 < 5) {
   console.log("Different Text")
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorSemicolonAfterIfCondition", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorSemicolonAfterIfCondition,
+        ...errorSemicolonAfterIfCondition,
       },
     ]
     it("with error", () => {
@@ -139,14 +171,18 @@ if (3 < 5) {
   console.log("Text");
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorSemicolonAfterIfCondition", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorMissingParenthesesIfCondition,
+        ...errorMissingParenthesesIfCondition,
       },
     ]
     it("with error", () => {
@@ -173,14 +209,18 @@ if (3 < 5) {
   console.log("Text");
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorConsoleLogInBody", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorConsoleLogInBody,
+        ...errorConsoleLogInBody,
       },
     ]
     it("with error", () => {
@@ -204,14 +244,18 @@ if (3 < 5) {
   console.log("Text");
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorMissingFunctionKeyword", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorMissingFunctionKeyword,
+        ...errorMissingFunctionKeyword,
       },
     ]
     it("with error", () => {
@@ -234,14 +278,18 @@ function name () {
   // function implementation
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorMissingFunctionName", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorMissingFunctionName,
+        ...errorMissingFunctionName,
       },
     ]
     it("with error", () => {
@@ -266,14 +314,18 @@ function name () {
   // function implementation
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorLogicalOperator", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorLogicalOperator,
+        ...errorLogicalOperator,
       },
     ]
     it("with error", () => {
@@ -295,14 +347,18 @@ if (true && true) {
   // code
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorUsageOfMathMax", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorUsageOfMathMax,
+        ...errorUsageOfMathMax,
       },
     ]
     it("with error", () => {
@@ -318,16 +374,19 @@ function max() {
   // code
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorMissingReturn", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorMissingReturn,
-        condition: (...args) =>
-          errorMessages.errorMissingReturn.condition(...args, ["name"]),
+        ...errorMissingReturn,
+        condition: (...args) => errorMissingReturn.condition(...args, ["name"]),
       },
     ]
     it("with error", () => {
@@ -351,18 +410,20 @@ function name() {
   return 0;
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorConsoleLogInsteadOfReturn", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorConsoleLogInsteadOfReturn,
+        ...errorConsoleLogInsteadOfReturn,
         condition: (...args) =>
-          errorMessages.errorConsoleLogInsteadOfReturn.condition(...args, [
-            "name",
-          ]),
+          errorConsoleLogInsteadOfReturn.condition(...args, ["name"]),
       },
     ]
     it("with error", () => {
@@ -388,20 +449,20 @@ function name() {
  return 0;
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorIncorrectNumberOfParams", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorIncorrectNumberOfParams,
+        ...errorIncorrectNumberOfParams,
         condition: (...args) =>
-          errorMessages.errorIncorrectNumberOfParams.condition(
-            ...args,
-            "name",
-            1
-          ),
+          errorIncorrectNumberOfParams.condition(...args, "name", 1),
       },
     ]
     it("with error", () => {
@@ -425,20 +486,20 @@ function name(one) {
  console.log("log")
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorIncorrectNumberOfCallArguments", () => {
     const misconceptions = [
       {
-        ...errorMessages.errorIncorrectNumberOfCallArguments,
+        ...errorIncorrectNumberOfCallArguments,
         condition: (...args) =>
-          errorMessages.errorIncorrectNumberOfCallArguments.condition(
-            ...args,
-            "name",
-            1
-          ),
+          errorIncorrectNumberOfCallArguments.condition(...args, "name", 1),
       },
     ]
     it("with error", () => {
@@ -464,7 +525,11 @@ function name(one) {
 }
 name(1)`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 })
