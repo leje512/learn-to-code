@@ -76,7 +76,19 @@
   <p id="console">
     {consoleCode}
   </p>
-  {#if lintError}
+  {#if code && code.trim() === initialcode.trim()}
+    <div id="pop-up" class="praise">
+      <h4>Hallo!</h4>
+      <p id="no-space-wrap">
+        Ich bin dein Tutor. Durch Tipps will ich dir helfen, das Programmieren
+        besser zu verstehen. Drücke auf Wo, um den Codeausschnitt zu markieren,
+        für den der Tipp gedacht ist. Oder drücke auf Weitere Informationen, um
+        dir genauere Infos und Anleitungen zur Umsetzung zu holen. Los geht's!
+      </p>
+      <button disabled>Wo?</button>
+      <button disabled>Mehr Informationen</button>
+    </div>
+  {:else if lintError}
     <div id="pop-up" class={lintError.severity}>
       {#if lintError.severity !== "praise"}
         <h4>Achtung!</h4>
@@ -145,6 +157,9 @@
   #pop-up p {
     white-space: pre-wrap;
     word-wrap: break-word;
+  }
+  #no-space-wrap {
+    white-space: inherit;
   }
   #action {
     grid-area: action;
