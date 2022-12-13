@@ -77,10 +77,16 @@
     {consoleCode}
   </p>
   {#if lintError}
-    <div id="pop-up" class={lintError.severity == "error" ? "error" : "help"}>
-      <h4>Achtung!</h4>
+    <div id="pop-up" class={lintError.severity}>
+      {#if lintError.severity !== "praise"}
+        <h4>Achtung!</h4>
+      {:else}
+        <h4>Weiter so!</h4>
+      {/if}
       <p>{lintError.messages[messageIndex]}</p>
-      <button on:click={showWhere}>Wo?</button>
+      {#if lintError.severity !== "praise"}
+        <button on:click={showWhere}>Wo?</button>
+      {/if}
       {#if messageIndex < lintError.messages.length - 1}
         <button on:click={moreInformation}>Mehr Informationen</button>
       {/if}
@@ -127,8 +133,11 @@
   .error {
     background-color: #f23d3d;
   }
-  .help {
+  .hint {
     background-color: #2678bf;
+  }
+  .praise {
+    background-color: #b7d63a;
   }
   #pop-up h4 {
     margin: 0;
