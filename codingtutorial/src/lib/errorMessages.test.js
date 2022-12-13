@@ -17,14 +17,9 @@ describe("errorMessages work as expected", () => {
   describe("errorConsoleLogNotInBody", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: {
-          ...errorMessages.errorConsoleLogNotInBody,
-          condition: (...args) =>
-            errorMessages.errorConsoleLogNotInBody.condition(...args, "Text"),
-        },
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorConsoleLogNotInBody,
+        condition: (...args) =>
+          errorMessages.errorConsoleLogNotInBody.condition(...args, "Text"),
       },
     ]
     it("with error", () => {
@@ -52,14 +47,7 @@ if (2 > 5) {
   })
 
   describe("errorSwitchedCompareSymbol", () => {
-    const misconceptions = [
-      {
-        type: "node",
-        check: errorMessages.errorSwitchedCompareSymbol,
-        severity: "error",
-        parseErrorCheck: "both",
-      },
-    ]
+    const misconceptions = [{ ...errorMessages.errorSwitchedCompareSymbol }]
     it("with error", () => {
       const code = `
 if (3 =< 5) {
@@ -85,14 +73,7 @@ if (3 =< 5) {
   })
 
   describe("errorMissingIfElse", () => {
-    const misconceptions = [
-      {
-        type: "ast",
-        check: errorMessages.errorMissingIfElse,
-        severity: "hint",
-        parseErrorCheck: "regular",
-      },
-    ]
+    const misconceptions = [{ ...errorMessages.errorMissingIfElse }]
     it("with error", () => {
       const code = `
 if (3 < 5) {
@@ -131,10 +112,7 @@ if (3 < 5) {
   describe("errorSemicolonAfterIfCondition", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorSemicolonAfterIfCondition,
-        severity: "error",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorSemicolonAfterIfCondition,
       },
     ]
     it("with error", () => {
@@ -168,10 +146,7 @@ if (3 < 5) {
   describe("errorSemicolonAfterIfCondition", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorMissingParenthesesIfCondition,
-        severity: "error",
-        parseErrorCheck: "parseError",
+        ...errorMessages.errorMissingParenthesesIfCondition,
       },
     ]
     it("with error", () => {
@@ -205,10 +180,7 @@ if (3 < 5) {
   describe("errorConsoleLogInBody", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorConsoleLogInBody,
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorConsoleLogInBody,
       },
     ]
     it("with error", () => {
@@ -239,10 +211,7 @@ if (3 < 5) {
   describe("errorMissingFunctionKeyword", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorMissingFunctionKeyword,
-        severity: "error",
-        parseErrorCheck: "parseError",
+        ...errorMessages.errorMissingFunctionKeyword,
       },
     ]
     it("with error", () => {
@@ -272,10 +241,7 @@ function name () {
   describe("errorMissingFunctionName", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorMissingFunctionName,
-        severity: "error",
-        parseErrorCheck: "parseError",
+        ...errorMessages.errorMissingFunctionName,
       },
     ]
     it("with error", () => {
@@ -307,10 +273,7 @@ function name () {
   describe("errorLogicalOperator", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorLogicalOperator,
-        severity: "error",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorLogicalOperator,
       },
     ]
     it("with error", () => {
@@ -339,10 +302,7 @@ if (true && true) {
   describe("errorUsageOfMathMax", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorUsageOfMathMax,
-        severity: "error",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorUsageOfMathMax,
       },
     ]
     it("with error", () => {
@@ -365,14 +325,9 @@ function max() {
   describe("errorMissingReturn", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: {
-          ...errorMessages.errorMissingReturn,
-          condition: (...args) =>
-            errorMessages.errorMissingReturn.condition(...args, ["name"]),
-        },
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorMissingReturn,
+        condition: (...args) =>
+          errorMessages.errorMissingReturn.condition(...args, ["name"]),
       },
     ]
     it("with error", () => {
@@ -403,16 +358,11 @@ function name() {
   describe("errorConsoleLogInsteadOfReturn", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: {
-          ...errorMessages.errorConsoleLogInsteadOfReturn,
-          condition: (...args) =>
-            errorMessages.errorConsoleLogInsteadOfReturn.condition(...args, [
-              "name",
-            ]),
-        },
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorConsoleLogInsteadOfReturn,
+        condition: (...args) =>
+          errorMessages.errorConsoleLogInsteadOfReturn.condition(...args, [
+            "name",
+          ]),
       },
     ]
     it("with error", () => {
@@ -445,18 +395,13 @@ function name() {
   describe("errorIncorrectNumberOfParams", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: {
-          ...errorMessages.errorIncorrectNumberOfParams,
-          condition: (...args) =>
-            errorMessages.errorIncorrectNumberOfParams.condition(
-              ...args,
-              "name",
-              1
-            ),
-        },
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorIncorrectNumberOfParams,
+        condition: (...args) =>
+          errorMessages.errorIncorrectNumberOfParams.condition(
+            ...args,
+            "name",
+            1
+          ),
       },
     ]
     it("with error", () => {
@@ -487,18 +432,13 @@ function name(one) {
   describe("errorIncorrectNumberOfCallArguments", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: {
-          ...errorMessages.errorIncorrectNumberOfCallArguments,
-          condition: (...args) =>
-            errorMessages.errorIncorrectNumberOfCallArguments.condition(
-              ...args,
-              "name",
-              1
-            ),
-        },
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorIncorrectNumberOfCallArguments,
+        condition: (...args) =>
+          errorMessages.errorIncorrectNumberOfCallArguments.condition(
+            ...args,
+            "name",
+            1
+          ),
       },
     ]
     it("with error", () => {

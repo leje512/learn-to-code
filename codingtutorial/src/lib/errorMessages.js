@@ -40,6 +40,9 @@ const isFunctionCall = (node) => {
 
 // console.log("Auf Wiedersehen"); is not a child of script
 const errorConsoleLogNotInBody = {
+  type: "node",
+  severity: "hint",
+  parseErrorCheck: "regular",
   condition: (node, parent, text) => {
     return (
       isConsoleLog(node) &&
@@ -55,6 +58,9 @@ const errorConsoleLogNotInBody = {
 }
 
 const errorSwitchedCompareSymbol = {
+  type: "node",
+  severity: "error",
+  parseErrorCheck: "both",
   condition: (node, parent) => {
     return (
       isIfStatement(node) &&
@@ -70,6 +76,9 @@ const errorSwitchedCompareSymbol = {
 }
 
 const errorMissingIfElse = {
+  type: "ast",
+  severity: "hint",
+  parseErrorCheck: "regular",
   condition: (node, parent) => {
     return node.type && isIfStatement(node) && isElseOrElseIfStatement(node)
   },
@@ -91,6 +100,9 @@ const errorMissingIfElse = {
 }
 
 const errorSemicolonAfterIfCondition = {
+  type: "node",
+  severity: "error",
+  parseErrorCheck: "regular",
   condition: (node, parent) => {
     return (
       isIfStatement(node) &&
@@ -111,6 +123,9 @@ const errorSemicolonAfterIfCondition = {
 }
 
 const errorMissingParenthesesIfCondition = {
+  type: "node",
+  severity: "error",
+  parseErrorCheck: "parseError",
   condition: (node, parent, code) => {
     // unexpected token, after if in same row
     const lineNumber = getLineOfCodeByStart(code, node.start)
@@ -133,6 +148,9 @@ const errorMissingParenthesesIfCondition = {
 }
 
 const errorConsoleLogInBody = {
+  type: "node",
+  severity: "hint",
+  parseErrorCheck: "regular",
   condition: (node, parent) => {
     return isConsoleLog(node) && parent.type == "Program"
   },
@@ -145,6 +163,9 @@ Code der weder in if noch in else enthalten ist, wird immer ausgeführt.`,
 }
 
 const errorMissingFunctionKeyword = {
+  type: "node",
+  severity: "error",
+  parseErrorCheck: "parseError",
   condition: (node, parent, code, next) => {
     const lineNumber = getLineOfCodeByStart(code, node.start)
     const currentLine = getLineOfCodeByLineNumber(code, lineNumber)
@@ -164,6 +185,9 @@ function name() { }`,
 }
 
 const errorMissingFunctionName = {
+  type: "node",
+  severity: "error",
+  parseErrorCheck: "parseError",
   condition: (node, parent) => {
     return (
       isFunctionDeclaration(node) &&
@@ -182,6 +206,9 @@ const errorMissingFunctionName = {
 }
 
 const errorLogicalOperator = {
+  type: "node",
+  severity: "error",
+  parseErrorCheck: "regular",
   condition: (node, parent) => {
     return (
       isIfStatement(node) &&
@@ -197,6 +224,9 @@ const errorLogicalOperator = {
 }
 
 const errorUsageOfMathMax = {
+  type: "node",
+  severity: "error",
+  parseErrorCheck: "regular",
   condition: (node, parent) => {
     return (
       isFunctionCall(node) &&
@@ -211,6 +241,9 @@ const errorUsageOfMathMax = {
 }
 
 const errorMissingReturn = {
+  type: "node",
+  severity: "hint",
+  parseErrorCheck: "regular",
   condition: (node, parent, functionNames) => {
     const returnChildren = walk.findNodeAfter(
       node,
@@ -234,6 +267,9 @@ Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
 }
 
 const errorConsoleLogInsteadOfReturn = {
+  type: "node",
+  severity: "hint",
+  parseErrorCheck: "regular",
   condition: (node, parent, functionNames) => {
     const consoleLogChildren = walk.findNodeAfter(node, 0, (nodeType, node) =>
       isConsoleLog(node)
@@ -262,6 +298,9 @@ Ersetze x mit deinem Variablennamen oder dem richtigen Wert.`,
 }
 
 const errorIncorrectNumberOfParams = {
+  type: "node",
+  severity: "hint",
+  parseErrorCheck: "regular",
   condition: (node, parent, functionName, length) => {
     return (
       isFunctionDeclaration(node) &&
@@ -279,6 +318,9 @@ a und b sind Parameter, hier zwei Stück. Überprüfe die Parameterzahl bei dein
 }
 
 const errorIncorrectNumberOfCallArguments = {
+  type: "node",
+  severity: "hint",
+  parseErrorCheck: "regular",
   condition: (node, parent, functionName, length) => {
     return (
       isFunctionCall(node) &&

@@ -41,28 +41,16 @@ console.log("Auf Wiedersehen.");`,
     // misconceptions are to be ranked by priority -> from general to specific
     misconceptions: [
       {
-        type: "node",
-        check: errorMessages.errorMissingParenthesesIfCondition,
-        severity: "error",
-        parseErrorCheck: "parseError",
+        ...errorMessages.errorMissingParenthesesIfCondition,
       },
       {
-        type: "node",
-        check: errorMessages.errorSwitchedCompareSymbol,
-        severity: "error",
-        parseErrorCheck: "both",
+        ...errorMessages.errorSwitchedCompareSymbol,
       },
       {
-        type: "node",
-        check: errorMessages.errorSemicolonAfterIfCondition,
-        severity: "error",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorSemicolonAfterIfCondition,
       },
       {
-        type: "ast",
-        check: errorMessages.errorMissingIfElse,
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorMissingIfElse,
         exerciseSpecificMessage: `Ergänze folgende Syntax um den richtigen Code:
 if (punkte mindestens 5) {
   // drucke "Bestanden"
@@ -71,17 +59,12 @@ if (punkte mindestens 5) {
 }`,
       },
       {
-        type: "node",
-        check: {
-          ...errorMessages.errorConsoleLogNotInBody,
-          condition: (...args) =>
-            errorMessages.errorConsoleLogNotInBody.condition(
-              ...args,
-              "Auf Wiedersehen"
-            ),
-        },
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorConsoleLogNotInBody,
+        condition: (...args) =>
+          errorMessages.errorConsoleLogNotInBody.condition(
+            ...args,
+            "Auf Wiedersehen"
+          ),
         exerciseSpecificMessage:
           "console.log('Auf Wiedersehen'); sollte nicht in if-else enthalten sein. Stattdessen wird diese danach ausgeführt.",
       },
@@ -153,28 +136,16 @@ console.log("Durchgefallen");`,
     // misconceptions are to be ranked by priority -> from general to specific
     misconceptions: [
       {
-        type: "node",
-        check: errorMessages.errorMissingParenthesesIfCondition,
-        severity: "error",
-        parseErrorCheck: "parseError",
+        ...errorMessages.errorMissingParenthesesIfCondition,
       },
       {
-        type: "node",
-        check: errorMessages.errorSwitchedCompareSymbol,
-        severity: "error",
-        parseErrorCheck: "both",
+        ...errorMessages.errorSwitchedCompareSymbol,
       },
       {
-        type: "node",
-        check: errorMessages.errorSemicolonAfterIfCondition,
-        severity: "error",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorSemicolonAfterIfCondition,
       },
       {
-        type: "ast",
-        check: errorMessages.errorMissingIfElse,
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorMissingIfElse,
         exerciseSpecificMessage: `Ergänze folgende Syntax um den richtigen Code und erweitere um weitere else if Bedingungen:
 if (punkte <= 10) {
   // drucke Durchgefallen
@@ -183,10 +154,7 @@ if (punkte <= 10) {
 }`,
       },
       {
-        type: "node",
-        check: errorMessages.errorConsoleLogInBody,
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorConsoleLogInBody,
         exerciseSpecificMessage:
           "Achte darauf, dass bei dieser Aufgabe kein console.log außerhalb von if oder else steht, da dieser sonst immer ausgeführt wird. Hier soll aber nur ein bestimmter Text für jeden Fall angezeigt werden.",
       },
@@ -256,16 +224,10 @@ max2(10, 5);`,
     // misconceptions are to be ranked by priority -> from general to specific
     misconceptions: [
       {
-        type: "node",
-        check: errorMessages.errorMissingFunctionKeyword,
-        severity: "error",
-        parseErrorCheck: "parseError",
+        ...errorMessages.errorMissingFunctionKeyword,
       },
       {
-        type: "node",
-        check: errorMessages.errorMissingFunctionName,
-        severity: "error",
-        parseErrorCheck: "parseError",
+        ...errorMessages.errorMissingFunctionName,
         exerciseSpecificMessage: `Zwischen dem Keyword function und den Funktionsparametern, also dem Teil in normalen Klammern, sollte der Name stehen.
 function name() {
   // code 
@@ -273,38 +235,22 @@ function name() {
 In dieser Aufgabe ist die Benennung entweder max2 oder max3.`,
       },
       {
-        type: "node",
-        check: errorMessages.errorLogicalOperator,
-        severity: "error",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorLogicalOperator,
       },
       {
-        type: "node",
-        check: errorMessages.errorUsageOfMathMax,
-        severity: "error",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorUsageOfMathMax,
       },
       {
-        type: "node",
-        check: errorMessages.errorMissingParenthesesIfCondition,
-        severity: "error",
-        parseErrorCheck: "parseError",
+        ...errorMessages.errorMissingParenthesesIfCondition,
       },
       {
-        type: "node",
-        check: errorMessages.errorSwitchedCompareSymbol,
-        severity: "error",
-        parseErrorCheck: "both",
+        ...errorMessages.errorSwitchedCompareSymbol,
       },
       {
-        type: "node",
-        check: errorMessages.errorSemicolonAfterIfCondition,
-        severity: "error",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorSemicolonAfterIfCondition,
       },
       {
-        type: "node",
-        check: {
+        ...{
           ...errorMessages.errorConsoleLogInsteadOfReturn,
           condition: (...args) =>
             errorMessages.errorConsoleLogInsteadOfReturn.condition(...args, [
@@ -312,12 +258,9 @@ In dieser Aufgabe ist die Benennung entweder max2 oder max3.`,
               "max3",
             ]),
         },
-        severity: "hint",
-        parseErrorCheck: "regular",
       },
       {
-        type: "node",
-        check: {
+        ...{
           ...errorMessages.errorMissingReturn,
           condition: (...args) =>
             errorMessages.errorMissingReturn.condition(...args, [
@@ -325,14 +268,9 @@ In dieser Aufgabe ist die Benennung entweder max2 oder max3.`,
               "max3",
             ]),
         },
-        severity: "hint",
-        parseErrorCheck: "regular",
       },
       {
-        type: "ast",
-        check: errorMessages.errorMissingIfElse,
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMessages.errorMissingIfElse,
         exerciseSpecificMessage: `Ergänze folgende Syntax um den richtigen Code und erweitere um weitere Bedingungen:
 if (a > b) {
   // gebe den größeren Wert zurück
@@ -341,8 +279,7 @@ if (a > b) {
 }`,
       },
       {
-        type: "node",
-        check: {
+        ...{
           ...errorMessages.errorIncorrectNumberOfParams,
           condition: (...args) =>
             errorMessages.errorIncorrectNumberOfParams.condition(
@@ -351,15 +288,12 @@ if (a > b) {
               2
             ),
         },
-        severity: "hint",
-        parseErrorCheck: "regular",
         exerciseSpecificMessage: `Die Funktion max2 sollte zwei Parameter bekommen. So sollte der Funktionskopf von max2 aussehen:
 function max2(a, b)
 Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Bezeichnungen als a und b wählen.`,
       },
       {
-        type: "node",
-        check: {
+        ...{
           ...errorMessages.errorIncorrectNumberOfParams,
           condition: (...args) =>
             errorMessages.errorIncorrectNumberOfParams.condition(
@@ -368,15 +302,12 @@ Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Beze
               3
             ),
         },
-        severity: "hint",
-        parseErrorCheck: "regular",
         exerciseSpecificMessage: `Die Funktion max3 sollte drei Parameter bekommen. So sollte der Funktionskopf von max3 aussehen:
 function max3(a, b, c)
 Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Bezeichnungen als a, b und c wählen.`,
       },
       {
-        type: "node",
-        check: {
+        ...{
           ...errorMessages.errorIncorrectNumberOfCallArguments,
           condition: (...args) =>
             errorMessages.errorIncorrectNumberOfCallArguments.condition(
@@ -385,14 +316,11 @@ Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Beze
               2
             ),
         },
-        severity: "hint",
-        parseErrorCheck: "regular",
         exerciseSpecificMessage:
           "Für die Funktion function max2(a, b) {} sollte der Funktionsaufruf so aussehen: max2(1, 2). 1 und 2 sind dabei die Werte für die Parameter a und b eingesetzt werden. Die Anzahl der übergebenen Parameter muss dabei mit der Funktionsinitialisierung übereinstimmen, hier also genau zwei.",
       },
       {
-        type: "node",
-        check: {
+        ...{
           ...errorMessages.errorIncorrectNumberOfCallArguments,
           condition: (...args) =>
             errorMessages.errorIncorrectNumberOfCallArguments.condition(
@@ -401,8 +329,6 @@ Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Beze
               3
             ),
         },
-        severity: "hint",
-        parseErrorCheck: "regular",
         exerciseSpecificMessage:
           "Für die Funktion function max3(a, b, c) {} sollte der Funktionsaufruf so aussehen: max3(1, 2, 3). 1, 2 und 3 sind dabei die Werte für die Parameter a, b und c eingesetzt werden. Die Anzahl der übergebenen Parameter muss dabei mit der Funktionsinitialisierung übereinstimmen, hier also genau drei.",
       },
