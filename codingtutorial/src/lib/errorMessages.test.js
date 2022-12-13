@@ -1,6 +1,21 @@
 import { assert } from "chai"
 import { getDiagnostics, clearLintDiagnostics } from "./astlint.js"
-import errorMessages from "./errorMessages.js"
+import {
+  errorMissingParenthesesIfCondition,
+  errorSwitchedCompareSymbol,
+  errorSemicolonAfterIfCondition,
+  errorMissingIfElse,
+  errorConsoleLogNotInBody,
+  errorConsoleLogInBody,
+  errorMissingFunctionKeyword,
+  errorMissingFunctionName,
+  errorLogicalOperator,
+  errorUsageOfMathMax,
+  errorConsoleLogInsteadOfReturn,
+  errorMissingReturn,
+  errorIncorrectNumberOfParams,
+  errorIncorrectNumberOfCallArguments,
+} from "./errorMessages.js"
 
 beforeEach(() => {
   clearLintDiagnostics()
@@ -10,21 +25,21 @@ describe("errorMessages work as expected", () => {
   describe("no misconception should return no errors", () => {
     const misconceptions = []
     it("no error", () => {
-      assert.deepEqual(getDiagnostics(misconceptions, ""), [])
+      const errors = getDiagnostics(misconceptions, "")
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorConsoleLogNotInBody", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: {
-          ...errorMessages.errorConsoleLogNotInBody,
-          condition: (...args) =>
-            errorMessages.errorConsoleLogNotInBody.condition(...args, "Text"),
-        },
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorConsoleLogNotInBody,
+        condition: (...args) =>
+          errorConsoleLogNotInBody.condition(...args, "Text"),
       },
     ]
     it("with error", () => {
@@ -47,19 +62,16 @@ if (2 > 5) {
   }
   console.log("Text")`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorSwitchedCompareSymbol", () => {
-    const misconceptions = [
-      {
-        type: "node",
-        check: errorMessages.errorSwitchedCompareSymbol,
-        severity: "error",
-        parseErrorCheck: "both",
-      },
-    ]
+    const misconceptions = [{ ...errorSwitchedCompareSymbol }]
     it("with error", () => {
       const code = `
 if (3 =< 5) {
@@ -80,19 +92,16 @@ if (3 =< 5) {
   }
   console.log("Text")`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorMissingIfElse", () => {
-    const misconceptions = [
-      {
-        type: "ast",
-        check: errorMessages.errorMissingIfElse,
-        severity: "hint",
-        parseErrorCheck: "regular",
-      },
-    ]
+    const misconceptions = [{ ...errorMissingIfElse }]
     it("with error", () => {
       const code = `
 if (3 < 5) {
@@ -124,17 +133,18 @@ if (3 < 5) {
   console.log("Different Text")
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorSemicolonAfterIfCondition", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorSemicolonAfterIfCondition,
-        severity: "error",
-        parseErrorCheck: "regular",
+        ...errorSemicolonAfterIfCondition,
       },
     ]
     it("with error", () => {
@@ -161,17 +171,18 @@ if (3 < 5) {
   console.log("Text");
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorSemicolonAfterIfCondition", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorMissingParenthesesIfCondition,
-        severity: "error",
-        parseErrorCheck: "parseError",
+        ...errorMissingParenthesesIfCondition,
       },
     ]
     it("with error", () => {
@@ -198,17 +209,18 @@ if (3 < 5) {
   console.log("Text");
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorConsoleLogInBody", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorConsoleLogInBody,
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorConsoleLogInBody,
       },
     ]
     it("with error", () => {
@@ -232,17 +244,18 @@ if (3 < 5) {
   console.log("Text");
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorMissingFunctionKeyword", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorMissingFunctionKeyword,
-        severity: "error",
-        parseErrorCheck: "parseError",
+        ...errorMissingFunctionKeyword,
       },
     ]
     it("with error", () => {
@@ -265,17 +278,18 @@ function name () {
   // function implementation
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorMissingFunctionName", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorMissingFunctionName,
-        severity: "error",
-        parseErrorCheck: "parseError",
+        ...errorMissingFunctionName,
       },
     ]
     it("with error", () => {
@@ -300,17 +314,18 @@ function name () {
   // function implementation
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorLogicalOperator", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorLogicalOperator,
-        severity: "error",
-        parseErrorCheck: "regular",
+        ...errorLogicalOperator,
       },
     ]
     it("with error", () => {
@@ -332,17 +347,18 @@ if (true && true) {
   // code
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorUsageOfMathMax", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: errorMessages.errorUsageOfMathMax,
-        severity: "error",
-        parseErrorCheck: "regular",
+        ...errorUsageOfMathMax,
       },
     ]
     it("with error", () => {
@@ -358,21 +374,19 @@ function max() {
   // code
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorMissingReturn", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: {
-          ...errorMessages.errorMissingReturn,
-          condition: (...args) =>
-            errorMessages.errorMissingReturn.condition(...args, ["name"]),
-        },
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorMissingReturn,
+        condition: (...args) => errorMissingReturn.condition(...args, ["name"]),
       },
     ]
     it("with error", () => {
@@ -396,23 +410,20 @@ function name() {
   return 0;
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorConsoleLogInsteadOfReturn", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: {
-          ...errorMessages.errorConsoleLogInsteadOfReturn,
-          condition: (...args) =>
-            errorMessages.errorConsoleLogInsteadOfReturn.condition(...args, [
-              "name",
-            ]),
-        },
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorConsoleLogInsteadOfReturn,
+        condition: (...args) =>
+          errorConsoleLogInsteadOfReturn.condition(...args, ["name"]),
       },
     ]
     it("with error", () => {
@@ -438,25 +449,20 @@ function name() {
  return 0;
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorIncorrectNumberOfParams", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: {
-          ...errorMessages.errorIncorrectNumberOfParams,
-          condition: (...args) =>
-            errorMessages.errorIncorrectNumberOfParams.condition(
-              ...args,
-              "name",
-              1
-            ),
-        },
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorIncorrectNumberOfParams,
+        condition: (...args) =>
+          errorIncorrectNumberOfParams.condition(...args, "name", 1),
       },
     ]
     it("with error", () => {
@@ -480,25 +486,20 @@ function name(one) {
  console.log("log")
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 
   describe("errorIncorrectNumberOfCallArguments", () => {
     const misconceptions = [
       {
-        type: "node",
-        check: {
-          ...errorMessages.errorIncorrectNumberOfCallArguments,
-          condition: (...args) =>
-            errorMessages.errorIncorrectNumberOfCallArguments.condition(
-              ...args,
-              "name",
-              1
-            ),
-        },
-        severity: "hint",
-        parseErrorCheck: "regular",
+        ...errorIncorrectNumberOfCallArguments,
+        condition: (...args) =>
+          errorIncorrectNumberOfCallArguments.condition(...args, "name", 1),
       },
     ]
     it("with error", () => {
@@ -524,7 +525,11 @@ function name(one) {
 }
 name(1)`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 0)
+      assert.lengthOf(errors, 1)
+      assert.equal(errors[0].severity, "praise")
+      assert.deepEqual(errors[0].messages, [
+        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+      ])
     })
   })
 })

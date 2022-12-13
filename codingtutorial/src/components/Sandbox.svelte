@@ -76,11 +76,29 @@
   <p id="console">
     {consoleCode}
   </p>
-  {#if lintError}
-    <div id="pop-up" class={lintError.severity == "error" ? "error" : "help"}>
-      <h4>Achtung!</h4>
+  {#if code && code.trim() === initialcode.trim()}
+    <div id="pop-up" class="praise">
+      <h4>Hallo!</h4>
+      <p id="no-space-wrap">
+        Ich bin dein Tutor. Durch Tipps will ich dir helfen, das Programmieren
+        besser zu verstehen. Drücke auf Wo, um den Codeausschnitt zu markieren,
+        für den der Tipp gedacht ist. Oder drücke auf Weitere Informationen, um
+        dir genauere Infos und Anleitungen zur Umsetzung zu holen. Los geht's!
+      </p>
+      <button disabled>Wo?</button>
+      <button disabled>Mehr Informationen</button>
+    </div>
+  {:else if lintError}
+    <div id="pop-up" class={lintError.severity}>
+      {#if lintError.severity !== "praise"}
+        <h4>Achtung!</h4>
+      {:else}
+        <h4>Weiter so!</h4>
+      {/if}
       <p>{lintError.messages[messageIndex]}</p>
-      <button on:click={showWhere}>Wo?</button>
+      {#if lintError.severity !== "praise"}
+        <button on:click={showWhere}>Wo?</button>
+      {/if}
       {#if messageIndex < lintError.messages.length - 1}
         <button on:click={moreInformation}>Mehr Informationen</button>
       {/if}
@@ -127,8 +145,11 @@
   .error {
     background-color: #f23d3d;
   }
-  .help {
+  .hint {
     background-color: #2678bf;
+  }
+  .praise {
+    background-color: #b7d63a;
   }
   #pop-up h4 {
     margin: 0;
@@ -136,6 +157,9 @@
   #pop-up p {
     white-space: pre-wrap;
     word-wrap: break-word;
+  }
+  #no-space-wrap {
+    white-space: inherit;
   }
   #action {
     grid-area: action;
