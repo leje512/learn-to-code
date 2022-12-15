@@ -22,10 +22,10 @@
 
 <main>
   <div class="exercise-action">
-    <button disabled={count <= 0} on:click={decreaseCount}>back</button>
+    <!--button disabled={count <= 0} on:click={decreaseCount}>back</button>
     <button disabled={count >= exercises.length - 1} on:click={incrementCount}
       >next</button
-    >
+    -->
   </div>
   <div id="task">
     {@html exercises[count].task}
@@ -35,6 +35,7 @@
     initialcode={exercises[count].initialcode}
     testCases={exercises[count].testCases}
     misconceptions={exercises[count].misconceptions}
+    on:next={incrementCount}
   />
 </main>
 

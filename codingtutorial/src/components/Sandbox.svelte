@@ -3,6 +3,9 @@
   import { runUnitTest } from "../lib/tests"
   import { getDiagnostics } from "../lib/astlint"
   import { isEqual } from "lodash"
+  import { createEventDispatcher } from "svelte"
+
+  const dispatch = createEventDispatcher()
 
   export let title
   export let initialcode
@@ -15,6 +18,7 @@
   let previousLintError
   let messageIndex = 0
   let showErrorMessage = false
+  let testPassed = false
 
   // TODO: weitere Erklärungen -> erkläre zusätzliche Prinzipien wie if-Bedingung etc.
 
@@ -28,10 +32,6 @@
       showErrorMessage = false
       messageIndex = 0
     }
-  }
-
-  function logCode() {
-    console.log(code)
   }
 
   function run() {
@@ -49,8 +49,13 @@
   }
 
   function test() {
-    let correct = runUnitTest(title, code, testCases)
-    document.body.style.background = correct ? "green" : "red"
+    testPassed = runUnitTest(title, code, testCases)
+  }
+
+  function next() {
+    if (testPassed) {
+      dispatch("next")
+    }
   }
 
   function showWhere() {
@@ -105,9 +110,9 @@
     </div>
   {/if}
   <div id="action">
-    <button on:click={logCode}>log code</button>
-    <button on:click={run}>run code</button>
-    <button on:click={test}>test</button>
+    <button on:click={run}>Run</button>
+    <button on:click={test}>Test</button>
+    <button disabled={!testPassed} on:click={next}>Nächste Aufgabe</button>
   </div>
 </div>
 
