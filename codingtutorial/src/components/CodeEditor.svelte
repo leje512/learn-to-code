@@ -28,11 +28,13 @@
       /* lintGutter(),
       linter(astlint), */
       EditorView.updateListener.of((update) => {
-        dispatch("edited", {
-          text: update.state.doc.toString(),
-        })
-        clearHighlighting(view)
-        clearLintDiagnostics()
+        if (update.docChanged) {
+          dispatch("edited", {
+            text: update.state.doc.toString(),
+          })
+          clearHighlighting(view)
+          clearLintDiagnostics()
+        }
       }),
       highlightExtension,
     ],
