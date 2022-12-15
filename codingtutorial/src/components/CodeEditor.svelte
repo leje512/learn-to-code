@@ -14,8 +14,8 @@
   export let showErrorMessage = false
 
   let previousError
-
   let view
+  let cleared = true
 
   const addHighlight = StateEffect.define({
     map: ({ from, to }, change) => ({
@@ -33,31 +33,26 @@
     create() {
       return Decoration.none
     },
-    update(value, transaction) {
-      console.log("before map")
-      value = value.map(transaction.changes)
-      console.log("transaction", transaction)
+    update(decorations, transaction) {
+      decorations = decorations.map(transaction.changes)
       for (let effect of transaction.effects) {
-        if (effect.is(addHighlight)) {
-          console.log("add")
-          try {
-            value = value.update({
-              add: [highlightDecoration.range(effect.value)],
-            })
-          } catch (error) {}
-        } else if (effect.is(removeHighlight)) {
-          console.log("remove")
-          try {
-            value = value.update({
-              filter: (f, t, value) => value.range !== undefined,
-            })
-          } catch (error) {}
-        }
         try {
-          value = value.update({ add: effect.value, sort: true })
-        } catch (error) {}
+          if (effect.is(addHighlight)) {
+            decorations = decorations.update({
+              add: [
+                highlightDecoration.range(effect.value.from, effect.value.to),
+              ],
+            })
+          } else if (effect.is(removeHighlight)) {
+            decorations = decorations.update({
+              filter: (f, t, value) => false,
+            })
+          }
+        } catch (e) {
+          console.log("error in extension", e)
+        }
       }
-      return value
+      return decorations
     },
     provide: (f) => EditorView.decorations.from(f),
   })
@@ -65,8 +60,6 @@
   const highlightDecoration = Decoration.mark({
     attributes: { style: "background-color: #e67373" },
   })
-  const noDecoration = Decoration.none
-  const theme = EditorView.baseTheme({})
 
   let state = EditorState.create({
     doc: initialcode,
@@ -79,7 +72,7 @@
         dispatch("edited", {
           text: update.state.doc.toString(),
         })
-        clearHighlights()
+        clearHighlighting()
         clearLintDiagnostics()
       }),
       highlightExtension,
@@ -111,13 +104,7 @@
       ((error && !previousError) ||
         (error && previousError && !isEqual(error, previousError)))
     ) {
-      let effects = []
-      effects.push(StateEffect.appendConfig.of([highlightExtension, theme]))
-      view.dispatch({
-        effects: StateEffect.define({
-          map: ({ from, to }) => addHighlight.of({ from, to }),
-        }).of([highlightDecoration.range(error.from, error.to)]),
-      })
+      addHighlighting(error.from, error.to)
       previousError = error
     }
   }
@@ -129,30 +116,20 @@
     })
   })
 
-  /* function clearHighlights(length) {
-    if (view) {
-      let effects = []
-      effects.push(StateEffect.appendConfig.of([highlightExtension, theme]))
-      view.dispatch({
-        effects: StateEffect.define({
-          map: ({ from, to }) => removeHighlight.of({ from, to }),
-        }),
-      })
-      console.log("clear hightlights", length)
-    }
-  } */
+  function addHighlighting(start, end) {
+    view.dispatch({
+      effects: addHighlight.of({ from: start, to: end }),
+    })
+    cleared = false
+  }
 
-  function clearHighlights(length) {
-    console.log("clear")
-    if (view) {
-      let effects = []
-      view
-        .dispatch({
-          effects: StateEffect.define({
-            map: () => removeHighlight.of({ from: 0, to: length }),
-          }),
-        })
-        .of([highlightDecoration.range(error.from, error.to)])
+  function clearHighlighting() {
+    console.log("cleared", cleared)
+    if (view && !cleared) {
+      cleared = true
+      view.dispatch({
+        effects: removeHighlight.of({ from: 0, to: view.state.doc.length }),
+      })
     }
   }
 </script>
