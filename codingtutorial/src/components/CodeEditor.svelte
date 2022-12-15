@@ -3,9 +3,13 @@
   import { EditorView, basicSetup } from "codemirror"
   import { javascript } from "@codemirror/lang-javascript"
   // import { linter, lintGutter } from "@codemirror/lint"
-  import { EditorState, StateField, StateEffect } from "@codemirror/state"
-  import { Decoration } from "@codemirror/view"
+  import { EditorState } from "@codemirror/state"
   import { clearLintDiagnostics } from "../lib/astlint"
+  import {
+    highlightExtension,
+    addHighlighting,
+    clearHighlighting,
+  } from "../lib/editorExtension"
   import { isEqual } from "lodash"
 
   const dispatch = createEventDispatcher()
@@ -15,51 +19,6 @@
 
   let previousError
   let view
-  let cleared = true
-
-  const addHighlight = StateEffect.define({
-    map: ({ from, to }, change) => ({
-      from: change.mapPos(from),
-      to: change.mapPos(to),
-    }),
-  })
-  const removeHighlight = StateEffect.define({
-    map: ({ from, to }, change) => ({
-      from: change.mapPos(from),
-      to: change.mapPos(to),
-    }),
-  })
-  const highlightExtension = StateField.define({
-    create() {
-      return Decoration.none
-    },
-    update(decorations, transaction) {
-      decorations = decorations.map(transaction.changes)
-      for (let effect of transaction.effects) {
-        try {
-          if (effect.is(addHighlight)) {
-            decorations = decorations.update({
-              add: [
-                highlightDecoration.range(effect.value.from, effect.value.to),
-              ],
-            })
-          } else if (effect.is(removeHighlight)) {
-            decorations = decorations.update({
-              filter: (f, t, value) => false,
-            })
-          }
-        } catch (e) {
-          console.log("error in extension", e)
-        }
-      }
-      return decorations
-    },
-    provide: (f) => EditorView.decorations.from(f),
-  })
-
-  const highlightDecoration = Decoration.mark({
-    attributes: { style: "background-color: #e67373" },
-  })
 
   let state = EditorState.create({
     doc: initialcode,
@@ -72,7 +31,7 @@
         dispatch("edited", {
           text: update.state.doc.toString(),
         })
-        clearHighlighting()
+        clearHighlighting(view)
         clearLintDiagnostics()
       }),
       highlightExtension,
@@ -104,7 +63,7 @@
       ((error && !previousError) ||
         (error && previousError && !isEqual(error, previousError)))
     ) {
-      addHighlighting(error.from, error.to)
+      addHighlighting(view, error.from, error.to)
       previousError = error
     }
   }
@@ -115,23 +74,6 @@
       parent: document.getElementById("codeeditor"),
     })
   })
-
-  function addHighlighting(start, end) {
-    view.dispatch({
-      effects: addHighlight.of({ from: start, to: end }),
-    })
-    cleared = false
-  }
-
-  function clearHighlighting() {
-    console.log("cleared", cleared)
-    if (view && !cleared) {
-      cleared = true
-      view.dispatch({
-        effects: removeHighlight.of({ from: 0, to: view.state.doc.length }),
-      })
-    }
-  }
 </script>
 
 <div id="codeeditor" />
