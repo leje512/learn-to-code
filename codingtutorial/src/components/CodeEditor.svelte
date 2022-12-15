@@ -3,9 +3,13 @@
   import { EditorView, basicSetup } from "codemirror"
   import { javascript } from "@codemirror/lang-javascript"
   // import { linter, lintGutter } from "@codemirror/lint"
-  import { EditorState, StateField, StateEffect } from "@codemirror/state"
-  import { Decoration } from "@codemirror/view"
+  import { EditorState } from "@codemirror/state"
   import { clearLintDiagnostics } from "../lib/astlint"
+  import {
+    highlightExtension,
+    addHighlighting,
+    clearHighlighting,
+  } from "../lib/editorExtension"
   import { isEqual } from "lodash"
 
   const dispatch = createEventDispatcher()
@@ -14,28 +18,7 @@
   export let showErrorMessage = false
 
   let previousError
-
   let view
-  const highlightExtension = StateField.define({
-    create() {
-      return Decoration.none
-    },
-    update(value, transaction) {
-      value = value.map(transaction.changes)
-
-      for (let effect of transaction.effects) {
-        try {
-          value = value.update({ add: effect.value, sort: true })
-        } catch (error) {}
-      }
-      return value
-    },
-    provide: (f) => EditorView.decorations.from(f),
-  })
-
-  const highlightDecoration = Decoration.mark({
-    attributes: { style: "background-color: red" },
-  })
 
   let state = EditorState.create({
     doc: initialcode,
@@ -48,6 +31,7 @@
         dispatch("edited", {
           text: update.state.doc.toString(),
         })
+        clearHighlighting(view)
         clearLintDiagnostics()
       }),
       highlightExtension,
@@ -55,6 +39,7 @@
   })
 
   $: {
+    // watch initialcode
     if (view !== undefined) {
       const linebreakLength = initialcode.match(/\n/g)
         ? initialcode.match(/\n/g).length
@@ -71,16 +56,14 @@
   }
 
   $: {
+    // watch showErrorMessage and error
     if (
+      view &&
       showErrorMessage &&
       ((error && !previousError) ||
         (error && previousError && !isEqual(error, previousError)))
     ) {
-      view.dispatch({
-        effects: StateEffect.define({
-          map: ({ from, to }) => ({ from, to }),
-        }).of([highlightDecoration.range(error.from, error.to)]),
-      })
+      addHighlighting(view, error.from, error.to)
       previousError = error
     }
   }
