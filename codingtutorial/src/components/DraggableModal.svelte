@@ -1,8 +1,38 @@
 <script>
   import { createEventDispatcher } from "svelte"
+
   export let backgroundColor
+  export let backgroundUsable = true
 
   const dispatch = createEventDispatcher()
+
+  let left = 100
+  let top = 100
+  let moving = false
+  let minimized = false
+
+  function onMouseDown() {
+    moving = true
+  }
+
+  function onMouseMove(e) {
+    if (moving) {
+      left += e.movementX
+      top += e.movementY
+    }
+  }
+
+  function onMouseUp() {
+    moving = false
+  }
+
+  function minimizeModal() {
+    minimized = true
+  }
+
+  function maximizeModal() {
+    minimized = false
+  }
 
   function closeModal() {
     dispatch("close")
@@ -10,17 +40,33 @@
 </script>
 
 <transition name="modal">
-  <div class="modal-wrapper">
-    <div class="modal" style="background-color: {backgroundColor};">
-      <span class="close" on:click={closeModal}>x</span>
-      <h3 class="title">
-        <slot name="title" />
-      </h3>
+  <div class={backgroundUsable ? "" : "modal-wrapper"}>
+    <div
+      on:mousedown={onMouseDown}
+      style="left: {left}px; top: {top}px; background-color: {backgroundColor};"
+      class="modal"
+    >
+      <div class="taskbar">
+        {#if !minimized}
+          <span on:click={minimizeModal}>_</span>
+        {:else}
+          <span on:click={maximizeModal}>o</span>
+        {/if}
+        <span on:click={closeModal}>x</span>
+      </div>
+      {#if !minimized}
+        <h3 class="title">
+          <slot name="title" />
+        </h3>
+      {/if}
       <slot name="content" />
-      <slot class="actions" name="actions" />
+      {#if !minimized}
+        <slot class="actions" name="actions" />
+      {/if}
     </div>
   </div>
 </transition>
+<svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove} />
 
 <style>
   .modal-wrapper {
@@ -55,14 +101,14 @@
     width: 60vw;
     max-width: 800px;
     max-height: 80vh;
-    background: white;
     display: flex;
     flex-direction: column;
     padding: 20px;
     overflow-y: scroll;
+    cursor: move;
   }
 
-  .close {
+  .taskbar {
     margin-left: auto;
     cursor: pointer;
     font-size: 2em;

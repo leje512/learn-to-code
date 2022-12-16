@@ -1,6 +1,6 @@
 <script>
   import CodeEditor from "./CodeEditor.svelte"
-  import Modal from "./Modal.svelte"
+  import DraggableModal from "./DraggableModal.svelte"
   import { runUnitTest } from "../lib/tests"
   import { getDiagnostics } from "../lib/astlint"
   import { isEqual } from "lodash"
@@ -101,7 +101,7 @@
   {#if showTutor}
     <p>Tutor</p>
     {#if code && code.trim() === initialcode.trim()}
-      <Modal
+      <DraggableModal
         backgroundColor={getBackgroundColor()}
         on:close={() => (showTutor = false)}
       >
@@ -117,9 +117,9 @@
           <button disabled>Wo?</button>
           <button disabled>Weitere Informationen</button>
         </div>
-      </Modal>
+      </DraggableModal>
     {:else if lintError}
-      <Modal
+      <DraggableModal
         backgroundColor={getBackgroundColor(lintError.severity)}
         on:close={() => (showTutor = false)}
       >
@@ -135,10 +135,11 @@
             <button on:click={moreInformation}>Weitere Informationen</button>
           {/if}
         </div>
-      </Modal>
+      </DraggableModal>
     {/if}
   {/if}
   <div id="action">
+    <button on:click={() => (showTutor = true)}>Tutor</button>
     <button on:click={run}>Run</button>
     <button on:click={test}>Test</button>
     <button disabled={!testPassed} on:click={next}>Nächste Aufgabe</button>
