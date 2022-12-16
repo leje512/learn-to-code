@@ -1,5 +1,6 @@
 <script>
   import CodeEditor from "./CodeEditor.svelte"
+  import Modal from "./Modal.svelte"
   import { runUnitTest } from "../lib/tests"
   import { getDiagnostics } from "../lib/astlint"
   import { isEqual } from "lodash"
@@ -19,6 +20,7 @@
   let messageIndex = 0
   let showErrorMessage = false
   let testPassed = false
+  let showTutor = true
 
   // TODO: weitere Erklärungen -> erkläre zusätzliche Prinzipien wie if-Bedingung etc.
 
@@ -29,6 +31,7 @@
     }
     lintError = getDiagnostics(misconceptions, code)[0]
     if (!isEqual(previousLintError, lintError)) {
+      showTutor = true
       showErrorMessage = false
       messageIndex = 0
     }
@@ -67,6 +70,20 @@
       messageIndex++
     }
   }
+
+  function getBackgroundColor(severity) {
+    console.log("severitx", severity)
+    switch (severity) {
+      case "error":
+        return "#f23d3d"
+      case "hint":
+        return "#2678bf"
+      case "praise":
+        return "#b7d63a"
+      default:
+        return "white"
+    }
+  }
 </script>
 
 <div id="sandbox">
@@ -81,33 +98,45 @@
   <p id="console">
     {consoleCode}
   </p>
-  {#if code && code.trim() === initialcode.trim()}
-    <div id="pop-up" class="praise">
-      <h4>Hallo!</h4>
-      <p id="no-space-wrap">
-        Ich bin dein Tutor. Durch Tipps will ich dir helfen, das Programmieren
-        besser zu verstehen. Drücke auf Wo, um den Codeausschnitt zu markieren,
-        für den der Tipp gedacht ist. Oder drücke auf Weitere Informationen, um
-        dir genauere Infos und Anleitungen zur Umsetzung zu holen. Los geht's!
-      </p>
-      <button disabled>Wo?</button>
-      <button disabled>Mehr Informationen</button>
-    </div>
-  {:else if lintError}
-    <div id="pop-up" class={lintError.severity}>
-      {#if lintError.severity !== "praise"}
-        <h4>Achtung!</h4>
-      {:else}
-        <h4>Weiter so!</h4>
-      {/if}
-      <p>{lintError.messages[messageIndex]}</p>
-      {#if lintError.severity !== "praise"}
-        <button on:click={showWhere}>Wo?</button>
-      {/if}
-      {#if messageIndex < lintError.messages.length - 1}
-        <button on:click={moreInformation}>Mehr Informationen</button>
-      {/if}
-    </div>
+  {#if showTutor}
+    <p>Tutor</p>
+    {#if code && code.trim() === initialcode.trim()}
+      <Modal
+        backgroundColor={getBackgroundColor()}
+        on:close={() => (showTutor = false)}
+      >
+        <span slot="title">Hallo!</span>
+        <p slot="content" id="no-space-wrap">
+          Ich bin dein Tutor. Durch Tipps will ich dir helfen, das Programmieren
+          besser zu verstehen. Drücke auf Wo, um den Codeausschnitt zu
+          markieren, für den der Tipp gedacht ist. Oder drücke auf Weitere
+          Informationen, um dir genauere Infos und Anleitungen zur Umsetzung zu
+          holen. Los geht's!
+        </p>
+        <div class="actions" slot="actions">
+          <button disabled>Wo?</button>
+          <button disabled>Weitere Informationen</button>
+        </div>
+      </Modal>
+    {:else if lintError}
+      <Modal
+        backgroundColor={getBackgroundColor(lintError.severity)}
+        on:close={() => (showTutor = false)}
+      >
+        <span slot="title"
+          >{#if lintError.severity !== "praise"}Achtung!{:else}Weiter so!{/if}</span
+        >
+        <p slot="content">{lintError.messages[messageIndex]}</p>
+        <div class="actions" slot="actions">
+          {#if lintError.severity !== "praise"}
+            <button on:click={showWhere}>Wo?</button>
+          {/if}
+          {#if messageIndex < lintError.messages.length - 1}
+            <button on:click={moreInformation}>Weitere Informationen</button>
+          {/if}
+        </div>
+      </Modal>
+    {/if}
   {/if}
   <div id="action">
     <button on:click={run}>Run</button>
@@ -123,7 +152,8 @@
     grid-template-columns: minmax(250px, 1fr) minmax(250px, 1fr);
     grid-template-areas:
       "editor console"
-      "error action";
+      "editor console"
+      "action .";
     grid-gap: 2em;
     max-height: 100%;
   }
@@ -138,28 +168,8 @@
     padding: 0 5px;
     line-height: 1.4;
     overflow-y: scroll;
-    max-height: 70vh;
-    height: 70vh;
   }
-  #pop-up {
-    grid-area: error;
-    margin: 0;
-    padding: 1em;
-    color: white;
-  }
-  .error {
-    background-color: #f23d3d;
-  }
-  .hint {
-    background-color: #2678bf;
-  }
-  .praise {
-    background-color: #b7d63a;
-  }
-  #pop-up h4 {
-    margin: 0;
-  }
-  #pop-up p {
+  p {
     white-space: pre-wrap;
     word-wrap: break-word;
   }
