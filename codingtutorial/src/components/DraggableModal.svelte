@@ -12,21 +12,31 @@
   export let backgroundColor = "white"
   export let backgroundUsable = true
   export let minimizable = true
-  export let left = transform({
-    prop: "left",
-    value: `calc((100vw - ${modalWidth})/ 2)`,
-    win,
-  })
-  export let top = transform({
-    prop: "top",
-    value: `calc((100vh - ${modalHeight})/ 2)`,
-    win,
-  })
+  export let minimizedAtStart = false
+
+  export let left = minimizedAtStart
+    ? 20
+    : transform({
+        prop: "left",
+        value: `calc((100vw - ${modalWidth})/ 2)`,
+        win,
+      })
+  export let top = minimizedAtStart
+    ? transform({
+        prop: "top",
+        value: `calc(100vh - 10vh - 20px)`,
+        win,
+      })
+    : transform({
+        prop: "top",
+        value: `calc((100vh - ${modalHeight})/ 2)`,
+        win,
+      })
 
   const dispatch = createEventDispatcher()
 
   let moving = false
-  let minimized = false
+  let minimized = minimizedAtStart
 
   function onMouseDown() {
     backgroundUsable = false
