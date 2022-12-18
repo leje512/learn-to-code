@@ -48,15 +48,13 @@
         showTutor = true
         showErrorMessage = false
       }
-    }, 2000)
+    }, 1500)
   }
 
   $: {
     if (remainingProblems) {
       lintError = remainingProblems[0]
       showTutor = true
-      console.log(remainingProblems)
-      console.log("lintError", lintError)
     }
   }
 
