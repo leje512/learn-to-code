@@ -12,7 +12,6 @@ export function getDiagnostics(misconceptions, code) {
       allowReserved: "never",
     })
 
-    let foundError = false
     misconceptions.forEach(
       ({
         type,
@@ -30,7 +29,6 @@ export function getDiagnostics(misconceptions, code) {
                 if (exerciseSpecificMessage) {
                   messages[messages.length - 1] = exerciseSpecificMessage
                 }
-                foundError = true
                 diagnostics.push({
                   from: node.start,
                   to: node.end,
@@ -51,7 +49,6 @@ export function getDiagnostics(misconceptions, code) {
               if (exerciseSpecificMessage) {
                 messages[messages.length - 1] = exerciseSpecificMessage
               }
-              foundError = true
               diagnostics.push({
                 from: ast.start,
                 to: ast.end,
@@ -63,17 +60,6 @@ export function getDiagnostics(misconceptions, code) {
         }
       }
     )
-
-    if (!foundError) {
-      diagnostics.push({
-        from: 0,
-        to: 0,
-        severity: "praise",
-        messages: [
-          "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-        ],
-      })
-    }
   } catch (error) {
     // try again with a loose parse to get syntax errors
     let foundError = false

@@ -54,11 +54,12 @@
     : getBackgroundColor(lintError)}
   left={modalLeft}
   top={modalTop}
+  minimizedAtStart={!showTutorialMessage}
   on:close={() => dispatch("close")}
   on:move={updateModalPosition}
 >
   <span slot="title"
-    >{#if showTutorialMessage}Hallo!{:else if lintError && lintError.severity !== "praise"}Achtung!{:else}Weiter
+    >{#if showTutorialMessage}Hallo!{:else if lintError}Achtung!{:else}Weiter
       so!{/if}</span
   >
   <p slot="content" id={showTutorialMessage ? "no-space-wrap" : ""}>
@@ -68,10 +69,12 @@
       für den der Tipp gedacht ist. Oder drücke auf Weitere Informationen, um
       dir genauere Infos und Anleitungen zur Umsetzung zu holen. Los geht's!
     {:else if lintError}{lintError.messages[messageIndex]}
+    {:else}Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und
+      lasse deinen Code überprüfen.
     {/if}
   </p>
   <div class="actions" slot="actions">
-    {#if lintError && lintError.severity !== "praise"}
+    {#if lintError}
       <button disabled={showTutorialMessage} on:click={showWhere}>Wo?</button>
     {/if}
     {#if lintError && messageIndex < lintError.messages.length - 1}
