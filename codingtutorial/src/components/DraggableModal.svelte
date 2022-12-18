@@ -90,33 +90,31 @@
   }
 </script>
 
-<transition name="modal">
-  <div class={backgroundUsable ? "" : "modal-wrapper"}>
-    <div
-      on:mousedown={onMouseDown}
-      style="--modalWidth:{modalWidth};--modalHeight:{modalHeight};left: {left}px; top: {top}px; background-color: {backgroundColor};"
-      class="modal {minimized ? 'minimized' : ''}"
-    >
-      <div class="taskbar">
-        {#if minimizable && !minimized}
-          <span on:click={minimizeModal}>_</span>
-        {:else if minimizable}
-          <span on:click={maximizeModal}>o</span>
-        {/if}
-        <span on:click={closeModal}>x</span>
-      </div>
-      {#if !minimized}
-        <h3 class="title">
-          <slot name="title" />
-        </h3>
+<div class={backgroundUsable ? "" : "modal-wrapper"}>
+  <div
+    on:mousedown={onMouseDown}
+    style="--modalWidth:{modalWidth};--modalHeight:{modalHeight};left: {left}px; top: {top}px; background-color: {backgroundColor};"
+    class="modal {minimized ? 'minimized' : ''}"
+  >
+    <div class="taskbar">
+      {#if minimizable && !minimized}
+        <span on:click={minimizeModal}>_</span>
+      {:else if minimizable}
+        <span on:click={maximizeModal}>o</span>
       {/if}
-      <slot name="content" />
-      {#if !minimized}
-        <slot class="actions" name="actions" />
-      {/if}
+      <span on:click={closeModal}>x</span>
     </div>
+    {#if !minimized}
+      <h3 class="title">
+        <slot name="title" />
+      </h3>
+    {/if}
+    <slot name="content" />
+    {#if !minimized}
+      <slot class="actions" name="actions" />
+    {/if}
   </div>
-</transition>
+</div>
 <svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove} />
 
 <style>
@@ -126,19 +124,6 @@
     right: 0;
     bottom: 0;
     left: 0;
-  }
-
-  .modal-wrapper:before {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0.3;
-    flex: 1;
-    width: 100%;
-    height: 100%;
-    content: "";
   }
 
   .modal {

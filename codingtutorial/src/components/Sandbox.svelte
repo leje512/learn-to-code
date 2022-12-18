@@ -97,6 +97,7 @@
   function closeTutorModal() {
     showTutor = false
     showTutorialMessage = false
+    showErrorMessage = false
   }
 
   function getBackgroundColor() {
@@ -121,14 +122,6 @@
   <p class="formatted-p" id="console">
     {consoleCode}
   </p>
-  {#if showTutor}
-    <Tutor
-      {showTutorialMessage}
-      {lintError}
-      on:showWhere={() => (showErrorMessage = true)}
-      on:close={closeTutorModal}
-    />
-  {/if}
   <div id="action">
     <button on:click={() => (showTutor = true)}>Tutor</button>
     <button on:click={run}>Run</button>
@@ -137,29 +130,41 @@
     >
     <button disabled={!unlockedNext} on:click={next}>Nächste Aufgabe</button>
   </div>
+  {#if showTutor}
+    <div class="modal">
+      <Tutor
+        {showTutorialMessage}
+        {lintError}
+        on:showWhere={() => (showErrorMessage = true)}
+        on:close={closeTutorModal}
+      />
+    </div>
+  {/if}
   {#if showTestModal}
-    <DraggableModal
-      backgroundColor={getBackgroundColor()}
-      backgroundUsable={false}
-      minimizable={false}
-      on:close={() => (showTestModal = false)}
-    >
-      <span slot="title"
-        >{#if testPassed}Super!{:else}Noch nicht ganz.{/if}</span
+    <div class="modal">
+      <DraggableModal
+        backgroundColor={getBackgroundColor()}
+        backgroundUsable={false}
+        minimizable={false}
+        on:close={() => (showTestModal = false)}
       >
-      <p slot="content">
-        {#if testPassed}
-          Dein Code liefert das gewünschte Ergebnis.
-          {#if remainingProblems.length}
-            Es gibt aber noch ein paar Probleme in deinem Code. Nutze den Tutor,
-            um alle Probleme zu beheben.
+        <span slot="title"
+          >{#if testPassed}Super!{:else}Noch nicht ganz.{/if}</span
+        >
+        <p slot="content">
+          {#if testPassed}
+            Dein Code liefert das gewünschte Ergebnis.
+            {#if remainingProblems.length}
+              Es gibt aber noch ein paar Probleme in deinem Code. Nutze den
+              Tutor, um alle Probleme zu beheben.
+            {/if}
+          {:else}
+            Überprüfe die Aufgabenstellung und nutze den Tutor, um zum richtigen
+            Ergebnis zu gelangen.
           {/if}
-        {:else}
-          Überprüfe die Aufgabenstellung und nutze den Tutor, um zum richtigen
-          Ergebnis zu gelangen.
-        {/if}
-      </p>
-    </DraggableModal>
+        </p>
+      </DraggableModal>
+    </div>
   {/if}
 </div>
 
@@ -168,11 +173,12 @@
     padding: 2em 0 0 0;
     display: grid;
     grid-template-columns: minmax(250px, 1fr) minmax(250px, 1fr);
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto 2em 1fr 0px;
     grid-template-areas:
       "editor console"
-      ". action";
-    grid-gap: 2em;
+      ". ."
+      ". action"
+      "modal modal";
     max-height: 100%;
     min-height: 0;
   }
@@ -189,10 +195,6 @@
     line-height: 1.4;
     overflow-y: auto;
   }
-  .formatted-p {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
 
   #action {
     grid-area: action;
@@ -200,8 +202,15 @@
     justify-content: space-evenly;
     gap: 1em;
   }
+  .modal {
+    grid-area: modal;
+  }
   #action button {
     flex: 1;
+  }
+  .formatted-p {
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
   .passed {
     background-color: #b7d63a;
