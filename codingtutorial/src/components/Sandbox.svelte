@@ -106,7 +106,6 @@
     {consoleCode}
   </p>
   {#if showTutor}
-    <p>Tutor</p>
     {#if code && code.trim() === initialcode.trim()}
       <DraggableModal
         backgroundColor={getBackgroundColor("praise")}

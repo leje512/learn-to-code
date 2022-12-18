@@ -3,22 +3,22 @@
   import { transform } from "css-calc-transform"
 
   let modalWidth = "50vw"
-  let modalHeight = "80vh"
-  let window = {
-    width: document.body.offsetWidth,
-    height: document.body.offsetHeight,
+  let modalHeight = "50vh"
+  let win = {
+    width: window.innerWidth,
+    height: window.innerHeight,
   }
   export let backgroundColor = "white"
   export let backgroundUsable = true
   export let left = transform({
     prop: "left",
     value: `calc((100vw - ${modalWidth})/ 2)`,
-    win: window,
+    win,
   })
   export let top = transform({
     prop: "top",
-    value: `calc((100vw - ${modalHeight})/ 2)`,
-    win: window,
+    value: `calc((100vh - ${modalHeight})/ 2)`,
+    win,
   })
 
   const dispatch = createEventDispatcher()
@@ -27,11 +27,12 @@
   let minimized = false
 
   function onMouseDown() {
+    backgroundUsable = false
     moving = true
   }
 
   function onMouseMove(e) {
-    if (moving) {
+    if (moving && !minimized) {
       left += e.movementX
       top += e.movementY
       dispatch("move", {
@@ -43,14 +44,31 @@
 
   function onMouseUp() {
     moving = false
+    backgroundUsable = true
   }
 
   function minimizeModal() {
     minimized = true
+    left = 20
+    top = transform({
+      prop: "top",
+      value: `calc(100vh - 10vh - 20px)`,
+      win,
+    })
   }
 
   function maximizeModal() {
     minimized = false
+    left = transform({
+      prop: "left",
+      value: `calc((100vw - ${modalWidth})/ 2)`,
+      win,
+    })
+    top = transform({
+      prop: "top",
+      value: `calc((100vh - ${modalHeight})/ 2)`,
+      win,
+    })
   }
 
   function closeModal() {
@@ -89,17 +107,11 @@
 
 <style>
   .modal-wrapper {
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    z-index: 21;
-    box-sizing: border-box;
-    padding: 10vh 32px 32px;
   }
 
   .modal-wrapper:before {
@@ -128,7 +140,10 @@
   }
 
   .minimized {
-    max-height: 20vh;
+    position: fixed;
+    cursor: initial;
+    max-height: 5vh;
+    max-width: 20vw;
   }
 
   .taskbar {
