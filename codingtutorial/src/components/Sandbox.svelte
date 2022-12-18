@@ -29,16 +29,22 @@
 
   // TODO: weitere Erklärungen -> erkläre zusätzliche Prinzipien wie if-Bedingung etc.
 
+  let timerId
   function updateCode(event) {
-    code = event.detail.text
-    if (lintError) {
-      previousLintError = lintError
+    if (timerId) {
+      clearTimeout(timerId)
     }
-    lintError = getDiagnostics(misconceptions, code)[0]
-    if (!isEqual(previousLintError, lintError)) {
-      showTutor = true
-      showErrorMessage = false
-    }
+    timerId = setTimeout(() => {
+      code = event.detail.text
+      if (lintError) {
+        previousLintError = lintError
+      }
+      lintError = getDiagnostics(misconceptions, code)[0]
+      if (!isEqual(previousLintError, lintError)) {
+        showTutor = true
+        showErrorMessage = false
+      }
+    }, 2000)
   }
 
   function run() {
