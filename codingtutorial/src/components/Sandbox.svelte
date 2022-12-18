@@ -22,6 +22,9 @@
   let testPassed = false
   let showTutor = true
 
+  let modalLeft
+  let modalTop
+
   // TODO: weitere Erklärungen -> erkläre zusätzliche Prinzipien wie if-Bedingung etc.
 
   function updateCode(event) {
@@ -83,6 +86,11 @@
         return "white"
     }
   }
+
+  function updateModalPosition(event) {
+    modalLeft = event.detail.left
+    modalTop = event.detail.top
+  }
 </script>
 
 <div id="sandbox">
@@ -102,7 +110,10 @@
     {#if code && code.trim() === initialcode.trim()}
       <DraggableModal
         backgroundColor={getBackgroundColor("praise")}
+        left={modalLeft}
+        top={modalTop}
         on:close={() => (showTutor = false)}
+        on:move={updateModalPosition}
       >
         <span slot="title">Hallo!</span>
         <p slot="content" id="no-space-wrap">
@@ -120,7 +131,10 @@
     {:else if lintError}
       <DraggableModal
         backgroundColor={getBackgroundColor(lintError.severity)}
+        left={modalLeft}
+        top={modalTop}
         on:close={() => (showTutor = false)}
+        on:move={updateModalPosition}
       >
         <span slot="title"
           >{#if lintError.severity !== "praise"}Achtung!{:else}Weiter so!{/if}</span

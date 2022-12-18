@@ -1,13 +1,28 @@
 <script>
   import { createEventDispatcher } from "svelte"
+  import { transform } from "css-calc-transform"
 
+  let modalWidth = "50vw"
+  let modalHeight = "80vh"
+  let window = {
+    width: document.body.offsetWidth,
+    height: document.body.offsetHeight,
+  }
   export let backgroundColor = "white"
   export let backgroundUsable = true
+  export let left = transform({
+    prop: "left",
+    value: `calc((100vw - ${modalWidth})/ 2)`,
+    win: window,
+  })
+  export let top = transform({
+    prop: "top",
+    value: `calc((100vw - ${modalHeight})/ 2)`,
+    win: window,
+  })
 
   const dispatch = createEventDispatcher()
 
-  let left = 100
-  let top = 100
   let moving = false
   let minimized = false
 
@@ -19,6 +34,10 @@
     if (moving) {
       left += e.movementX
       top += e.movementY
+      dispatch("move", {
+        left,
+        top,
+      })
     }
   }
 
@@ -43,7 +62,7 @@
   <div class={backgroundUsable ? "" : "modal-wrapper"}>
     <div
       on:mousedown={onMouseDown}
-      style="left: {left}px; top: {top}px; background-color: {backgroundColor};"
+      style="--modalWidth:{modalWidth};--modalHeight:{modalHeight};left: {left}px; top: {top}px; background-color: {backgroundColor};"
       class="modal {minimized ? 'minimized' : ''}"
     >
       <div class="taskbar">
@@ -99,8 +118,8 @@
   .modal {
     position: absolute;
     margin: auto;
-    width: 50vw;
-    max-height: 80vh;
+    width: var(--modalWidth);
+    max-height: var(--modalHeight);
     display: flex;
     flex-direction: column;
     padding: 20px;
