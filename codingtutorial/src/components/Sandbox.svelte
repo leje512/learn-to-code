@@ -5,6 +5,7 @@
   import { getDiagnostics } from "../lib/astlint"
   import { isEqual } from "lodash"
   import { createEventDispatcher } from "svelte"
+  import DraggableModal from "./DraggableModal.svelte"
 
   const dispatch = createEventDispatcher()
 
@@ -17,11 +18,14 @@
   let consoleCode = ""
   let lintError
   let previousLintError
+  let remainingProblems
   let showErrorMessage = false
   let testPassed = false
+  let unlockedNext = false
 
   let showTutor = true
   let showTutorialMessage = true
+  let showTestModal = false
 
   $: {
     showTutorialMessage = code && code.trim() === initialcode.trim()
@@ -39,12 +43,21 @@
       if (lintError) {
         previousLintError = lintError
       }
-      lintError = getDiagnostics(misconceptions, code)[0]
+      remainingProblems = getDiagnostics(misconceptions, code)
       if (!isEqual(previousLintError, lintError)) {
         showTutor = true
         showErrorMessage = false
       }
     }, 2000)
+  }
+
+  $: {
+    if (remainingProblems) {
+      lintError = remainingProblems[0]
+      showTutor = true
+      console.log(remainingProblems)
+      console.log("lintError", lintError)
+    }
   }
 
   function run() {
@@ -62,25 +75,39 @@
   }
 
   function test() {
+    showTestModal = true
     testPassed = runUnitTest(title, code, testCases)
+    if (remainingProblems.length === 0 && testPassed) {
+      unlockedNext = true
+    }
   }
 
   function next() {
-    if (testPassed) {
+    if (unlockedNext) {
       dispatch("next")
+      consoleCode = ""
+      lintError = null
+      previousLintError = null
+      showErrorMessage = false
+      testPassed = false
+      showTutorialMessage = true
+      showTutor = true
+      unlockedNext = false
     }
-    consoleCode = ""
-    lintError = null
-    previousLintError = null
-    showErrorMessage = false
-    testPassed = false
-    showTutorialMessage = true
-    showTutor = true
   }
 
-  function closeModal() {
+  function closeTutorModal() {
     showTutor = false
     showTutorialMessage = false
+  }
+
+  function getBackgroundColor() {
+    if (testPassed && unlockedNext) {
+      return "#b7d63a"
+    } else if (testPassed) {
+      return "#faea49"
+    }
+    return "#f23d3d"
   }
 </script>
 
@@ -93,7 +120,7 @@
       on:edited={updateCode}
     />
   </div>
-  <p id="console">
+  <p class="formatted-p" id="console">
     {consoleCode}
   </p>
   {#if showTutor}
@@ -101,7 +128,7 @@
       {showTutorialMessage}
       {lintError}
       on:showWhere={() => (showErrorMessage = true)}
-      on:close={closeModal}
+      on:close={closeTutorModal}
     />
   {/if}
   <div id="action">
@@ -110,8 +137,32 @@
     <button class={testPassed ? "passed" : "failed"} on:click={test}
       >Test</button
     >
-    <button disabled={!testPassed} on:click={next}>Nächste Aufgabe</button>
+    <button disabled={!unlockedNext} on:click={next}>Nächste Aufgabe</button>
   </div>
+  {#if showTestModal}
+    <DraggableModal
+      backgroundColor={getBackgroundColor()}
+      backgroundUsable={false}
+      minimizable={false}
+      on:close={() => (showTestModal = false)}
+    >
+      <span slot="title"
+        >{#if testPassed}Super!{:else}Noch nicht ganz.{/if}</span
+      >
+      <p slot="content">
+        {#if testPassed}
+          Dein Code liefert das gewünschte Ergebnis.
+          {#if remainingProblems.length}
+            Es gibt aber noch ein paar Probleme in deinem Code. Nutze den Tutor,
+            um alle Probleme zu beheben.
+          {/if}
+        {:else}
+          Überprüfe die Aufgabenstellung und nutze den Tutor, um zum richtigen
+          Ergebnis zu gelangen.
+        {/if}
+      </p>
+    </DraggableModal>
+  {/if}
 </div>
 
 <style>
@@ -140,13 +191,11 @@
     line-height: 1.4;
     overflow-y: auto;
   }
-  p {
+  .formatted-p {
     white-space: pre-wrap;
     word-wrap: break-word;
   }
-  #no-space-wrap {
-    white-space: inherit;
-  }
+
   #action {
     grid-area: action;
     display: flex;

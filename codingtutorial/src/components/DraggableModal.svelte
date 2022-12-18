@@ -8,8 +8,10 @@
     width: window.innerWidth,
     height: window.innerHeight,
   }
+
   export let backgroundColor = "white"
   export let backgroundUsable = true
+  export let minimizable = true
   export let left = transform({
     prop: "left",
     value: `calc((100vw - ${modalWidth})/ 2)`,
@@ -48,13 +50,15 @@
   }
 
   function minimizeModal() {
-    minimized = true
-    left = 20
-    top = transform({
-      prop: "top",
-      value: `calc(100vh - 10vh - 20px)`,
-      win,
-    })
+    if (minimizable) {
+      minimized = true
+      left = 20
+      top = transform({
+        prop: "top",
+        value: `calc(100vh - 10vh - 20px)`,
+        win,
+      })
+    }
   }
 
   function maximizeModal() {
@@ -84,9 +88,9 @@
       class="modal {minimized ? 'minimized' : ''}"
     >
       <div class="taskbar">
-        {#if !minimized}
+        {#if minimizable && !minimized}
           <span on:click={minimizeModal}>_</span>
-        {:else}
+        {:else if minimizable}
           <span on:click={maximizeModal}>o</span>
         {/if}
         <span on:click={closeModal}>x</span>

@@ -81,3 +81,13 @@
     {/if}
   </div>
 </DraggableModal>
+
+<style>
+  p {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  #no-space-wrap {
+    white-space: inherit;
+  }
+</style>
