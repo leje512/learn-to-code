@@ -1,8 +1,13 @@
 <script>
   import CodeEditor from "./CodeEditor.svelte"
+  import Tutor from "./Tutor.svelte"
   import { runUnitTest } from "../lib/tests"
   import { getDiagnostics } from "../lib/astlint"
   import { isEqual } from "lodash"
+  import { createEventDispatcher } from "svelte"
+  import DraggableModal from "./DraggableModal.svelte"
+
+  const dispatch = createEventDispatcher()
 
   export let title
   export let initialcode
@@ -13,25 +18,44 @@
   let consoleCode = ""
   let lintError
   let previousLintError
-  let messageIndex = 0
+  let remainingProblems
   let showErrorMessage = false
+  let testPassed = false
+  let unlockedNext = false
+
+  let showTutor = true
+  let showTutorialMessage = true
+  let showTestModal = false
+
+  $: {
+    showTutorialMessage = code && code.trim() === initialcode.trim()
+  }
 
   // TODO: weitere Erklärungen -> erkläre zusätzliche Prinzipien wie if-Bedingung etc.
 
+  let timerId
   function updateCode(event) {
-    code = event.detail.text
-    if (lintError) {
-      previousLintError = lintError
+    if (timerId) {
+      clearTimeout(timerId)
     }
-    lintError = getDiagnostics(misconceptions, code)[0]
-    if (!isEqual(previousLintError, lintError)) {
-      showErrorMessage = false
-      messageIndex = 0
-    }
+    timerId = setTimeout(() => {
+      code = event.detail.text
+      if (lintError) {
+        previousLintError = lintError
+      }
+      remainingProblems = getDiagnostics(misconceptions, code)
+      if (!isEqual(previousLintError, lintError)) {
+        showTutor = true
+        showErrorMessage = false
+      }
+    }, 1500)
   }
 
-  function logCode() {
-    console.log(code)
+  $: {
+    if (remainingProblems) {
+      lintError = remainingProblems[0]
+      showTutor = true
+    }
   }
 
   function run() {
@@ -49,18 +73,43 @@
   }
 
   function test() {
-    let correct = runUnitTest(title, code, testCases)
-    document.body.style.background = correct ? "green" : "red"
-  }
-
-  function showWhere() {
-    showErrorMessage = true
-  }
-
-  function moreInformation() {
-    if (messageIndex < lintError.messages.length - 1) {
-      messageIndex++
+    showTestModal = true
+    testPassed = runUnitTest(title, code, testCases)
+    if (remainingProblems.length === 0 && testPassed) {
+      unlockedNext = true
     }
+  }
+
+  function next() {
+    if (unlockedNext) {
+      dispatch("next")
+      consoleCode = ""
+      lintError = null
+      previousLintError = null
+      remainingProblems = []
+      showErrorMessage = false
+      testPassed = false
+      unlockedNext = false
+
+      showTutorialMessage = true
+      showTutor = true
+      showTestModal = false
+    }
+  }
+
+  function closeTutorModal() {
+    showTutor = false
+    showTutorialMessage = false
+    showErrorMessage = false
+  }
+
+  function getBackgroundColor() {
+    if (testPassed && unlockedNext) {
+      return "#b7d63a"
+    } else if (testPassed) {
+      return "#faea49"
+    }
+    return "#f23d3d"
   }
 </script>
 
@@ -73,57 +122,72 @@
       on:edited={updateCode}
     />
   </div>
-  <p id="console">
+  <p class="formatted-p" id="console">
     {consoleCode}
   </p>
-  {#if code && code.trim() === initialcode.trim()}
-    <div id="pop-up" class="praise">
-      <h4>Hallo!</h4>
-      <p id="no-space-wrap">
-        Ich bin dein Tutor. Durch Tipps will ich dir helfen, das Programmieren
-        besser zu verstehen. Drücke auf Wo, um den Codeausschnitt zu markieren,
-        für den der Tipp gedacht ist. Oder drücke auf Weitere Informationen, um
-        dir genauere Infos und Anleitungen zur Umsetzung zu holen. Los geht's!
-      </p>
-      <button disabled>Wo?</button>
-      <button disabled>Mehr Informationen</button>
-    </div>
-  {:else if lintError}
-    <div id="pop-up" class={lintError.severity}>
-      {#if lintError.severity !== "praise"}
-        <h4>Achtung!</h4>
-      {:else}
-        <h4>Weiter so!</h4>
-      {/if}
-      <p>{lintError.messages[messageIndex]}</p>
-      {#if lintError.severity !== "praise"}
-        <button on:click={showWhere}>Wo?</button>
-      {/if}
-      {#if messageIndex < lintError.messages.length - 1}
-        <button on:click={moreInformation}>Mehr Informationen</button>
-      {/if}
+  <div id="action">
+    <button on:click={() => (showTutor = true)}>Tutor</button>
+    <button on:click={run}>Run</button>
+    <button class={testPassed ? "passed" : "failed"} on:click={test}
+      >Test</button
+    >
+    <button disabled={!unlockedNext} on:click={next}>Nächste Aufgabe</button>
+  </div>
+  {#if showTutor}
+    <div class="modal">
+      <Tutor
+        {showTutorialMessage}
+        {lintError}
+        on:showWhere={() => (showErrorMessage = true)}
+        on:close={closeTutorModal}
+      />
     </div>
   {/if}
-  <div id="action">
-    <button on:click={logCode}>log code</button>
-    <button on:click={run}>run code</button>
-    <button on:click={test}>test</button>
-  </div>
+  {#if showTestModal}
+    <div class="modal">
+      <DraggableModal
+        backgroundColor={getBackgroundColor()}
+        backgroundUsable={false}
+        minimizable={false}
+        on:close={() => (showTestModal = false)}
+      >
+        <span slot="title"
+          >{#if testPassed}Super!{:else}Noch nicht ganz.{/if}</span
+        >
+        <p slot="content">
+          {#if testPassed}
+            Dein Code liefert das gewünschte Ergebnis.
+            {#if remainingProblems.length}
+              Es gibt aber noch ein paar Probleme in deinem Code. Nutze den
+              Tutor, um alle Probleme zu beheben.
+            {/if}
+          {:else}
+            Überprüfe die Aufgabenstellung und nutze den Tutor, um zum richtigen
+            Ergebnis zu gelangen.
+          {/if}
+        </p>
+      </DraggableModal>
+    </div>
+  {/if}
 </div>
 
 <style>
   #sandbox {
-    padding: 2em 0;
+    padding: 2em 0 0 0;
     display: grid;
     grid-template-columns: minmax(250px, 1fr) minmax(250px, 1fr);
+    grid-template-rows: auto 2em 1fr 0px;
     grid-template-areas:
       "editor console"
-      "error action";
-    grid-gap: 2em;
+      ". ."
+      ". action"
+      "modal modal";
     max-height: 100%;
+    min-height: 0;
   }
   #editor {
     grid-area: editor;
+    overflow-y: auto;
   }
   #console {
     grid-area: console;
@@ -132,39 +196,29 @@
     margin: 0;
     padding: 0 5px;
     line-height: 1.4;
-    overflow-y: scroll;
-    max-height: 70vh;
-    height: 70vh;
+    overflow-y: auto;
   }
-  #pop-up {
-    grid-area: error;
-    margin: 0;
-    padding: 1em;
-    color: white;
+
+  #action {
+    grid-area: action;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1em;
   }
-  .error {
-    background-color: #f23d3d;
+  .modal {
+    grid-area: modal;
   }
-  .hint {
-    background-color: #2678bf;
+  #action button {
+    flex: 1;
   }
-  .praise {
-    background-color: #b7d63a;
-  }
-  #pop-up h4 {
-    margin: 0;
-  }
-  #pop-up p {
+  .formatted-p {
     white-space: pre-wrap;
     word-wrap: break-word;
   }
-  #no-space-wrap {
-    white-space: inherit;
+  .passed {
+    background-color: #b7d63a;
   }
-  #action {
-    grid-area: action;
-  }
-  p {
-    white-space: pre-line;
+  .failed {
+    background-color: #f23d3d;
   }
 </style>
