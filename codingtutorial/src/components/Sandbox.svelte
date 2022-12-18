@@ -72,7 +72,6 @@
   }
 
   function getBackgroundColor(severity) {
-    console.log("severitx", severity)
     switch (severity) {
       case "error":
         return "#f23d3d"
@@ -102,7 +101,7 @@
     <p>Tutor</p>
     {#if code && code.trim() === initialcode.trim()}
       <DraggableModal
-        backgroundColor={getBackgroundColor()}
+        backgroundColor={getBackgroundColor("praise")}
         on:close={() => (showTutor = false)}
       >
         <span slot="title">Hallo!</span>

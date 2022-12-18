@@ -1,7 +1,7 @@
 <script>
   import { createEventDispatcher } from "svelte"
 
-  export let backgroundColor
+  export let backgroundColor = "white"
   export let backgroundUsable = true
 
   const dispatch = createEventDispatcher()
@@ -44,7 +44,7 @@
     <div
       on:mousedown={onMouseDown}
       style="left: {left}px; top: {top}px; background-color: {backgroundColor};"
-      class="modal"
+      class="modal {minimized ? 'minimized' : ''}"
     >
       <div class="taskbar">
         {#if !minimized}
@@ -98,14 +98,18 @@
 
   .modal {
     position: absolute;
-    width: 60vw;
-    max-width: 800px;
+    margin: auto;
+    width: 50vw;
     max-height: 80vh;
     display: flex;
     flex-direction: column;
     padding: 20px;
-    overflow-y: scroll;
+    overflow-y: auto;
     cursor: move;
+  }
+
+  .minimized {
+    max-height: 20vh;
   }
 
   .taskbar {
