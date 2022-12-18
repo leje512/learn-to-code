@@ -21,12 +21,11 @@
 </script>
 
 <main>
-  <div class="exercise-action">
-    <!--button disabled={count <= 0} on:click={decreaseCount}>back</button>
+  <!--div class="exercise-action">
+    <-button disabled={count <= 0} on:click={decreaseCount}>back</button>
     <button disabled={count >= exercises.length - 1} on:click={incrementCount}
-      >next</button
-    -->
-  </div>
+      >next</button>
+  </div-->
   <div id="task">
     {@html exercises[count].task}
   </div>
@@ -40,8 +39,26 @@
 </main>
 
 <style>
+  :global(#app) {
+    margin: 0;
+    padding: 0;
+    max-height: 100vh;
+    max-width: 100vw;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
   main {
+    margin: 0;
+    padding: 2em;
+    max-height: 100vh;
+    max-width: 100vw;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
     text-align: left;
+    display: flex;
+    flex-direction: column;
   }
   .exercise-action {
     display: flex;

@@ -176,18 +176,20 @@
 
 <style>
   #sandbox {
-    padding: 2em 0;
+    padding: 2em 0 0 0;
     display: grid;
     grid-template-columns: minmax(250px, 1fr) minmax(250px, 1fr);
+    grid-template-rows: auto 1fr;
     grid-template-areas:
       "editor console"
-      "editor console"
-      "action .";
+      ". action";
     grid-gap: 2em;
     max-height: 100%;
+    min-height: 0;
   }
   #editor {
     grid-area: editor;
+    overflow-y: auto;
   }
   #console {
     grid-area: console;
@@ -196,7 +198,7 @@
     margin: 0;
     padding: 0 5px;
     line-height: 1.4;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
   p {
     white-space: pre-wrap;
@@ -207,6 +209,12 @@
   }
   #action {
     grid-area: action;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1em;
+  }
+  #action button {
+    flex: 1;
   }
   .passed {
     background-color: #b7d63a;
