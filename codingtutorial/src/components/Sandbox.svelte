@@ -67,6 +67,14 @@
     if (testPassed) {
       dispatch("next")
     }
+    consoleCode = ""
+    lintError = null
+    previousLintError = null
+    messageIndex = 0
+    showErrorMessage = false
+    testPassed = false
+    showTutorialMessage = true
+    showTutor = true
   }
 
   function showWhere() {
