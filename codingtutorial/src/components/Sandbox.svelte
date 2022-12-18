@@ -86,11 +86,14 @@
       consoleCode = ""
       lintError = null
       previousLintError = null
+      remainingProblems = []
       showErrorMessage = false
       testPassed = false
+      unlockedNext = false
+
       showTutorialMessage = true
       showTutor = true
-      unlockedNext = false
+      showTestModal = false
     }
   }
 

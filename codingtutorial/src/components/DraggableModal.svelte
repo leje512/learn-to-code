@@ -11,6 +11,7 @@
 
   export let backgroundColor = "white"
   export let backgroundUsable = true
+  let useBackground = backgroundUsable
   export let minimizable = true
   export let minimizedAtStart = false
 
@@ -39,7 +40,9 @@
   let minimized = minimizedAtStart
 
   function onMouseDown() {
-    backgroundUsable = false
+    if (backgroundUsable) {
+      useBackground = false
+    }
     moving = true
   }
 
@@ -56,7 +59,9 @@
 
   function onMouseUp() {
     moving = false
-    backgroundUsable = true
+    if (backgroundUsable) {
+      useBackground = true
+    }
   }
 
   function minimizeModal() {
@@ -90,7 +95,7 @@
   }
 </script>
 
-<div class={backgroundUsable ? "" : "modal-wrapper"}>
+<div class={useBackground ? "" : "modal-wrapper"}>
   <div
     on:mousedown={onMouseDown}
     style="--modalWidth:{modalWidth};--modalHeight:{modalHeight};left: {left}px; top: {top}px; background-color: {backgroundColor};"
