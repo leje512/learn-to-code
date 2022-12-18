@@ -1,6 +1,6 @@
 <script>
   import CodeEditor from "./CodeEditor.svelte"
-  import DraggableModal from "./DraggableModal.svelte"
+  import Tutor from "./Tutor.svelte"
   import { runUnitTest } from "../lib/tests"
   import { getDiagnostics } from "../lib/astlint"
   import { isEqual } from "lodash"
@@ -17,14 +17,11 @@
   let consoleCode = ""
   let lintError
   let previousLintError
-  let messageIndex = 0
   let showErrorMessage = false
   let testPassed = false
-  let showTutorialMessage = true
-  let showTutor = true
 
-  let modalLeft
-  let modalTop
+  let showTutor = true
+  let showTutorialMessage = true
 
   $: {
     showTutorialMessage = code && code.trim() === initialcode.trim()
@@ -41,7 +38,6 @@
     if (!isEqual(previousLintError, lintError)) {
       showTutor = true
       showErrorMessage = false
-      messageIndex = 0
     }
   }
 
@@ -70,47 +66,15 @@
     consoleCode = ""
     lintError = null
     previousLintError = null
-    messageIndex = 0
     showErrorMessage = false
     testPassed = false
     showTutorialMessage = true
     showTutor = true
   }
 
-  function showWhere() {
-    showErrorMessage = true
-  }
-
-  function moreInformation() {
-    if (messageIndex < lintError.messages.length - 1) {
-      messageIndex++
-    }
-  }
-
-  function getBackgroundColor(lintError) {
-    if (!lintError) {
-      return "#b7d63a"
-    }
-    switch (lintError.severity) {
-      case "error":
-        return "#f23d3d"
-      case "hint":
-        return "#2678bf"
-      case "praise":
-        return "#b7d63a"
-      default:
-        return "white"
-    }
-  }
-
   function closeModal() {
     showTutor = false
     showTutorialMessage = false
-  }
-
-  function updateModalPosition(event) {
-    modalLeft = event.detail.left
-    modalTop = event.detail.top
   }
 </script>
 
@@ -127,42 +91,12 @@
     {consoleCode}
   </p>
   {#if showTutor}
-    <DraggableModal
-      backgroundColor={showTutorialMessage
-        ? getBackgroundColor()
-        : getBackgroundColor(lintError)}
-      left={modalLeft}
-      top={modalTop}
+    <Tutor
+      {showTutorialMessage}
+      {lintError}
+      on:showWhere={() => (showErrorMessage = true)}
       on:close={closeModal}
-      on:move={updateModalPosition}
-    >
-      <span slot="title"
-        >{#if showTutorialMessage}Hallo!{:else if lintError && lintError.severity !== "praise"}Achtung!{:else}Weiter
-          so!{/if}</span
-      >
-      <p slot="content" id={showTutorialMessage ? "no-space-wrap" : ""}>
-        {#if showTutorialMessage}
-          Ich bin dein Tutor. Durch Tipps will ich dir helfen, das Programmieren
-          besser zu verstehen. Drücke auf Wo, um den Codeausschnitt zu
-          markieren, für den der Tipp gedacht ist. Oder drücke auf Weitere
-          Informationen, um dir genauere Infos und Anleitungen zur Umsetzung zu
-          holen. Los geht's!
-        {:else if lintError}{lintError.messages[messageIndex]}
-        {/if}
-      </p>
-      <div class="actions" slot="actions">
-        {#if lintError && lintError.severity !== "praise"}
-          <button disabled={showTutorialMessage} on:click={showWhere}
-            >Wo?</button
-          >
-        {/if}
-        {#if lintError && messageIndex < lintError.messages.length - 1}
-          <button disabled={showTutorialMessage} on:click={moreInformation}
-            >Weitere Informationen</button
-          >
-        {/if}
-      </div>
-    </DraggableModal>
+    />
   {/if}
   <div id="action">
     <button on:click={() => (showTutor = true)}>Tutor</button>
