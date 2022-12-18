@@ -20,10 +20,15 @@
   let messageIndex = 0
   let showErrorMessage = false
   let testPassed = false
+  let showTutorialMessage = true
   let showTutor = true
 
   let modalLeft
   let modalTop
+
+  $: {
+    showTutorialMessage = code && code.trim() === initialcode.trim()
+  }
 
   // TODO: weitere Erklärungen -> erkläre zusätzliche Prinzipien wie if-Bedingung etc.
 
@@ -74,8 +79,11 @@
     }
   }
 
-  function getBackgroundColor(severity) {
-    switch (severity) {
+  function getBackgroundColor(lintError) {
+    if (!lintError) {
+      return "#b7d63a"
+    }
+    switch (lintError.severity) {
       case "error":
         return "#f23d3d"
       case "hint":
@@ -85,6 +93,11 @@
       default:
         return "white"
     }
+  }
+
+  function closeModal() {
+    showTutor = false
+    showTutorialMessage = false
   }
 
   function updateModalPosition(event) {
@@ -106,54 +119,49 @@
     {consoleCode}
   </p>
   {#if showTutor}
-    {#if code && code.trim() === initialcode.trim()}
-      <DraggableModal
-        backgroundColor={getBackgroundColor("praise")}
-        left={modalLeft}
-        top={modalTop}
-        on:close={() => (showTutor = false)}
-        on:move={updateModalPosition}
+    <DraggableModal
+      backgroundColor={showTutorialMessage
+        ? getBackgroundColor()
+        : getBackgroundColor(lintError)}
+      left={modalLeft}
+      top={modalTop}
+      on:close={closeModal}
+      on:move={updateModalPosition}
+    >
+      <span slot="title"
+        >{#if showTutorialMessage}Hallo!{:else if lintError && lintError.severity !== "praise"}Achtung!{:else}Weiter
+          so!{/if}</span
       >
-        <span slot="title">Hallo!</span>
-        <p slot="content" id="no-space-wrap">
+      <p slot="content" id={showTutorialMessage ? "no-space-wrap" : ""}>
+        {#if showTutorialMessage}
           Ich bin dein Tutor. Durch Tipps will ich dir helfen, das Programmieren
           besser zu verstehen. Drücke auf Wo, um den Codeausschnitt zu
           markieren, für den der Tipp gedacht ist. Oder drücke auf Weitere
           Informationen, um dir genauere Infos und Anleitungen zur Umsetzung zu
           holen. Los geht's!
-        </p>
-        <div class="actions" slot="actions">
-          <button disabled>Wo?</button>
-          <button disabled>Weitere Informationen</button>
-        </div>
-      </DraggableModal>
-    {:else if lintError}
-      <DraggableModal
-        backgroundColor={getBackgroundColor(lintError.severity)}
-        left={modalLeft}
-        top={modalTop}
-        on:close={() => (showTutor = false)}
-        on:move={updateModalPosition}
-      >
-        <span slot="title"
-          >{#if lintError.severity !== "praise"}Achtung!{:else}Weiter so!{/if}</span
-        >
-        <p slot="content">{lintError.messages[messageIndex]}</p>
-        <div class="actions" slot="actions">
-          {#if lintError.severity !== "praise"}
-            <button on:click={showWhere}>Wo?</button>
-          {/if}
-          {#if messageIndex < lintError.messages.length - 1}
-            <button on:click={moreInformation}>Weitere Informationen</button>
-          {/if}
-        </div>
-      </DraggableModal>
-    {/if}
+        {:else if lintError}{lintError.messages[messageIndex]}
+        {/if}
+      </p>
+      <div class="actions" slot="actions">
+        {#if lintError && lintError.severity !== "praise"}
+          <button disabled={showTutorialMessage} on:click={showWhere}
+            >Wo?</button
+          >
+        {/if}
+        {#if lintError && messageIndex < lintError.messages.length - 1}
+          <button disabled={showTutorialMessage} on:click={moreInformation}
+            >Weitere Informationen</button
+          >
+        {/if}
+      </div>
+    </DraggableModal>
   {/if}
   <div id="action">
     <button on:click={() => (showTutor = true)}>Tutor</button>
     <button on:click={run}>Run</button>
-    <button on:click={test}>Test</button>
+    <button class={testPassed ? "passed" : "failed"} on:click={test}
+      >Test</button
+    >
     <button disabled={!testPassed} on:click={next}>Nächste Aufgabe</button>
   </div>
 </div>
@@ -192,7 +200,10 @@
   #action {
     grid-area: action;
   }
-  p {
-    white-space: pre-line;
+  .passed {
+    background-color: #b7d63a;
+  }
+  .failed {
+    background-color: #f23d3d;
   }
 </style>
