@@ -54,7 +54,7 @@
   $: {
     if (remainingProblems) {
       lintError = remainingProblems[0]
-      showTutor = true
+      // showTutor = true // TODO: entweder hier oder in 48
     }
   }
 
@@ -76,6 +76,7 @@
     showTestModal = true
     testPassed = runUnitTest(title, code, testCases)
     if (remainingProblems.length === 0 && testPassed) {
+      // TODO: maybe new type to check for non passing errors (like math.max?)
       unlockedNext = true
     }
   }
