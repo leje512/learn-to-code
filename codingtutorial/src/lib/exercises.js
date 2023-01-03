@@ -19,7 +19,7 @@ export default [
   {
     title: "if-else",
     task: `Es ist eine Punktzahl gegeben: 
-<code>let punktzahl = 10</code>
+<code>let punkte = 10</code>
 Schreibe ein Programm, dass bei einer Punktzahl von mindestens 5 ausgibt:
 <code class="terminal">Bestanden. 
 Auf Wiedersehen.</code>
@@ -59,10 +59,10 @@ console.log("Auf Wiedersehen.");`,
         ...errorMissingParenthesesIfCondition,
       },
       {
-        ...errorSwitchedCompareSymbol,
+        ...errorSemicolonAfterIfCondition,
       },
       {
-        ...errorSemicolonAfterIfCondition,
+        ...errorSwitchedCompareSymbol,
       },
       {
         ...errorMissingIfElse,
@@ -151,10 +151,10 @@ console.log("Durchgefallen");`,
         ...errorMissingParenthesesIfCondition,
       },
       {
-        ...errorSwitchedCompareSymbol,
+        ...errorSemicolonAfterIfCondition,
       },
       {
-        ...errorSemicolonAfterIfCondition,
+        ...errorSwitchedCompareSymbol,
       },
       {
         ...errorMissingIfElse,
@@ -247,19 +247,19 @@ function name() {
 In dieser Aufgabe ist die Benennung entweder max2 oder max3.`,
       },
       {
-        ...errorLogicalOperator,
-      },
-      {
-        ...errorUsageOfMathMax,
-      },
-      {
         ...errorMissingParenthesesIfCondition,
+      },
+      {
+        ...errorSemicolonAfterIfCondition,
+      },
+      {
+        ...errorLogicalOperator,
       },
       {
         ...errorSwitchedCompareSymbol,
       },
       {
-        ...errorSemicolonAfterIfCondition,
+        ...errorUsageOfMathMax,
       },
       {
         ...{
