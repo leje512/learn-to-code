@@ -1,6 +1,6 @@
 <script>
   import Sandbox from "./components/Sandbox.svelte"
-  import { clearLintDiagnostics } from "./lib/astlint"
+  import { clearLintDiagnostics } from "./lib/astlint.js"
 
   import exercises from "./lib/exercises"
   let count = 0

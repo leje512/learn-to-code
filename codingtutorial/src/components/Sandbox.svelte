@@ -1,8 +1,8 @@
 <script>
   import CodeEditor from "./CodeEditor.svelte"
   import Tutor from "./Tutor.svelte"
-  import { runUnitTest } from "../lib/tests"
-  import { getDiagnostics } from "../lib/astlint"
+  import { runUnitTest } from "../lib/tests.js"
+  import { getDiagnostics } from "../lib/astlint.js"
   import { isEqual } from "lodash"
   import { createEventDispatcher } from "svelte"
   import DraggableModal from "./DraggableModal.svelte"

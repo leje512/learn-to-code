@@ -13,7 +13,7 @@ import {
   errorMissingReturn,
   errorIncorrectNumberOfParams,
   errorIncorrectNumberOfCallArguments,
-} from "./errorMessages"
+} from "./errorMessages.js"
 
 export default [
   {

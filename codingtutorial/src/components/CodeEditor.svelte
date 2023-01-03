@@ -4,12 +4,12 @@
   import { javascript } from "@codemirror/lang-javascript"
   // import { linter, lintGutter } from "@codemirror/lint"
   import { EditorState } from "@codemirror/state"
-  import { clearLintDiagnostics } from "../lib/astlint"
+  import { clearLintDiagnostics } from "../lib/astlint.js"
   import {
     highlightExtension,
     addHighlighting,
     clearHighlighting,
-  } from "../lib/editorExtension"
+  } from "../lib/editorExtension.js"
   import { isEqual } from "lodash"
 
   const dispatch = createEventDispatcher()
