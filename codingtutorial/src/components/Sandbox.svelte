@@ -45,7 +45,6 @@
       }
       remainingProblems = getDiagnostics(misconceptions, code)
       if (!isEqual(previousLintError, lintError)) {
-        showTutor = true
         showErrorMessage = false
       }
     }, 1500)
@@ -54,7 +53,7 @@
   $: {
     if (remainingProblems) {
       lintError = remainingProblems[0]
-      // showTutor = true // TODO: entweder hier oder in 48
+      showTutor = true
     }
   }
 
