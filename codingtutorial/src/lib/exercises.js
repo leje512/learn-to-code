@@ -1,4 +1,5 @@
 import {
+  errorMissingConsoleLog,
   errorMissingParenthesesIfCondition,
   errorSwitchedCompareSymbol,
   errorSemicolonAfterIfCondition,
@@ -72,6 +73,9 @@ if (punkte mindestens 5) {
 } else {
   // drucke "Durchgefallen"
 }`,
+      },
+      {
+        ...errorMissingConsoleLog,
       },
       {
         ...errorConsoleLogNotInBody,
@@ -164,6 +168,9 @@ if (punkte <= 10) {
 } else if (punkte <=20) {
   // drucke Naja
 }`,
+      },
+      {
+        ...errorMissingConsoleLog,
       },
       {
         ...errorConsoleLogInBody,

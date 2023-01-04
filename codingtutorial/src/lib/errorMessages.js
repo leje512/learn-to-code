@@ -9,7 +9,20 @@ import {
 } from "./nodeConditions.js"
 import * as walk from "acorn-walk"
 
-// console.log("Auf Wiedersehen"); is not a child of script
+const errorMissingConsoleLog = {
+  type: "ast",
+  severity: "hint",
+  parseErrorCheck: "regular",
+  condition: (node, parent, text) => {
+    return isConsoleLog(node)
+  },
+  messages: [
+    "Vergiss nicht, den Druckbefehl zu verwenden.",
+    "Vergiss den Druckbefehl console.log() nicht. In die Klammern schreibst du deinen Wert, der dann als Text in der Konsole angezeigt wird.",
+    "Wenn du den Text Hallo! auf der Konsole ausgeben willst, schreibe dazu in deinen Code: console.log('Hallo!')",
+  ],
+}
+
 const errorConsoleLogNotInBody = {
   type: "node",
   severity: "hint",
@@ -310,6 +323,7 @@ Beim Funktionsaufruf sollten also ebenfalls zwei Parameter übergeben werden.`,
 }
 
 export {
+  errorMissingConsoleLog,
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
   errorMissingIfElse,
@@ -327,6 +341,7 @@ export {
 }
 
 export default {
+  errorMissingConsoleLog,
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
   errorMissingIfElse,
