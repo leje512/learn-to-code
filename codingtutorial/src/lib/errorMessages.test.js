@@ -8,6 +8,7 @@ import {
   errorMissingIfElse,
   errorConsoleLogNotInBody,
   errorConsoleLogInBody,
+  errorMissingFunction,
   errorMissingFunctionKeyword,
   errorMissingFunctionName,
   errorLogicalOperator,
@@ -249,6 +250,37 @@ Code der weder in if noch in else enthalten ist, wird immer ausgeführt.`,
 if (3 < 5) {
   console.log("Text");
 }`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
+
+  describe("errorMissingFunction", () => {
+    const misconceptions = [
+      {
+        ...errorMissingFunction,
+      },
+    ]
+    it("with error", () => {
+      const code = `
+if (2 > 5) {
+  const a = 3
+}`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 1)
+      assert.deepEqual(errors[0].messages, [
+        "Löse diese Aufgabe mithilfe einer Funktion. Eine Funktion kann an anderer Stelle (auch mehrfach) aufgerufen werden. Meist macht es Sinn eine Funktion zu erstellen, wenn der Code öfters genutzt werden soll.",
+        `Nutze eine Funktion, damit der Code mehrmals aufgerufen werden kann. Eine Funktion hat folgende Syntax:
+  function name() {
+    // code 
+  }`,
+      ])
+    })
+    it("no error", () => {
+      const code = `
+  function something (a) {
+    return a
+  }`
       const errors = getDiagnostics(misconceptions, code)
       assert.lengthOf(errors, 0)
     })

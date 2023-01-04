@@ -168,6 +168,22 @@ function name() { }`,
   ],
 }
 
+const errorMissingFunction = {
+  type: "ast",
+  severity: "hint",
+  parseErrorCheck: "regular",
+  condition: (node, parent) => {
+    return isFunctionDeclaration(node)
+  },
+  messages: [
+    "Löse diese Aufgabe mithilfe einer Funktion. Eine Funktion kann an anderer Stelle (auch mehrfach) aufgerufen werden. Meist macht es Sinn eine Funktion zu erstellen, wenn der Code öfters genutzt werden soll.",
+    `Nutze eine Funktion, damit der Code mehrmals aufgerufen werden kann. Eine Funktion hat folgende Syntax:
+  function name() {
+    // code 
+  }`,
+  ],
+}
+
 const errorMissingFunctionName = {
   type: "node",
   severity: "error",
@@ -330,6 +346,7 @@ export {
   errorSemicolonAfterIfCondition,
   errorMissingParenthesesIfCondition,
   errorConsoleLogInBody,
+  errorMissingFunction,
   errorMissingFunctionKeyword,
   errorMissingFunctionName,
   errorLogicalOperator,
@@ -348,6 +365,7 @@ export default {
   errorSemicolonAfterIfCondition,
   errorMissingParenthesesIfCondition,
   errorConsoleLogInBody,
+  errorMissingFunction,
   errorMissingFunctionKeyword,
   errorMissingFunctionName,
   errorLogicalOperator,
