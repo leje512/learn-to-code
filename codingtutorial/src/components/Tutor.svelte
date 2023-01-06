@@ -69,8 +69,9 @@
       für den der Tipp gedacht ist. Oder drücke auf Weitere Informationen, um
       dir genauere Infos und Anleitungen zur Umsetzung zu holen. Los geht's!
     {:else if lintError}{lintError.messages[messageIndex]}
-    {:else}Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und
-      lasse deinen Code überprüfen.
+    {:else}Probiere deinen Code auch zwischendurch mit Run aus. Wenn du denkst,
+      dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code
+      überprüfen.
     {/if}
   </p>
   <div class="actions" slot="actions">

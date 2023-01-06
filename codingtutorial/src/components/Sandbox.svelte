@@ -163,7 +163,8 @@
             {/if}
           {:else}
             Überprüfe die Aufgabenstellung und nutze den Tutor, um zum richtigen
-            Ergebnis zu gelangen.
+            Ergebnis zu gelangen. Achte darauf, alle Anforderungen zu erfüllen
+            und keine Logikfehler zu machen.
           {/if}
         </p>
       </DraggableModal>

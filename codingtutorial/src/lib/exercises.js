@@ -83,7 +83,7 @@ if (punkte mindestens 5) {
         condition: (...args) =>
           errorConsoleLogNotInBody.condition(...args, "Auf Wiedersehen"),
         exerciseSpecificMessage:
-          "console.log('Auf Wiedersehen'); sollte nicht in if-else enthalten sein. Stattdessen wird diese danach ausgeführt.",
+          "console.log('Auf Wiedersehen'); sollte nicht in if-else enthalten sein. Stattdessen soll dies danach ausgeführt werden. Dadurch muss die Zeile auch nicht doppelt, sondern nur einmal geschrieben werden.",
       },
     ],
   },
