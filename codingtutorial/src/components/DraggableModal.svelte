@@ -25,7 +25,7 @@
   export let top = minimizedAtStart
     ? transform({
         prop: "top",
-        value: `calc(100vh - 10vh - 20px)`,
+        value: `calc(100vh - 25vh - 20px)`,
         win,
       })
     : transform({
@@ -70,7 +70,7 @@
       left = 20
       top = transform({
         prop: "top",
-        value: `calc(100vh - 10vh - 20px)`,
+        value: `calc(100vh - 25vh - 20px)`,
         win,
       })
     }
@@ -146,8 +146,9 @@
   .minimized {
     position: fixed;
     cursor: initial;
-    max-height: 5vh;
-    max-width: 20vw;
+    max-height: 20vh;
+    min-height: 20vh;
+    max-width: 35vw;
   }
 
   .taskbar {
