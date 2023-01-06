@@ -1,11 +1,12 @@
 <script>
+  import { createEventDispatcher, onMount } from "svelte"
   import CodeEditor from "./CodeEditor.svelte"
   import Tutor from "./Tutor.svelte"
+  import DraggableModal from "./DraggableModal.svelte"
+  import Solution from "./Solution.svelte"
   import { runUnitTest } from "../lib/tests.js"
   import { getDiagnostics } from "../lib/astlint.js"
   import { isEqual } from "lodash"
-  import { createEventDispatcher, onMount } from "svelte"
-  import DraggableModal from "./DraggableModal.svelte"
 
   const dispatch = createEventDispatcher()
 
@@ -13,6 +14,7 @@
   export let initialcode
   export let testCases
   export let misconceptions
+  export let solution
 
   let code
   let consoleCode = ""
@@ -26,6 +28,7 @@
   let showTutor = true
   let showTutorialMessage = true
   let showTestModal = false
+  let showSolution = false
 
   onMount(() => {
     const consoleLog = console.log
@@ -106,6 +109,16 @@
     showErrorMessage = false
   }
 
+  function openSolution() {
+    const response = confirm(
+      "Willst du dir wirklich die Lösung anzeigen lassen? Überprüfe davor nochmal die Aufgabenstellung und deinen Code."
+    )
+
+    if (response) {
+      showSolution = true
+    }
+  }
+
   function getBackgroundColor() {
     if (testPassed && unlockedNext) {
       return "#b7d63a"
@@ -134,6 +147,7 @@
     <button class={testPassed ? "passed" : "failed"} on:click={test}
       >Test</button
     >
+    <button on:click={openSolution}>Lösung</button>
     <button disabled={!unlockedNext} on:click={next}>Nächste Aufgabe</button>
   </div>
   {#if showTutor}
@@ -172,6 +186,9 @@
         </p>
       </DraggableModal>
     </div>
+  {/if}
+  {#if showSolution}
+    <Solution {solution} on:close={() => (showSolution = false)} />
   {/if}
 </div>
 

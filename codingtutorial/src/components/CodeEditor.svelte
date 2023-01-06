@@ -11,12 +11,14 @@
     clearHighlighting,
   } from "../lib/editorExtension.js"
   import { isEqual } from "lodash"
+  import { v4 as uuidv4 } from "uuid"
 
   const dispatch = createEventDispatcher()
   export let initialcode = "\n\n\n\n\n\n\n\n\n\n\n"
-  export let error
+  export let error = null
   export let showErrorMessage = false
 
+  let randomizedId = uuidv4()
   let previousError
   let view
 
@@ -73,18 +75,19 @@
   onMount(() => {
     view = new EditorView({
       state,
-      parent: document.getElementById("codeeditor"),
+      parent: document.getElementById(randomizedId),
     })
   })
 </script>
 
-<div id="codeeditor" />
+<div class="codeeditor" id={randomizedId} />
 
 <style>
-  #codeeditor :global(.cm-editor) {
+  .codeeditor :global(.cm-editor) {
     width: 50vw;
     max-width: 100%;
     max-height: 70vh;
     height: 70vh;
+    background-color: white;
   }
 </style>

@@ -2,8 +2,8 @@
   import { createEventDispatcher } from "svelte"
   import { transform } from "css-calc-transform"
 
-  let modalWidth = "50vw"
-  let modalHeight = "50vh"
+  export let modalWidth = "50vw"
+  export let modalHeight = "50vh"
   let win = {
     width: window.innerWidth,
     height: window.innerHeight,

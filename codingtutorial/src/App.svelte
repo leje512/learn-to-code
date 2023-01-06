@@ -34,6 +34,7 @@
     initialcode={exercises[count].initialcode}
     testCases={exercises[count].testCases}
     misconceptions={exercises[count].misconceptions}
+    solution={exercises[count].solution}
     on:next={incrementCount}
   />
 </main>
