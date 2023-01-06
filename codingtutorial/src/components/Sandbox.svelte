@@ -38,10 +38,6 @@
     }
   })
 
-  $: {
-    showTutorialMessage = code && code.trim() === initialcode.trim()
-  }
-
   // TODO: weitere Erklärungen -> erkläre zusätzliche Prinzipien wie if-Bedingung etc.
 
   let timerId
@@ -184,6 +180,11 @@
             und keine Logikfehler zu machen.
           {/if}
         </p>
+        <div class="actions" slot="actions">
+          {#if unlockedNext}
+            <button on:click={next}>Nächste Aufgabe</button>
+          {/if}
+        </div>
       </DraggableModal>
     </div>
   {/if}
