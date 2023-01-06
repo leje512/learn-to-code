@@ -1,12 +1,14 @@
 import { assert } from "chai"
 import { getDiagnostics, clearLintDiagnostics } from "./astlint.js"
 import {
+  errorMissingConsoleLog,
   errorMissingParenthesesIfCondition,
   errorSwitchedCompareSymbol,
   errorSemicolonAfterIfCondition,
   errorMissingIfElse,
   errorConsoleLogNotInBody,
   errorConsoleLogInBody,
+  errorMissingFunction,
   errorMissingFunctionKeyword,
   errorMissingFunctionName,
   errorLogicalOperator,
@@ -26,11 +28,36 @@ describe("errorMessages work as expected", () => {
     const misconceptions = []
     it("no error", () => {
       const errors = getDiagnostics(misconceptions, "")
+      assert.lengthOf(errors, 0)
+    })
+  })
+
+  describe("errorMissingConsoleLog", () => {
+    const misconceptions = [
+      {
+        ...errorMissingConsoleLog,
+      },
+    ]
+    it("with error", () => {
+      const code = `
+if (2 > 5) {
+  const a = 3
+}`
+      const errors = getDiagnostics(misconceptions, code)
       assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
       assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+        "Vergiss nicht, den Druckbefehl zu verwenden.",
+        "Vergiss den Druckbefehl console.log() nicht. In die Klammern schreibst du deinen Wert, der dann als Text in der Konsole angezeigt wird.",
+        "Wenn du den Text Hallo! auf der Konsole ausgeben willst, schreibe dazu in deinen Code: console.log('Hallo!')",
       ])
+    })
+    it("no error", () => {
+      const code = `
+  if (true) {
+    console.log("Different")
+  }`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -62,11 +89,7 @@ if (2 > 5) {
   }
   console.log("Text")`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -92,11 +115,7 @@ if (3 =< 5) {
   }
   console.log("Text")`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -133,11 +152,7 @@ if (3 < 5) {
   console.log("Different Text")
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -171,11 +186,7 @@ if (3 < 5) {
   console.log("Text");
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -209,11 +220,7 @@ if (3 < 5) {
   console.log("Text");
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -244,11 +251,38 @@ if (3 < 5) {
   console.log("Text");
 }`
       const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
+    })
+  })
+
+  describe("errorMissingFunction", () => {
+    const misconceptions = [
+      {
+        ...errorMissingFunction,
+      },
+    ]
+    it("with error", () => {
+      const code = `
+if (2 > 5) {
+  const a = 3
+}`
+      const errors = getDiagnostics(misconceptions, code)
       assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
       assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
+        "Löse diese Aufgabe mithilfe einer Funktion. Eine Funktion kann an anderer Stelle (auch mehrfach) aufgerufen werden. Meist macht es Sinn eine Funktion zu erstellen, wenn der Code öfters genutzt werden soll.",
+        `Nutze eine Funktion, damit der Code mehrmals aufgerufen werden kann. Eine Funktion hat folgende Syntax:
+  function name() {
+    // code 
+  }`,
       ])
+    })
+    it("no error", () => {
+      const code = `
+  function something (a) {
+    return a
+  }`
+      const errors = getDiagnostics(misconceptions, code)
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -278,11 +312,7 @@ function name () {
   // function implementation
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -314,11 +344,7 @@ function name () {
   // function implementation
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -347,11 +373,7 @@ if (true && true) {
   // code
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -374,11 +396,7 @@ function max() {
   // code
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -410,11 +428,7 @@ function name() {
   return 0;
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -449,11 +463,7 @@ function name() {
  return 0;
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -486,11 +496,7 @@ function name(one) {
  console.log("log")
 }`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 
@@ -525,11 +531,7 @@ function name(one) {
 }
 name(1)`
       const errors = getDiagnostics(misconceptions, code)
-      assert.lengthOf(errors, 1)
-      assert.equal(errors[0].severity, "praise")
-      assert.deepEqual(errors[0].messages, [
-        "Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code überprüfen.",
-      ])
+      assert.lengthOf(errors, 0)
     })
   })
 })

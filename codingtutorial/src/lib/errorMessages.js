@@ -9,7 +9,20 @@ import {
 } from "./nodeConditions.js"
 import * as walk from "acorn-walk"
 
-// console.log("Auf Wiedersehen"); is not a child of script
+const errorMissingConsoleLog = {
+  type: "ast",
+  severity: "hint",
+  parseErrorCheck: "regular",
+  condition: (node, parent, text) => {
+    return isConsoleLog(node)
+  },
+  messages: [
+    "Vergiss nicht, den Druckbefehl zu verwenden.",
+    "Vergiss den Druckbefehl console.log() nicht. In die Klammern schreibst du deinen Wert, der dann als Text in der Konsole angezeigt wird.",
+    "Wenn du den Text Hallo! auf der Konsole ausgeben willst, schreibe dazu in deinen Code: console.log('Hallo!')",
+  ],
+}
+
 const errorConsoleLogNotInBody = {
   type: "node",
   severity: "hint",
@@ -152,6 +165,22 @@ const errorMissingFunctionKeyword = {
     `Nutze folgende Syntax um eine Funktion auszuzeichnen:
 function name() { }`,
     "Ergänze das Keyword function vor dem Funktionsnamen.",
+  ],
+}
+
+const errorMissingFunction = {
+  type: "ast",
+  severity: "hint",
+  parseErrorCheck: "regular",
+  condition: (node, parent) => {
+    return isFunctionDeclaration(node)
+  },
+  messages: [
+    "Löse diese Aufgabe mithilfe einer Funktion. Eine Funktion kann an anderer Stelle (auch mehrfach) aufgerufen werden. Meist macht es Sinn eine Funktion zu erstellen, wenn der Code öfters genutzt werden soll.",
+    `Nutze eine Funktion, damit der Code mehrmals aufgerufen werden kann. Eine Funktion hat folgende Syntax:
+  function name() {
+    // code 
+  }`,
   ],
 }
 
@@ -310,12 +339,14 @@ Beim Funktionsaufruf sollten also ebenfalls zwei Parameter übergeben werden.`,
 }
 
 export {
+  errorMissingConsoleLog,
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
   errorMissingIfElse,
   errorSemicolonAfterIfCondition,
   errorMissingParenthesesIfCondition,
   errorConsoleLogInBody,
+  errorMissingFunction,
   errorMissingFunctionKeyword,
   errorMissingFunctionName,
   errorLogicalOperator,
@@ -327,12 +358,14 @@ export {
 }
 
 export default {
+  errorMissingConsoleLog,
   errorConsoleLogNotInBody,
   errorSwitchedCompareSymbol,
   errorMissingIfElse,
   errorSemicolonAfterIfCondition,
   errorMissingParenthesesIfCondition,
   errorConsoleLogInBody,
+  errorMissingFunction,
   errorMissingFunctionKeyword,
   errorMissingFunctionName,
   errorLogicalOperator,

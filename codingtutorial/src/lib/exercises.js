@@ -1,10 +1,12 @@
 import {
+  errorMissingConsoleLog,
   errorMissingParenthesesIfCondition,
   errorSwitchedCompareSymbol,
   errorSemicolonAfterIfCondition,
   errorMissingIfElse,
   errorConsoleLogNotInBody,
   errorConsoleLogInBody,
+  errorMissingFunction,
   errorMissingFunctionKeyword,
   errorMissingFunctionName,
   errorLogicalOperator,
@@ -72,6 +74,9 @@ if (punkte mindestens 5) {
 } else {
   // drucke "Durchgefallen"
 }`,
+      },
+      {
+        ...errorMissingConsoleLog,
       },
       {
         ...errorConsoleLogNotInBody,
@@ -164,6 +169,9 @@ if (punkte <= 10) {
 } else if (punkte <=20) {
   // drucke Naja
 }`,
+      },
+      {
+        ...errorMissingConsoleLog,
       },
       {
         ...errorConsoleLogInBody,
@@ -260,6 +268,14 @@ In dieser Aufgabe ist die Benennung entweder max2 oder max3.`,
       },
       {
         ...errorUsageOfMathMax,
+      },
+      {
+        ...errorMissingFunction,
+        exerciseSpecificMessage: `Schreibe zwei Funktionen, die mehrmals aufgerufen werden können. Schreibe jeweils eine Funktion für max2 und max3. Die Syntax sieht so aus:
+function name() {
+  // code 
+}
+Ersetze name jeweils durch den Namen der Funktion.`,
       },
       {
         ...{
