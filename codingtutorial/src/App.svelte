@@ -40,15 +40,6 @@
 </main>
 
 <style>
-  :global(#app) {
-    margin: 0;
-    padding: 0;
-    max-height: 100vh;
-    max-width: 100vw;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-  }
   main {
     margin: 0;
     padding: 2em;

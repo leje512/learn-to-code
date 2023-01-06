@@ -7,7 +7,7 @@
   export let showTutorialMessage = true
   export let lintError
 
-  let modalLeft
+  let modalRight
   let modalTop
   let messageIndex = 0
 
@@ -43,7 +43,7 @@
   }
 
   function updateModalPosition(event) {
-    modalLeft = event.detail.left
+    modalRight = event.detail.right
     modalTop = event.detail.top
   }
 </script>
@@ -52,7 +52,7 @@
   backgroundColor={showTutorialMessage
     ? getBackgroundColor()
     : getBackgroundColor(lintError)}
-  left={modalLeft}
+  right={modalRight}
   top={modalTop}
   minimizedAtStart={!showTutorialMessage}
   on:close={() => dispatch("close")}

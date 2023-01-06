@@ -196,12 +196,12 @@
   #sandbox {
     padding: 2em 0 0 0;
     display: grid;
-    grid-template-columns: minmax(250px, 1fr) minmax(250px, 1fr);
+    grid-template-columns: minmax(250px, 2fr) minmax(250px, 1fr);
     grid-template-rows: auto 2em 1fr 0px;
     grid-template-areas:
       "editor console"
       ". ."
-      ". action"
+      "action ."
       "modal modal";
     max-height: 100%;
     min-height: 0;
@@ -209,6 +209,7 @@
   #editor {
     grid-area: editor;
     overflow-y: auto;
+    margin-right: 2em;
   }
   #console {
     grid-area: console;

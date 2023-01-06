@@ -84,10 +84,12 @@
 
 <style>
   .codeeditor :global(.cm-editor) {
-    width: 50vw;
     max-width: 100%;
     max-height: 70vh;
     height: 70vh;
     background-color: white;
+  }
+  :global(.ͼ1 .cm-scroller) {
+    overflow-x: initial;
   }
 </style>
