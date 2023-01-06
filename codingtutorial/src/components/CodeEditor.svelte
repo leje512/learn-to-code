@@ -1,6 +1,7 @@
 <script>
   import { onMount, createEventDispatcher } from "svelte"
   import { EditorView, basicSetup } from "codemirror"
+  import { autocompletion } from "@codemirror/autocomplete"
   import { javascript } from "@codemirror/lang-javascript"
   // import { linter, lintGutter } from "@codemirror/lint"
   import { EditorState } from "@codemirror/state"
@@ -27,8 +28,7 @@
     extensions: [
       basicSetup,
       javascript(),
-      /* lintGutter(),
-      linter(astlint), */
+      autocompletion({ activateOnTyping: false }),
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {
           dispatch("edited", {

@@ -93,7 +93,6 @@
       testPassed = false
       unlockedNext = false
 
-      showTutorialMessage = true
       showTutor = true
       showTestModal = false
     }
