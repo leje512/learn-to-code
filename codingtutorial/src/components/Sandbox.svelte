@@ -4,7 +4,7 @@
   import { runUnitTest } from "../lib/tests.js"
   import { getDiagnostics } from "../lib/astlint.js"
   import { isEqual } from "lodash"
-  import { createEventDispatcher } from "svelte"
+  import { createEventDispatcher, onMount } from "svelte"
   import DraggableModal from "./DraggableModal.svelte"
 
   const dispatch = createEventDispatcher()
@@ -26,6 +26,14 @@
   let showTutor = true
   let showTutorialMessage = true
   let showTestModal = false
+
+  onMount(() => {
+    const consoleLog = console.log
+    console.log = function (msg) {
+      consoleLog.apply(console, arguments)
+      consoleCode = `${consoleCode}${msg}\n`
+    }
+  })
 
   $: {
     showTutorialMessage = code && code.trim() === initialcode.trim()
@@ -59,11 +67,6 @@
 
   function run() {
     consoleCode = ""
-    const consoleLog = console.log
-    console.log = function (msg) {
-      consoleLog.apply(console, arguments)
-      consoleCode = `${consoleCode}${msg}\n`
-    }
     try {
       Function(code)()
     } catch (error) {

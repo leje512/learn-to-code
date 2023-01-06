@@ -104,7 +104,7 @@ export function getDiagnostics(misconceptions, code) {
         }
       )
     } catch (looseError) {
-      console.log("Konnte Code nicht übersetzen.", looseError)
+      // diagnostic element will only be added if no tutor matching error was found
     }
 
     if (!foundError) {
