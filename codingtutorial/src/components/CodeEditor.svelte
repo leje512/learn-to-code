@@ -1,9 +1,10 @@
 <script>
   import { onMount, createEventDispatcher } from "svelte"
+  import { isEqual } from "lodash"
+  import { v4 as uuidv4 } from "uuid"
   import { EditorView, basicSetup } from "codemirror"
   import { autocompletion } from "@codemirror/autocomplete"
   import { javascript } from "@codemirror/lang-javascript"
-  // import { linter, lintGutter } from "@codemirror/lint"
   import { EditorState } from "@codemirror/state"
   import { clearLintDiagnostics } from "../lib/astlint.js"
   import {
@@ -11,13 +12,11 @@
     addHighlighting,
     clearHighlighting,
   } from "../lib/editorExtension.js"
-  import { isEqual } from "lodash"
-  import { v4 as uuidv4 } from "uuid"
 
   const dispatch = createEventDispatcher()
   export let initialcode = "\n\n\n\n\n\n\n\n\n\n\n"
   export let error = null
-  export let showErrorMessage = false
+  export let showHighlighting = false
 
   let randomizedId = uuidv4()
   let previousError
@@ -60,15 +59,18 @@
   }
 
   $: {
-    // watch showErrorMessage and error
+    // watch showHighlighting and error
     if (
       view &&
-      showErrorMessage &&
-      ((error && !previousError) ||
+      showHighlighting &&
+      ((!error && !previousError) ||
+        (error && !previousError) ||
         (error && previousError && !isEqual(error, previousError)))
     ) {
       addHighlighting(view, error.from, error.to)
       previousError = error
+    } else if (!showHighlighting) {
+      clearHighlighting(view)
     }
   }
 

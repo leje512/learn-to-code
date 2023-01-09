@@ -2,6 +2,8 @@
   import { createEventDispatcher } from "svelte"
   import { transform } from "css-calc-transform"
 
+  const dispatch = createEventDispatcher()
+
   export let modalWidth = "50vw"
   export let modalHeight = "50vh"
   let win = {
@@ -12,8 +14,12 @@
   export let backgroundColor = "white"
   export let backgroundUsable = true
   let useBackground = backgroundUsable
+
   export let minimizable = true
   export let minimizedAtStart = false
+  let minimized = minimizedAtStart
+
+  let moving = false
 
   export let right = minimizedAtStart
     ? 20
@@ -33,11 +39,6 @@
         value: `calc((100vh - ${modalHeight})/ 2)`,
         win,
       })
-
-  const dispatch = createEventDispatcher()
-
-  let moving = false
-  let minimized = minimizedAtStart
 
   function onMouseDown() {
     if (backgroundUsable) {

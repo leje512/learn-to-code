@@ -4,14 +4,14 @@
 
   const dispatch = createEventDispatcher()
 
-  export let lintError
+  export let tutorContent
 
   let modalRight
   let modalTop
   let messageIndex = 0
 
   $: {
-    lintError
+    tutorContent
     messageIndex = 0
   }
 
@@ -20,16 +20,16 @@
   }
 
   function moreInformation() {
-    if (messageIndex < lintError.messages.length - 1) {
+    if (messageIndex < tutorContent.messages.length - 1) {
       messageIndex++
     }
   }
 
-  function getBackgroundColor(lintError) {
-    if (!lintError) {
+  function getBackgroundColor(tutorContent) {
+    if (!tutorContent) {
       return "#b7d63a"
     }
-    switch (lintError.severity) {
+    switch (tutorContent.severity) {
       case "error":
         return "#f23d3d"
       case "hint":
@@ -48,7 +48,7 @@
 </script>
 
 <DraggableModal
-  backgroundColor={getBackgroundColor(lintError)}
+  backgroundColor={getBackgroundColor(tutorContent)}
   right={modalRight}
   top={modalTop}
   minimizedAtStart={true}
@@ -56,20 +56,20 @@
   on:move={updateModalPosition}
 >
   <span slot="title"
-    >{#if lintError}Achtung!{:else}Weiter so!{/if}</span
+    >{#if tutorContent}Achtung!{:else}Weiter so!{/if}</span
   >
-  <p slot="content" id={!lintError ? "no-space-wrap" : ""}>
-    {#if lintError}{lintError.messages[messageIndex]}
+  <p slot="content" id={!tutorContent ? "no-space-wrap" : ""}>
+    {#if tutorContent}{tutorContent.messages[messageIndex]}
     {:else}Probiere deinen Code auch zwischendurch mit Run aus. Wenn du denkst,
       dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code
       überprüfen.
     {/if}
   </p>
   <div class="actions" slot="actions">
-    {#if lintError}
+    {#if tutorContent}
       <button on:click={showWhere}>Wo?</button>
     {/if}
-    {#if lintError && messageIndex < lintError.messages.length - 1}
+    {#if tutorContent && messageIndex < tutorContent.messages.length - 1}
       <button on:click={moreInformation}>Nächster Tipp</button>
     {/if}
   </div>

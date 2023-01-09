@@ -5,9 +5,9 @@
   import Tutor from "./Tutor.svelte"
   import DraggableModal from "./DraggableModal.svelte"
   import Solution from "./Solution.svelte"
+  import TutorialModal from "./TutorialModal.svelte"
   import { runUnitTest } from "../lib/tests.js"
   import { getDiagnostics } from "../lib/astlint.js"
-  import TutorialModal from "./TutorialModal.svelte"
 
   const dispatch = createEventDispatcher()
 
@@ -46,12 +46,12 @@
 
   $: {
     if (remainingProblems) {
-      updateLintError()
+      updateTutorContent()
     }
   }
 
   let timerId
-  function updateLintError() {
+  function updateTutorContent() {
     if (timerId) {
       clearTimeout(timerId)
     }
@@ -162,7 +162,7 @@
   {#if showTutorModal}
     <div class="modal">
       <Tutor
-        lintError={tutorContent}
+        {tutorContent}
         on:showWhere={() => (showHighlighting = true)}
         on:close={closeTutorModal}
       />
