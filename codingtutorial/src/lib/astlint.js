@@ -22,7 +22,6 @@ export function getDiagnostics(misconceptions, code) {
         exerciseSpecificMessage,
       }) => {
         if (parseErrorCheck == "regular" || parseErrorCheck == "both") {
-          // TODO: change to includes and dont do both?
           if (type == "node") {
             walk.fullAncestor(ast, (node, ancestors) => {
               const parent = ancestors[ancestors.length - 2]

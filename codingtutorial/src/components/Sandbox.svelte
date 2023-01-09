@@ -38,8 +38,6 @@
     }
   })
 
-  // TODO: weitere Erklärungen -> erkläre zusätzliche Prinzipien wie if-Bedingung etc.
-
   let timerId
   function updateCode(event) {
     if (timerId) {
@@ -77,7 +75,6 @@
     showTestModal = true
     testPassed = runUnitTest(title, code, testCases)
     if (remainingProblems.length === 0 && testPassed) {
-      // TODO: maybe new type to check for non passing errors (like math.max?)
       unlockedNext = true
     }
   }
