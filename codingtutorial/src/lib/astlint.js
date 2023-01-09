@@ -2,9 +2,9 @@ import { parse } from "acorn"
 import * as walk from "acorn-walk"
 import * as acornLoose from "acorn-loose"
 
-let diagnostics = []
-
 export function getDiagnostics(misconceptions, code) {
+  let diagnostics = []
+
   try {
     const ast = parse(code, {
       ecmaVersion: "latest",
@@ -122,8 +122,4 @@ export function getDiagnostics(misconceptions, code) {
     }
   }
   return diagnostics
-}
-
-export function clearLintDiagnostics() {
-  diagnostics = []
 }

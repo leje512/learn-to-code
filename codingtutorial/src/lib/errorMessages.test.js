@@ -1,5 +1,5 @@
 import { assert } from "chai"
-import { getDiagnostics, clearLintDiagnostics } from "./astlint.js"
+import { getDiagnostics } from "./astlint.js"
 import {
   errorMissingConsoleLog,
   errorMissingParenthesesIfCondition,
@@ -18,10 +18,6 @@ import {
   errorIncorrectNumberOfParams,
   errorIncorrectNumberOfCallArguments,
 } from "./errorMessages.js"
-
-beforeEach(() => {
-  clearLintDiagnostics()
-})
 
 describe("errorMessages work as expected", () => {
   describe("no misconception should return no errors", () => {

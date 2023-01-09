@@ -6,7 +6,6 @@
   import { autocompletion } from "@codemirror/autocomplete"
   import { javascript } from "@codemirror/lang-javascript"
   import { EditorState } from "@codemirror/state"
-  import { clearLintDiagnostics } from "../lib/astlint.js"
   import {
     highlightExtension,
     addHighlighting,
@@ -34,7 +33,6 @@
             text: update.state.doc.toString(),
           })
           clearHighlighting(view)
-          clearLintDiagnostics()
         }
       }),
       highlightExtension,

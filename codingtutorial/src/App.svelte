@@ -1,6 +1,5 @@
 <script>
   import Sandbox from "./components/Sandbox.svelte"
-  import { clearLintDiagnostics } from "./lib/astlint.js"
 
   import exercises from "./lib/exercises"
   let count = 0
@@ -8,24 +7,11 @@
   function incrementCount() {
     if (count < exercises.length - 1) {
       count++
-      clearLintDiagnostics()
-    }
-  }
-
-  function decreaseCount() {
-    if (count > 0) {
-      count--
-      clearLintDiagnostics()
     }
   }
 </script>
 
 <main>
-  <!--div class="exercise-action">
-    <-button disabled={count <= 0} on:click={decreaseCount}>back</button>
-    <button disabled={count >= exercises.length - 1} on:click={incrementCount}
-      >next</button>
-  </div-->
   <div id="task">
     {@html exercises[count].task}
   </div>
