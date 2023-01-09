@@ -1,6 +1,7 @@
 <script>
   import { onMount, createEventDispatcher } from "svelte"
   import { EditorView, basicSetup } from "codemirror"
+  import { autocompletion } from "@codemirror/autocomplete"
   import { javascript } from "@codemirror/lang-javascript"
   // import { linter, lintGutter } from "@codemirror/lint"
   import { EditorState } from "@codemirror/state"
@@ -11,12 +12,14 @@
     clearHighlighting,
   } from "../lib/editorExtension.js"
   import { isEqual } from "lodash"
+  import { v4 as uuidv4 } from "uuid"
 
   const dispatch = createEventDispatcher()
   export let initialcode = "\n\n\n\n\n\n\n\n\n\n\n"
-  export let error
+  export let error = null
   export let showErrorMessage = false
 
+  let randomizedId = uuidv4()
   let previousError
   let view
 
@@ -25,8 +28,7 @@
     extensions: [
       basicSetup,
       javascript(),
-      /* lintGutter(),
-      linter(astlint), */
+      autocompletion({ activateOnTyping: false }),
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {
           dispatch("edited", {
@@ -73,18 +75,21 @@
   onMount(() => {
     view = new EditorView({
       state,
-      parent: document.getElementById("codeeditor"),
+      parent: document.getElementById(randomizedId),
     })
   })
 </script>
 
-<div id="codeeditor" />
+<div class="codeeditor" id={randomizedId} />
 
 <style>
-  #codeeditor :global(.cm-editor) {
-    width: 50vw;
+  .codeeditor :global(.cm-editor) {
     max-width: 100%;
     max-height: 70vh;
     height: 70vh;
+    background-color: white;
+  }
+  :global(.ͼ1 .cm-scroller) {
+    overflow-x: initial;
   }
 </style>

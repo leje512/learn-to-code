@@ -7,7 +7,7 @@
   export let showTutorialMessage = true
   export let lintError
 
-  let modalLeft
+  let modalRight
   let modalTop
   let messageIndex = 0
 
@@ -21,7 +21,7 @@
   }
 
   function moreInformation() {
-    if (messageIndex < lintError.messages.length - 1) {
+    if (messageIndex < lintError.messages.length - 1 || showTutorialMessage) {
       messageIndex++
     }
   }
@@ -43,7 +43,7 @@
   }
 
   function updateModalPosition(event) {
-    modalLeft = event.detail.left
+    modalRight = event.detail.right
     modalTop = event.detail.top
   }
 </script>
@@ -52,7 +52,7 @@
   backgroundColor={showTutorialMessage
     ? getBackgroundColor()
     : getBackgroundColor(lintError)}
-  left={modalLeft}
+  right={modalRight}
   top={modalTop}
   minimizedAtStart={!showTutorialMessage}
   on:close={() => dispatch("close")}
@@ -62,25 +62,36 @@
     >{#if showTutorialMessage}Hallo!{:else if lintError}Achtung!{:else}Weiter
       so!{/if}</span
   >
-  <p slot="content" id={showTutorialMessage ? "no-space-wrap" : ""}>
-    {#if showTutorialMessage}
+  <p
+    slot="content"
+    id={showTutorialMessage || !lintError ? "no-space-wrap" : ""}
+  >
+    {#if showTutorialMessage && messageIndex === 0}
       Ich bin dein Tutor. Durch Tipps will ich dir helfen, das Programmieren
       besser zu verstehen. Drücke auf Wo, um den Codeausschnitt zu markieren,
-      für den der Tipp gedacht ist. Oder drücke auf Weitere Informationen, um
-      dir genauere Infos und Anleitungen zur Umsetzung zu holen. Los geht's!
+      für den der Tipp gedacht ist. Oder drücke auf Nächster Tipp, um dir
+      genauere Infos und Anleitungen zur Umsetzung zu holen. Probiers gleich
+      aus!
+    {:else if showTutorialMessage}
+      Super! Hier siehst du normalerweise genauere Tipps oder sogar
+      Syntaxvorgaben.
+      <p id="no-space-wrap">
+        Nutze den Button Run, um deinen Code zwischendurch auszuprobieren. Wenn
+        du denkst, dass du die Aufgabe gelöst hast, kannst du deinen Code mit
+        Klick auf Test überprüfen lassen. Los geht's!
+      </p>
     {:else if lintError}{lintError.messages[messageIndex]}
-    {:else}Wenn du denkst, dass du die Aufgabe erfüllt hast, klicke Test und
-      lasse deinen Code überprüfen.
+    {:else}Probiere deinen Code auch zwischendurch mit Run aus. Wenn du denkst,
+      dass du die Aufgabe erfüllt hast, klicke Test und lasse deinen Code
+      überprüfen.
     {/if}
   </p>
   <div class="actions" slot="actions">
     {#if lintError}
-      <button disabled={showTutorialMessage} on:click={showWhere}>Wo?</button>
+      <button on:click={showWhere}>Wo?</button>
     {/if}
-    {#if lintError && messageIndex < lintError.messages.length - 1}
-      <button disabled={showTutorialMessage} on:click={moreInformation}
-        >Weitere Informationen</button
-      >
+    {#if (showTutorialMessage && messageIndex === 0) || (lintError && messageIndex < lintError.messages.length - 1)}
+      <button on:click={moreInformation}>Nächster Tipp</button>
     {/if}
   </div>
 </DraggableModal>

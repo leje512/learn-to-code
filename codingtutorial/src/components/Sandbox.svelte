@@ -1,11 +1,12 @@
 <script>
+  import { createEventDispatcher, onMount } from "svelte"
   import CodeEditor from "./CodeEditor.svelte"
   import Tutor from "./Tutor.svelte"
+  import DraggableModal from "./DraggableModal.svelte"
+  import Solution from "./Solution.svelte"
   import { runUnitTest } from "../lib/tests.js"
   import { getDiagnostics } from "../lib/astlint.js"
   import { isEqual } from "lodash"
-  import { createEventDispatcher } from "svelte"
-  import DraggableModal from "./DraggableModal.svelte"
 
   const dispatch = createEventDispatcher()
 
@@ -13,6 +14,7 @@
   export let initialcode
   export let testCases
   export let misconceptions
+  export let solution
 
   let code
   let consoleCode = ""
@@ -26,10 +28,15 @@
   let showTutor = true
   let showTutorialMessage = true
   let showTestModal = false
+  let showSolution = false
 
-  $: {
-    showTutorialMessage = code && code.trim() === initialcode.trim()
-  }
+  onMount(() => {
+    const consoleLog = console.log
+    console.log = function (msg) {
+      consoleLog.apply(console, arguments)
+      consoleCode = `${consoleCode}${msg}\n`
+    }
+  })
 
   // TODO: weitere Erklärungen -> erkläre zusätzliche Prinzipien wie if-Bedingung etc.
 
@@ -59,11 +66,6 @@
 
   function run() {
     consoleCode = ""
-    const consoleLog = console.log
-    console.log = function (msg) {
-      consoleLog.apply(console, arguments)
-      consoleCode = `${consoleCode}${msg}\n`
-    }
     try {
       Function(code)()
     } catch (error) {
@@ -91,7 +93,6 @@
       testPassed = false
       unlockedNext = false
 
-      showTutorialMessage = true
       showTutor = true
       showTestModal = false
     }
@@ -101,6 +102,16 @@
     showTutor = false
     showTutorialMessage = false
     showErrorMessage = false
+  }
+
+  function openSolution() {
+    const response = confirm(
+      "Willst du dir wirklich die Lösung anzeigen lassen? Überprüfe davor nochmal die Aufgabenstellung und deinen Code."
+    )
+
+    if (response) {
+      showSolution = true
+    }
   }
 
   function getBackgroundColor() {
@@ -131,6 +142,7 @@
     <button class={testPassed ? "passed" : "failed"} on:click={test}
       >Test</button
     >
+    <button on:click={openSolution}>Lösung</button>
     <button disabled={!unlockedNext} on:click={next}>Nächste Aufgabe</button>
   </div>
   {#if showTutor}
@@ -163,11 +175,20 @@
             {/if}
           {:else}
             Überprüfe die Aufgabenstellung und nutze den Tutor, um zum richtigen
-            Ergebnis zu gelangen.
+            Ergebnis zu gelangen. Achte darauf, alle Anforderungen zu erfüllen
+            und keine Logikfehler zu machen.
           {/if}
         </p>
+        <div class="actions" slot="actions">
+          {#if unlockedNext}
+            <button on:click={next}>Nächste Aufgabe</button>
+          {/if}
+        </div>
       </DraggableModal>
     </div>
+  {/if}
+  {#if showSolution}
+    <Solution {solution} on:close={() => (showSolution = false)} />
   {/if}
 </div>
 
@@ -175,12 +196,12 @@
   #sandbox {
     padding: 2em 0 0 0;
     display: grid;
-    grid-template-columns: minmax(250px, 1fr) minmax(250px, 1fr);
+    grid-template-columns: minmax(250px, 2fr) minmax(250px, 1fr);
     grid-template-rows: auto 2em 1fr 0px;
     grid-template-areas:
       "editor console"
       ". ."
-      ". action"
+      "action ."
       "modal modal";
     max-height: 100%;
     min-height: 0;
@@ -188,6 +209,7 @@
   #editor {
     grid-area: editor;
     overflow-y: auto;
+    margin-right: 2em;
   }
   #console {
     grid-area: console;

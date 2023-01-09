@@ -2,8 +2,8 @@
   import { createEventDispatcher } from "svelte"
   import { transform } from "css-calc-transform"
 
-  let modalWidth = "50vw"
-  let modalHeight = "50vh"
+  export let modalWidth = "50vw"
+  export let modalHeight = "50vh"
   let win = {
     width: window.innerWidth,
     height: window.innerHeight,
@@ -15,17 +15,17 @@
   export let minimizable = true
   export let minimizedAtStart = false
 
-  export let left = minimizedAtStart
+  export let right = minimizedAtStart
     ? 20
     : transform({
-        prop: "left",
+        prop: "right",
         value: `calc((100vw - ${modalWidth})/ 2)`,
         win,
       })
   export let top = minimizedAtStart
     ? transform({
         prop: "top",
-        value: `calc(100vh - 10vh - 20px)`,
+        value: `calc(100vh - 25vh - 20px)`,
         win,
       })
     : transform({
@@ -48,10 +48,10 @@
 
   function onMouseMove(e) {
     if (moving && !minimized) {
-      left += e.movementX
+      right -= e.movementX
       top += e.movementY
       dispatch("move", {
-        left,
+        right,
         top,
       })
     }
@@ -67,10 +67,10 @@
   function minimizeModal() {
     if (minimizable) {
       minimized = true
-      left = 20
+      right = 20
       top = transform({
         prop: "top",
-        value: `calc(100vh - 10vh - 20px)`,
+        value: `calc(100vh - 25vh - 20px)`,
         win,
       })
     }
@@ -78,8 +78,8 @@
 
   function maximizeModal() {
     minimized = false
-    left = transform({
-      prop: "left",
+    right = transform({
+      prop: "right",
       value: `calc((100vw - ${modalWidth})/ 2)`,
       win,
     })
@@ -98,7 +98,7 @@
 <div class={useBackground ? "" : "modal-wrapper"}>
   <div
     on:mousedown={onMouseDown}
-    style="--modalWidth:{modalWidth};--modalHeight:{modalHeight};left: {left}px; top: {top}px; background-color: {backgroundColor};"
+    style="--modalWidth:{modalWidth};--modalHeight:{modalHeight};right: {right}px; top: {top}px; background-color: {backgroundColor};"
     class="modal {minimized ? 'minimized' : ''}"
   >
     <div class="taskbar">
@@ -141,13 +141,15 @@
     padding: 20px;
     overflow-y: auto;
     cursor: move;
+    border-radius: 8px;
   }
 
   .minimized {
     position: fixed;
     cursor: initial;
-    max-height: 5vh;
-    max-width: 20vw;
+    max-height: 20vh;
+    min-height: 20vh;
+    max-width: 35vw;
   }
 
   .taskbar {
