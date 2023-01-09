@@ -1,12 +1,12 @@
 <script>
   import { createEventDispatcher, onMount } from "svelte"
+  import { isEqual } from "lodash"
   import CodeEditor from "./CodeEditor.svelte"
   import Tutor from "./Tutor.svelte"
   import DraggableModal from "./DraggableModal.svelte"
   import Solution from "./Solution.svelte"
   import { runUnitTest } from "../lib/tests.js"
   import { getDiagnostics } from "../lib/astlint.js"
-  import { isEqual } from "lodash"
 
   const dispatch = createEventDispatcher()
 
@@ -38,28 +38,33 @@
     }
   })
 
-  let timerId
   function updateCode(event) {
-    if (timerId) {
-      clearTimeout(timerId)
-    }
-    timerId = setTimeout(() => {
-      code = event.detail.text
-      if (lintError) {
-        previousLintError = lintError
-      }
-      remainingProblems = getDiagnostics(misconceptions, code)
-      if (!isEqual(previousLintError, lintError)) {
-        showErrorMessage = false
-      }
-    }, 1500)
+    code = event.detail.text
+    remainingProblems = getDiagnostics(misconceptions, code)
   }
 
   $: {
     if (remainingProblems) {
-      lintError = remainingProblems[0]
-      showTutor = true
+      updateLintError()
     }
+  }
+
+  let timerId
+  function updateLintError() {
+    if (timerId) {
+      clearTimeout(timerId)
+    }
+    timerId = setTimeout(() => {
+      if (lintError) {
+        previousLintError = lintError
+      }
+      lintError = remainingProblems[0]
+
+      if (!isEqual(previousLintError, lintError)) {
+        showTutor = true
+        showErrorMessage = false
+      }
+    }, 1500)
   }
 
   function run() {
