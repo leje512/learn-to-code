@@ -70,6 +70,28 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+button:disabled {
+  cursor: not-allowed;
+}
+button:disabled:hover {
+  border: none;
+}
+
+
+code {
+  background: lightgrey;
+  font-family: monospace;
+}
+code.terminal {
+  background: black;
+  color: white;
+  font-family: monospace;
+}
+
+.actions {
+  margin-left: auto;
+  padding: 5px;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

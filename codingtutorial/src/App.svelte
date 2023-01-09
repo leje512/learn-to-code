@@ -52,28 +52,8 @@
     display: flex;
     flex-direction: column;
   }
-  .exercise-action {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 0 20px 0;
-  }
-  button:disabled {
-    cursor: not-allowed;
-  }
-  button:disabled:hover {
-    border: none;
-  }
   #task {
     display: block;
     white-space: pre-wrap;
-  }
-  :global(code) {
-    background: lightgrey;
-    font-family: monospace;
-  }
-  :global(code.terminal) {
-    background: black;
-    color: white;
-    font-family: monospace;
   }
 </style>

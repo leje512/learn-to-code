@@ -167,9 +167,4 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
-  :global(.actions) {
-    margin-left: auto;
-    padding: 5px;
-  }
 </style>
