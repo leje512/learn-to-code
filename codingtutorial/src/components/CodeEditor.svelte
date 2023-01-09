@@ -81,15 +81,3 @@
 </script>
 
 <div class="codeeditor" id={randomizedId} />
-
-<style>
-  .codeeditor :global(.cm-editor) {
-    max-width: 100%;
-    max-height: 70vh;
-    height: 70vh;
-    background-color: white;
-  }
-  :global(.ͼ1 .cm-scroller) {
-    overflow-x: initial;
-  }
-</style>

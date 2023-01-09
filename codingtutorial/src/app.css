@@ -103,6 +103,16 @@ code.terminal {
   padding: 5px;
 }
 
+.codeeditor .cm-editor {
+  max-width: 100%;
+  max-height: 70vh;
+  height: 70vh;
+  background-color: white;
+}
+.ͼ1 .cm-scroller {
+  overflow-x: initial;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
