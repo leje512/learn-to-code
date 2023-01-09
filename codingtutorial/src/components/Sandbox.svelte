@@ -7,6 +7,7 @@
   import Solution from "./Solution.svelte"
   import { runUnitTest } from "../lib/tests.js"
   import { getDiagnostics } from "../lib/astlint.js"
+  import TutorialModal from "./TutorialModal.svelte"
 
   const dispatch = createEventDispatcher()
 
@@ -18,17 +19,17 @@
 
   let code
   let consoleCode = ""
-  let lintError
-  let previousLintError
+  let tutorContent
+  let previousTutorContent
   let remainingProblems
-  let showErrorMessage = false
+  let showHighlighting = false
   let testPassed = false
   let unlockedNext = false
 
-  let showTutor = true
-  let showTutorialMessage = true
+  let showTutorialModal = true
+  let showTutorModal = false
   let showTestModal = false
-  let showSolution = false
+  let showSolutionModal = false
 
   onMount(() => {
     const consoleLog = console.log
@@ -55,14 +56,14 @@
       clearTimeout(timerId)
     }
     timerId = setTimeout(() => {
-      if (lintError) {
-        previousLintError = lintError
+      if (tutorContent) {
+        previousTutorContent = tutorContent
       }
-      lintError = remainingProblems[0]
+      tutorContent = remainingProblems[0]
 
-      if (!isEqual(previousLintError, lintError)) {
-        showTutor = true
-        showErrorMessage = false
+      if (!isEqual(previousTutorContent, tutorContent) && !showTutorialModal) {
+        showTutorModal = true
+        showHighlighting = false
       }
     }, 1500)
   }
@@ -88,22 +89,25 @@
     if (unlockedNext) {
       dispatch("next")
       consoleCode = ""
-      lintError = null
-      previousLintError = null
+      tutorContent = null
+      previousTutorContent = null
       remainingProblems = []
-      showErrorMessage = false
+      showHighlighting = false
       testPassed = false
       unlockedNext = false
 
-      showTutor = true
+      showTutorModal = true
       showTestModal = false
     }
   }
 
+  function closeTutorialModal() {
+    showTutorialModal = false
+    showHighlighting = false
+  }
+
   function closeTutorModal() {
-    showTutor = false
-    showTutorialMessage = false
-    showErrorMessage = false
+    showTutorModal = false
   }
 
   function openSolution() {
@@ -112,7 +116,7 @@
     )
 
     if (response) {
-      showSolution = true
+      showSolutionModal = true
     }
   }
 
@@ -130,8 +134,8 @@
   <div id="editor">
     <CodeEditor
       {initialcode}
-      {showErrorMessage}
-      error={lintError}
+      {showHighlighting}
+      error={tutorContent}
       on:edited={updateCode}
     />
   </div>
@@ -139,7 +143,7 @@
     {consoleCode}
   </p>
   <div id="action">
-    <button on:click={() => (showTutor = true)}>Tutor</button>
+    <button on:click={() => (showTutorModal = true)}>Tutor</button>
     <button on:click={run}>Run</button>
     <button class={testPassed ? "passed" : "failed"} on:click={test}
       >Test</button
@@ -147,12 +151,19 @@
     <button on:click={openSolution}>Lösung</button>
     <button disabled={!unlockedNext} on:click={next}>Nächste Aufgabe</button>
   </div>
-  {#if showTutor}
+  {#if showTutorialModal}
+    <div class="modal">
+      <TutorialModal
+        on:showWhere={() => (showHighlighting = true)}
+        on:close={closeTutorialModal}
+      />
+    </div>
+  {/if}
+  {#if showTutorModal}
     <div class="modal">
       <Tutor
-        {showTutorialMessage}
-        {lintError}
-        on:showWhere={() => (showErrorMessage = true)}
+        lintError={tutorContent}
+        on:showWhere={() => (showHighlighting = true)}
         on:close={closeTutorModal}
       />
     </div>
@@ -189,8 +200,8 @@
       </DraggableModal>
     </div>
   {/if}
-  {#if showSolution}
-    <Solution {solution} on:close={() => (showSolution = false)} />
+  {#if showSolutionModal}
+    <Solution {solution} on:close={() => (showSolutionModal = false)} />
   {/if}
 </div>
 
