@@ -77,8 +77,8 @@
       Syntaxvorgaben.
       <p id="no-space-wrap">
         Nutze den Button Run, um deinen Code zwischendurch auszuprobieren. Wenn
-        du denkst, dass du die Aufgabe gelöst hast, kannst du mit Klick auf Test
-        überprüfen lassen. Los geht's!
+        du denkst, dass du die Aufgabe gelöst hast, kannst du deinen Code mit
+        Klick auf Test überprüfen lassen. Los geht's!
       </p>
     {:else if lintError}{lintError.messages[messageIndex]}
     {:else}Probiere deinen Code auch zwischendurch mit Run aus. Wenn du denkst,
