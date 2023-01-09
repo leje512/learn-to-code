@@ -88,8 +88,9 @@ button:disabled:hover {
 
 
 code {
-  background: lightgrey;
+  background: darkgrey;
   font-family: monospace;
+  color: white;
 }
 code.terminal {
   background: black;
