@@ -65,7 +65,7 @@
         showTutorModal = true
         showHighlighting = false
       }
-    }, 1500)
+    }, 3000)
   }
 
   function run() {
