@@ -29,9 +29,7 @@ const highlightExtension = StateField.define({
             filter: (f, t, value) => false,
           })
         }
-      } catch (e) {
-        console.log("error in extension", e)
-      }
+      } catch (e) {}
     }
     return decorations
   },

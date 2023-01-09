@@ -4,7 +4,6 @@
   line-height: 24px;
   font-weight: 400;
 
-  color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
@@ -13,6 +12,16 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+  .cm-content {
+    color: black;
+  }
 }
 
 a {
@@ -69,6 +78,39 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+button:disabled:hover {
+  border: none;
+}
+
+
+code {
+  background: darkgrey;
+  font-family: monospace;
+  color: white;
+}
+code.terminal {
+  background: black;
+  color: white;
+  font-family: monospace;
+}
+
+.actions {
+  margin-left: auto;
+  padding: 5px;
+}
+
+.codeeditor .cm-editor {
+  max-width: 100%;
+  max-height: 70vh;
+  height: 70vh;
+  background-color: white;
+}
+.ͼ1 .cm-scroller {
+  overflow-x: initial;
 }
 
 @media (prefers-color-scheme: light) {

@@ -1,3 +1,4 @@
+import * as walk from "acorn-walk"
 import { getLineOfCodeByLineNumber, getLineOfCodeByStart } from "./utils.js"
 import {
   isConsoleLog,
@@ -7,13 +8,12 @@ import {
   isFunctionDeclaration,
   isFunctionCall,
 } from "./nodeConditions.js"
-import * as walk from "acorn-walk"
 
 const errorMissingConsoleLog = {
   type: "ast",
   severity: "hint",
   parseErrorCheck: "regular",
-  condition: (node, parent, text) => {
+  condition: (node) => {
     return isConsoleLog(node)
   },
   messages: [
@@ -45,7 +45,7 @@ const errorSwitchedCompareSymbol = {
   type: "node",
   severity: "error",
   parseErrorCheck: "both",
-  condition: (node, parent) => {
+  condition: (node) => {
     return (
       isIfStatement(node) &&
       (node.test.type == "ArrowFunctionExpression" ||
@@ -63,7 +63,7 @@ const errorMissingIfElse = {
   type: "ast",
   severity: "hint",
   parseErrorCheck: "regular",
-  condition: (node, parent) => {
+  condition: (node) => {
     return node.type && isIfStatement(node) && isElseOrElseIfStatement(node)
   },
   messages: [
@@ -87,7 +87,7 @@ const errorSemicolonAfterIfCondition = {
   type: "node",
   severity: "error",
   parseErrorCheck: "regular",
-  condition: (node, parent) => {
+  condition: (node) => {
     return (
       isIfStatement(node) &&
       node.consequent &&
@@ -172,7 +172,7 @@ const errorMissingFunction = {
   type: "ast",
   severity: "hint",
   parseErrorCheck: "regular",
-  condition: (node, parent) => {
+  condition: (node) => {
     return isFunctionDeclaration(node)
   },
   messages: [
@@ -188,7 +188,7 @@ const errorMissingFunctionName = {
   type: "node",
   severity: "error",
   parseErrorCheck: "parseError",
-  condition: (node, parent) => {
+  condition: (node) => {
     return (
       isFunctionDeclaration(node) &&
       node.id.type == "Identifier" &&
@@ -209,7 +209,7 @@ const errorLogicalOperator = {
   type: "node",
   severity: "error",
   parseErrorCheck: "regular",
-  condition: (node, parent) => {
+  condition: (node) => {
     return (
       isIfStatement(node) &&
       node.test.type == "BinaryExpression" &&
@@ -227,7 +227,7 @@ const errorUsageOfMathMax = {
   type: "node",
   severity: "error",
   parseErrorCheck: "regular",
-  condition: (node, parent) => {
+  condition: (node) => {
     return (
       isFunctionCall(node) &&
       node.callee &&
