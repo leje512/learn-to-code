@@ -1,9 +1,31 @@
-# How to build the code editor
+# Interactive Webapp to learn how to code
 
-The code editor CodeMirror is built via rollup. The code is in codingtutorial/src/codemirror.js. Run
+## Prerequisite
+
+- [node.js](https://nodejs.org/en/download/) -> use nvm or take a look at .nvmrc to get current node version
+
+- [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+``
+npm install -g npm
+``
+
+### Local Productionmode
 
 ```
-  rollup -c
+npm i
+npm run build
+npm run preview
 ```
 
-and it will compile to the bundle codemirror.bundle.js. This bundle will be included in Svelte.
+### Developmentmode
+
+```
+npm i
+npm run dev
+```
+
+### Run tests
+
+```
+npm run test
+```
