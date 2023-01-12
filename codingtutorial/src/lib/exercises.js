@@ -340,4 +340,95 @@ Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Beze
       },
     ],
   },
+  {
+    title: "function-in-between",
+    task: `Schreibe eine Funktion <code>istImBereich</code>, die drei Parameter bekommt.
+Die Rückgabe ist ein boolescher Wert: true, wenn a zwischen b und c liegt, ansonsten false.
+Gehe davon aus, dass b immer kleiner als c ist.`,
+    solution: `function istImBereich(a, b, c) {
+  return a > b && a < c
+}`,
+    initialcode: `function istImBereich(a, b, c) {
+  return false
+}`,
+    testCases: [
+      {
+        functionTest: "istImBereich(1, 2, 3)",
+        functionResult: false,
+      },
+      {
+        functionTest: "istImBereich(2, 1, 3)",
+        functionResult: true,
+      },
+      {
+        functionTest: "istImBereich(-5, -20, 3)",
+        functionResult: true,
+      },
+      {
+        functionTest: "istImBereich(0, 0, 1)",
+        functionResult: false,
+      },
+    ],
+    // misconceptions are to be ranked by priority -> from general to specific
+    misconceptions: [
+      {
+        ...errorMissingFunctionKeyword,
+      },
+      {
+        ...errorMissingFunctionName,
+      },
+      {
+        ...errorMissingParenthesesIfCondition,
+      },
+      {
+        ...errorSemicolonAfterIfCondition,
+      },
+      {
+        ...errorLogicalOperator,
+      },
+      {
+        ...errorSwitchedCompareSymbol,
+      },
+      {
+        ...errorMissingFunction,
+      },
+      {
+        ...{
+          ...errorConsoleLogInsteadOfReturn,
+          condition: (...args) =>
+            errorConsoleLogInsteadOfReturn.condition(...args, ["istImBereich"]),
+        },
+      },
+      {
+        ...{
+          ...errorMissingReturn,
+          condition: (...args) =>
+            errorMissingReturn.condition(...args, ["istImBereich"]),
+        },
+      },
+      {
+        ...{
+          ...errorIncorrectNumberOfParams,
+          condition: (...args) =>
+            errorIncorrectNumberOfParams.condition(...args, "istImBereich", 3),
+        },
+        exerciseSpecificMessage: `Die Funktion istImBereich sollte drei Parameter bekommen. So sollte der Funktionskopf von istImBereich aussehen:
+function istImBereich(a, b, c)
+Du kannst natürlich die Namen der Parameter ändern und aussagekräftigere Bezeichnungen als a, b und c wählen.`,
+      },
+      {
+        ...{
+          ...errorIncorrectNumberOfCallArguments,
+          condition: (...args) =>
+            errorIncorrectNumberOfCallArguments.condition(
+              ...args,
+              "istImBereich",
+              3
+            ),
+        },
+        exerciseSpecificMessage:
+          "Für die Funktion function istImBereich(a, b, c) {} sollte der Funktionsaufruf so aussehen: istImBereich(4, 2, 7). Die Zahlen 4, 2 und 7 entsprechen dabei den Werten für die Parameter a, b und c. Die Anzahl der übergebenen Parameter muss dabei mit der Funktionsinitialisierung übereinstimmen, hier also genau drei.",
+      },
+    ],
+  },
 ]

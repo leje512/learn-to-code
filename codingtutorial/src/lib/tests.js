@@ -4,6 +4,7 @@ export const runUnitTest = (title, code, testCases) => {
     case "if-else-if":
       return checkConsoleLog(code, testCases)
     case "function-max":
+    case "function-in-between":
       return checkFunction(code, testCases)
   }
 }
