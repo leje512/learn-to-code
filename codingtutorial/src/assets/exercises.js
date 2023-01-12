@@ -15,7 +15,7 @@ import {
   errorMissingReturn,
   errorIncorrectNumberOfParams,
   errorIncorrectNumberOfCallArguments,
-} from "./errorMessages.js"
+} from "../diagnosis/errorMessages.js"
 
 export default [
   {

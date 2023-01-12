@@ -1,5 +1,8 @@
 import * as walk from "acorn-walk"
-import { getLineOfCodeByLineNumber, getLineOfCodeByStart } from "./utils.js"
+import {
+  getLineOfCodeByLineNumber,
+  getLineOfCodeByStart,
+} from "../lib/utils.js"
 import {
   isConsoleLog,
   consoleLogIncludesText,

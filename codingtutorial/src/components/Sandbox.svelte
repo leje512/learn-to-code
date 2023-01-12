@@ -7,7 +7,7 @@
   import Solution from "./Solution.svelte"
   import TutorialModal from "./TutorialModal.svelte"
   import { runUnitTest } from "../lib/tests.js"
-  import { getDiagnostics } from "../lib/astlint.js"
+  import { getDiagnostics } from "../diagnosis/astlint.js"
 
   const dispatch = createEventDispatcher()
 
