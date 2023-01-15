@@ -1,5 +1,5 @@
 <script>
-  import { createEventDispatcher, onMount } from "svelte"
+  import { createEventDispatcher } from "svelte"
   import { isEqual } from "lodash"
   import CodeEditor from "./CodeEditor.svelte"
   import Tutor from "./Tutor.svelte"
@@ -30,14 +30,6 @@
   let showTutorModal = false
   let showTestModal = false
   let showSolutionModal = false
-
-  onMount(() => {
-    const consoleLog = console.log
-    console.log = function (msg) {
-      consoleLog.apply(console, arguments)
-      consoleCode = `${consoleCode}${msg}\n`
-    }
-  })
 
   function updateCode(event) {
     code = event.detail.text
@@ -70,10 +62,22 @@
 
   function run() {
     consoleCode = ""
+
+    // override console.log only for the run of the function
+    const consoleLog = console.log
+    console.log = function (msg) {
+      consoleLog.apply(console, arguments)
+      consoleCode = `${consoleCode}${msg}\n`
+    }
     try {
       Function(code)()
     } catch (error) {
       console.log(error) // as long as console.log is extended, consoleCode = `${consoleCode}${msg}\n` is not necessary here
+    }
+
+    // reset console.log
+    console.log = function (msg) {
+      consoleLog.apply(console, arguments)
     }
   }
 
