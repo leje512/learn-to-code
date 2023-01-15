@@ -90,7 +90,7 @@ if (punkte mindestens 5) {
   {
     title: "if-else-if",
     task: `Es ist eine Punktzahl gegeben: 
-<code>let punktzahl = 10</code>
+<code>let punkte = 10</code>
 Schreiben Sie ein Programm, dass bei verschiedenen Punktständen ausgibt, wie die Klausur ausfällt:
 <code>0-10: Durchgefallen
 11-20: Naja
