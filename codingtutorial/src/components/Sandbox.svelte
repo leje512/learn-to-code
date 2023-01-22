@@ -71,6 +71,7 @@
     }
     try {
       Function(code)()
+      testCode()
     } catch (error) {
       console.log(error) // as long as console.log is extended, consoleCode = `${consoleCode}${msg}\n` is not necessary here
     }
@@ -83,6 +84,10 @@
 
   function test() {
     showTestModal = true
+    testCode()
+  }
+
+  function testCode() {
     testPassed = runUnitTest(title, code, testCases)
     if (remainingProblems.length === 0 && testPassed) {
       unlockedNext = true
